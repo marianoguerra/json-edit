@@ -1,0 +1,51 @@
+.je-field, .je-array, .je-array-actions, .je-array-items{
+ width: 99%;
+ margin: 0.25%;
+ padding: 0.25%;
+}
+
+.je-field label{
+ float: left;
+ width: 49%;
+}
+
+.je-field.je-required label{
+ font-weight: bold;
+}
+
+.je-field input, .je-field select{
+ float: right;
+ width: 50%;
+}
+
+.je-array-actions{
+ display: table;
+ text-align: center;
+}
+
+.je-array-items{
+ display: table;
+}
+
+.je-array-item{
+ text-align: right;
+ display: table;
+ width: 100%;
+}
+
+.je-array-item input{
+ float: left;
+ margin-left: 25%;
+}
+
+.je-array-item-actions{
+ float: right;
+}
+
+.je-array-actions button{
+ margin-left: 2em;
+}
+
+a.je-action{
+ text-decoration: none;
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Test Suite</title>
+	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-git.css">
+	<link rel="stylesheet" href="../css/json.edit.css">
+	<script src="http://code.jquery.com/qunit/qunit-git.js"></script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="https://raw.github.com/marianoguerra/legojs/master/jquery.lego.web.js"></script>
+ <script>
+  window._jsonEditOpts = {
+   "global": true,
+   "exportPrivates": true
+  };
+  </script>
+	<script src="../js/json.edit.js"></script>
+	<script src="json.edit.test.js"></script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture">test markup</div>
+ <div id="out"></div>
+</body>
+</html>
