@@ -1,0 +1,34 @@
+json-edit
+=========
+
+what
+----
+
+*json-edit* is a javascript library that takes a json schema[1] as input,
+generates a form to input information described by the schema, validates the
+input and returns a json object that respects the provided schema.
+
+this allows you to **describe** the shape of the data you want and let
+*json-edit* make the ugly work.
+
+who
+---
+
+marianoguerra
+
+why
+---
+
+I'm tired of writing boring, error-prone and repetitive forms and validation.
+
+also, I need it for something :)
+
+try it
+------
+
+http://marianoguerra.github.com/json-edit
+
+license
+-------
+
+MIT + optional beer for the creator
