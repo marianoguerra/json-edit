@@ -11,6 +11,8 @@ input and returns a json object that respects the provided schema.
 this allows you to **describe** the shape of the data you want and let
 *json-edit* make the ugly work.
 
+[1] http://tools.ietf.org/html/draft-zyp-json-schema-03
+
 who
 ---
 
@@ -23,10 +25,20 @@ I'm tired of writing boring, error-prone and repetitive forms and validation.
 
 also, I need it for something :)
 
+test it
+-------
+
+http://marianoguerra.github.com/json-edit/test
+
 try it
 ------
 
 http://marianoguerra.github.com/json-edit
+
+download it
+-----------
+
+the javascript is in the js folder, you will also need jquery and legojs.
 
 license
 -------
