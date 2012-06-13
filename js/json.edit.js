@@ -93,9 +93,28 @@
     ns = nsgen(prefix);
     priv.ns = ns;
 
+    priv.getKeys = function (obj) {
+        return $.map(obj, function (value, key) {
+            return key;
+        });
+    };
+
+
     priv.genFields = function (order, schema) {
+        if (!order) {
+            order = priv.getKeys(schema);
+        }
+
         return $.map(order, function (item) {
             var itemSchema = schema[item];
+
+            if (schema[item] === undefined) {
+                throw new cons.Error("attribute not found on schema", {
+                    "value": item,
+                    "schema": schema
+                });
+            }
+
             return priv.genField(item, itemSchema);
         });
     };
@@ -106,6 +125,11 @@
         $.each(priv.genFields(opts.order, opts.schema), function (index, lego) {
             container.append($.lego(lego));
         });
+    };
+
+    cons.Error = function (reason, args) {
+        this.reason = reason;
+        this.args = args;
     };
 
     priv.label = function (label, idFor) {
@@ -244,7 +268,15 @@
             $(selectorItems).children(selectorChildsToRemove).remove();
         }
 
-        if (type === "array") {
+        if (type === "object") {
+            return {
+                "div": {
+                    "id": id,
+                    "class": ns.classes("field", "object-fields"),
+                    "$childs": priv.genFields(opts.order, opts.properties)
+                }
+            };
+        } else if (type === "array") {
             minItems = opts.minItems || 1;
             for (i = 0; i < minItems; i += 1) {
                 arrayChild = makeArrayItem(

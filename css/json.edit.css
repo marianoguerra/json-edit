@@ -1,4 +1,4 @@
-.je-field, .je-array, .je-array-actions, .je-array-items{
+.je-field, .je-array, .je-object, .je-object-fields, .je-array-actions, .je-array-items{
  width: 99%;
  margin: 0.25%;
  padding: 0.25%;
@@ -48,4 +48,9 @@
 
 a.je-action{
  text-decoration: none;
+}
+
+.je-object-fields{
+ border: 1px solid #eee;
+ display: table;
 }

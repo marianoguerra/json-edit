@@ -104,6 +104,58 @@ var demos = [
         }
     ],
     [
+        "order not provided",
+        "gets keys in any order",
+        {
+            "schema": {
+                "name": {
+                    "type": "string",
+                    "required": true,
+                    "title": "Name"
+                },
+                "city": {
+                    "type": "string",
+                    "title": "City",
+                    "description": "city were you live",
+                    "maxLength": 20
+                }
+            }
+        }
+    ],
+    [
+        "nested objects",
+        "",
+        {
+            "order": ["name", "location"],
+            "schema": {
+                "name": {
+                    "type": "string",
+                    "required": true,
+                    "title": "Name"
+                },
+                "location": {
+                    "type": "object",
+                    "title": "Location",
+                    "order": ["city", "state", "country"],
+                    "properties": {
+                        "city": {
+                            "type": "string",
+                            "title": "City"
+                        },
+                        "state": {
+                            "type": "string",
+                            "title": "State"
+                        },
+                        "country": {
+                            "type": "string",
+                            "title": "Country"
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    [
         "Two fields, required, description and maxLength",
         "",
         {

@@ -224,6 +224,16 @@
         checkGeneratedField(fields[1], "age", "Age", 5, "je-field je-age je-number", ageOpts);
     });
 
+    test("error is thrown if order item is not in schema", function () {
+        try {
+            priv.genFields(["foo"], {"bar": {}});
+            ok(false, "should throw an exception");
+        } catch (error) {
+            equal(error.args.value, "foo", "ofending attribute should be foo");
+            equal(error.reason, "attribute not found on schema", "correct message should be set");
+        }
+    });
+
     test("schemas for array", function () {
         var arrCont, arrItems, field;
         priv.ns._reset();
@@ -236,7 +246,6 @@
             }
         });
 
-        console.log(field);
         equal(field.div.id, priv.ns.id("numbers", false, 0));
         equal(field.div["class"], priv.ns.classes("field", "numbers", "array"));
         ok(field.div.$childs[0].label);
@@ -263,7 +272,59 @@
             "enum": ["red", "green", "blue"]
         });
 
-        ok(true);
+        ok(field.div);
+        equal(field.div.$childs.length, 2);
+        ok(field.div.$childs[1].select);
+        equal(field.div.$childs[1].select.$childs.length, 4);
+        equal(field.div.$childs[1].select.$childs[0].option.$childs, "");
+        equal(field.div.$childs[1].select.$childs[1].option.$childs, "red");
+
+        field = priv.genField("color", {
+            "type": "string",
+            "required": true,
+            "enum": ["red", "green", "blue"]
+        });
+
+        equal(field.div.$childs[1].select.$childs[0].option.$childs, "red");
+
+    });
+
+    test("nested objects", function () {
+
+        var childs, field = priv.genField("object", {
+            "type": "object",
+            "title": "Location",
+            "order": ["city", "state", "country"],
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "title": "City"
+                },
+                "state": {
+                    "type": "string",
+                    "title": "State"
+                },
+                "country": {
+                    "type": "string",
+                    "title": "Country"
+                }
+            }
+        });
+
+        equal(field.div.$childs[1].div.$childs.length, 3);
+        childs = field.div.$childs[1].div.$childs;
+
+        ok(childs[0].div.$childs[0].label);
+        ok(childs[0].div.$childs[1].input);
+        equal(childs[0].div.$childs[0].label.$childs, "City");
+
+        ok(childs[1].div.$childs[0].label);
+        ok(childs[1].div.$childs[1].input);
+        equal(childs[1].div.$childs[0].label.$childs, "State");
+
+        ok(childs[2].div.$childs[0].label);
+        ok(childs[2].div.$childs[1].input);
+        equal(childs[2].div.$childs[0].label.$childs, "Country");
     });
 
     /*
