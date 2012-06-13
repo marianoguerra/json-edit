@@ -1,1 +1,135 @@
-My GitHub Page
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+ <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Json Edit</title>
+	<link rel="stylesheet" href="css/json.edit.css">
+	<link rel="stylesheet" href="css/demo.json.edit.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="https://raw.github.com/marianoguerra/legojs/master/jquery.lego.web.js"></script>
+	<script src="https://raw.github.com/ajaxorg/ace-builds/master/src-min/ace.js"></script>
+	<script src="https://raw.github.com/ajaxorg/ace-builds/master/src-min/mode-json.js"></script>
+	<script src="https://raw.github.com/ajaxorg/ace-builds/master/src-min/theme-merbivore_soft.js"></script>
+ 
+ <script>
+  window._jsonEditOpts = {
+   "global": true,
+   "exportPrivates": true
+  };
+ </script>
+
+	<script src="js/demos.js"></script>
+	<script src="js/json.edit.js"></script>
+
+ <style type="text/css" media="screen">
+.demo-box{
+ width: 97.9%;
+ display: table;
+ border: 1px solid #ddd;
+ margin: 0.5%;
+ padding: 0.5%;
+ background-color: #eee;
+}
+   
+.editor { 
+ margin: 0;
+ position: relative;
+ font-size: 1em;
+ width: 49%;
+ height: 25em;
+ float: left;
+}
+
+.demo-out{
+ margin: 0;
+ float: right;
+ border: 1px solid #666;
+ height: 25em;
+ width: 50%;
+ overflow: auto;
+ background-color: #fff;
+}
+
+.demo-run{
+ float: right;
+ clear: both;
+ margin: 0.5em 0;
+}
+ </style>
+</head>
+<body>
+ <h1>Json Edit</h1>
+
+ <p class="project-description">give me a json schema, I give you a form, give me the data (user input) I give you a validated json object matching the json schema</p>
+
+ <h2>Try it!</h2>
+
+ <script>
+
+     function startEditor(id, title, description, content) {
+      var editor, outputId = id + "-out";
+
+      function updateDemo() {
+        var content = editor.getSession().getDocument().getValue(), data;
+
+        try {
+         data = JSON.parse(content);
+        } catch (error) {
+         alert(error);
+         return;
+        }
+
+        $("#" + outputId).html("");
+        jsonEdit(outputId, data);
+      }
+
+      $("body")
+       .append($.lego(
+        {
+         "div": {
+          "class": "demo-box",
+          "$childs": [
+           {"h3": title},
+           {"p": {"class": "demo-desc", "$childs": description}},
+           {
+            "pre": {
+             "id": id,
+             "class": "editor",
+             "$childs": JSON.stringify(content, null, 2)
+            }
+           },
+           {"div": {"id": outputId, "class": "demo-out"}},
+           {
+            "button": {
+             "id": id + "-action",
+             "class": "demo-run", 
+             "$childs": "run", 
+             "$click": function () {
+              updateDemo();
+             }
+            }
+           }
+          ]
+         }
+        }));
+
+      editor = ace.edit(id);
+      editor.setTheme("ace/theme/merbivore_soft");
+      editor.getSession().setMode("ace/mode/json");
+      updateDemo();
+
+      return editor;
+     }
+
+     var i;
+
+     $(function () {
+      for (i = 0; i < demos.length; i += 1) {
+       startEditor("editor" + i, demos[i][0], demos[i][1], demos[i][2]);
+      }
+     });
+ </script>
+</body>
+</html>
+>>>>>>> master
