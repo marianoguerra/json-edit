@@ -4,7 +4,7 @@ var demos = [
         "",
         {
             "order": ["name"],
-            "schema": {
+            "properties": {
                 "name": {
                     "type": "string",
                     "title": "Name"
@@ -17,7 +17,7 @@ var demos = [
         "",
         {
             "order": ["name"],
-            "schema": {
+            "properties": {
                 "name": {
                     "type": "string",
                     "title": "Name",
@@ -31,7 +31,7 @@ var demos = [
         "try writing more than 10 characters (minLength is checked on validation)",
         {
             "order": ["name"],
-            "schema": {
+            "properties": {
                 "name": {
                     "type": "string",
                     "title": "Name",
@@ -47,7 +47,7 @@ var demos = [
         "",
         {
             "order": ["age"],
-            "schema": {
+            "properties": {
                 "age": {
                     "type": "number",
                     "required": true,
@@ -61,7 +61,7 @@ var demos = [
         "",
         {
             "order": ["age"],
-            "schema": {
+            "properties": {
                 "age": {
                     "type": "number",
                     "required": true,
@@ -77,7 +77,7 @@ var demos = [
         "",
         {
             "order": ["age"],
-            "schema": {
+            "properties": {
                 "age": {
                     "type": "number",
                     "required": true,
@@ -95,7 +95,7 @@ var demos = [
         "",
         {
             "order": ["sure"],
-            "schema": {
+            "properties": {
                 "sure": {
                     "type": "boolean",
                     "title": "Are you sure?"
@@ -107,7 +107,7 @@ var demos = [
         "order not provided",
         "gets keys in any order",
         {
-            "schema": {
+            "properties": {
                 "name": {
                     "type": "string",
                     "required": true,
@@ -127,7 +127,7 @@ var demos = [
         "",
         {
             "order": ["name", "location"],
-            "schema": {
+            "properties": {
                 "name": {
                     "type": "string",
                     "required": true,
@@ -160,7 +160,7 @@ var demos = [
         "",
         {
             "order": ["name", "city"],
-            "schema": {
+            "properties": {
                 "name": {
                     "type": "string",
                     "required": true,
@@ -180,7 +180,7 @@ var demos = [
         "see how the empty option is at the top since it's not required",
         {
             "order": ["color"],
-            "schema": {
+            "properties": {
                 "color": {
                     "type": "string",
                     "title": "Color",
@@ -194,7 +194,7 @@ var demos = [
         "",
         {
             "order": ["color"],
-            "schema": {
+            "properties": {
                 "color": {
                     "type": "string",
                     "title": "Color",
@@ -209,7 +209,7 @@ var demos = [
         "",
         {
             "order": ["color"],
-            "schema": {
+            "properties": {
                 "color": {
                     "type": "string",
                     "title": "Color",
@@ -227,7 +227,7 @@ var demos = [
             "order": [
                 "nums"
             ],
-            "schema": {
+            "properties": {
                 "nums": {
                     "type": "array",
                     "title": "Nums",
@@ -245,7 +245,7 @@ var demos = [
             "order": [
                 "nums"
             ],
-            "schema": {
+            "properties": {
                 "nums": {
                     "type": "array",
                     "title": "Nums",
@@ -264,7 +264,7 @@ var demos = [
             "order": [
                 "nums"
             ],
-            "schema": {
+            "properties": {
                 "nums": {
                     "type": "array",
                     "title": "Nums",

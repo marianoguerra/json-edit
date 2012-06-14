@@ -122,7 +122,7 @@
     cons = function (id, opts) {
         var container = $("#" + id);
 
-        $.each(priv.genFields(opts.order, opts.schema), function (index, lego) {
+        $.each(priv.genFields(opts.order, opts.properties), function (index, lego) {
             container.append($.lego(lego));
         });
     };
