@@ -392,6 +392,10 @@
 
                 obj.input.min = min;
             }
+
+            if (opts.pattern) {
+                obj.input.pattern = opts.pattern;
+            }
         }
 
         return obj;

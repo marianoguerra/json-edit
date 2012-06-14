@@ -27,6 +27,21 @@ var demos = [
         }
     ],
     [
+        "Field with pattern",
+        "",
+        {
+            "order": ["name"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name",
+                    "default": "bob",
+                    "pattern": "[a-zA-Z]+"
+                }
+            }
+        }
+    ],
+    [
         "Field with minLength and maxLength",
         "try writing more than 10 characters (minLength is checked on validation)",
         {
