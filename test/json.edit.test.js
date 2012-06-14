@@ -151,11 +151,9 @@
         );
     });
 
-    function checkInputTypeAndFormat(type, format, expectedType) {
+    function checkInputType(type, expectedType) {
         deepEqual(
-            priv.input("foo", type, "asd", {
-                format: format
-            }),
+            priv.input("foo", type, "asd", {}),
             {
                 "input": {
                     "id": "asd",
@@ -166,31 +164,15 @@
         );
     }
 
-    test("input field type respect type and format", function () {
-        var check = checkInputTypeAndFormat;
+    test("input field type respect type", function () {
+        var check = checkInputType;
 
-        check("string", null, "text");
-        check("string", "asdasdadasda", "text");
+        check("string", "text");
+        check("number", "number");
+        check("integer", "number");
+        check("boolean", "checkbox");
 
-        check("string", "email", "email");
-        check("string", "date-time", "datetime");
-        check("string", "date", "date");
-        check("string", "time", "time");
-        check("string", "uri", "url");
-        check("string", "color", "color");
-        check("string", "phone", "tel");
-        check("string", "utc-millisec", "text");
-        check("string", "regex", "text");
-        check("string", "style", "text");
-        check("string", "ip-address", "text");
-        check("string", "ipv6", "text");
-        check("string", "hostname", "text");
-
-        check("number", null, "number");
-        check("integer", null, "number");
-        check("boolean", null, "checkbox");
-
-        check("any", null, "text");
+        check("any", "text");
     });
 
     function checkGeneratedField(field, id, title, startIndex, classes, opts) {

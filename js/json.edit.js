@@ -148,26 +148,6 @@
         "boolean": "checkbox"
     };
 
-    priv.inputFormats = {
-        "date-time": "datetime",
-        "date": "date",
-        "time": "time",
-        "utc-millisec": "text",
-        "regex": "text",
-        "color": "color",
-        "style": "text",
-        "phone": "tel",
-        "uri": "url",
-        "email": "email",
-        "ip-address": "text",
-        "ipv6": "text",
-        "host-name": "text"
-    };
-
-    // TODO: add patterns for inputFormats not supported
-    priv.inputPatterns = {
-    };
-
     priv.input = function (name, type, id, opts) {
         var inputType = priv.inputTypes[type] || "text", obj, pattern,
             min, max,
@@ -349,16 +329,6 @@
                     "type": inputType
                 }
             };
-
-            if (type === "string" && opts.format) {
-                obj.input.type = priv.inputFormats[opts.format] || "text";
-
-                pattern = priv.inputPatterns[opts.format];
-
-                if (pattern) {
-                    obj.input.pattern = pattern;
-                }
-            }
 
             if (opts["default"]) {
                 obj.input.value = opts["default"];
