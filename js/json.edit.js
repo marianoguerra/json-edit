@@ -8,6 +8,11 @@
         displayError: function (msg) {
             alert(msg);
         },
+        displayWarning: function () {
+            if (window.console && window.console.warn) {
+                window.console.warn.apply(window.console, arguments);
+            }
+        },
         msgs: {
             cantRemoveMinItems: "Can't remove item, minimum number reached",
             cantAddMaxItems: "Can't add item, maximum number reached"
@@ -139,17 +144,60 @@
         };
     };
 
+    cons.collectResult = function (ok, msg, data) {
+        return {
+            ok: ok,
+            msg: msg,
+            data: data
+        };
+    };
+
+    cons.defaults = defaults;
     cons.collect = function (id, opts) {
-        var cont = $("#" + id),
-            order = priv.getKeys(opts.properties, opts.order);
+        var
+            // if can be already a jquery object if called from collectObject
+            cont = (typeof id === "string") ? $("#" + id) : id,
+            order = priv.getKeys(opts.properties, opts.order),
+            result = {ok: true, msg: "ok", data: {}};
 
-        $.each(order, function (index, item) {
+        $.each(order, function (i, key) {
             var
-                selector = priv.genFieldClasses(item, opts, ".");
+                value,
+                schema = opts.properties[key],
+                selector = "." + priv.genFieldClasses(key, schema, "."),
+                field = cont.children(selector);
 
-            console.log(selector, cont.children(selector));
+            if (field.size() !== 1) {
+                defaults.displayWarning("expected one item collecting",
+                    field.size(), key, selector, cont, field);
+
+                value = cons.collectResult(false,
+                    "expected one item collecting", {
+                        key: key,
+                        size: field.size()
+                    });
+
+            } else {
+                value = priv.collectField(key, field, schema);
+            }
+
+            if (!value.ok) {
+                result.ok = false;
+                result.msg = "one or more errors in object fields";
+            }
+
+            result.data[key] = value;
         });
 
+        return result;
+    };
+
+    priv.collectField = function (key, field, schema) {
+        if (cons.collectors[schema.type]) {
+            return cons.collectors[schema.type](key, field, schema);
+        } else {
+            return cons.collectDefault(key, field, schema);
+        }
     };
 
     cons.Error = function (reason, args) {
@@ -295,7 +343,7 @@
         return {
             "div": {
                 "id": id,
-                "class": ns.cls("array"),
+                "class": priv.genFieldClasses(name, opts),
                 "$childs": [
                     {
                         "div": {
@@ -323,29 +371,37 @@
     }
 
     function formatEnum(name, type, id, opts) {
-        var obj = {
-            "select": {
-                "id": id,
-                "name": name,
-                "$childs": $.map(opts["enum"], function (item, index) {
-                    var opt = {
-                        "option": {
-                            "id": id + "-" + index,
-                            "$childs": item
+        var hasDefault = false, noValueOption,
+            obj = {
+                "select": {
+                    "id": id,
+                    "name": name,
+                    "$childs": $.map(opts["enum"], function (item, index) {
+                        var opt = {
+                            "option": {
+                                "id": id + "-" + index,
+                                "$childs": item
+                            }
+                        };
+
+                        if (item === opts["default"]) {
+                            opt.option.selected = true;
+                            hasDefault = true;
                         }
-                    };
 
-                    if (item === opts["default"]) {
-                        opt.option.selected = true;
-                    }
-
-                    return opt;
-                })
-            }
-        };
+                        return opt;
+                    })
+                }
+            };
 
         if (!opts.required) {
-            obj.select.$childs.unshift({"option": {"$childs": ""}});
+            noValueOption = {"option": {"class": ns.cls("no-value"), "$childs": ""}};
+
+            if (!hasDefault) {
+                noValueOption.option.selected = true;
+            }
+
+            obj.select.$childs.unshift(noValueOption);
         }
 
         if (opts.description) {
@@ -415,12 +471,93 @@
         return obj;
     }
 
+    priv.validate = function (value, schema) {
+        if (cons.validators[schema.type]) {
+            return cons.validators[schema.type](value, schema);
+        } else {
+            return cons.validatorDefault(value, schema);
+        }
+    };
+
+    function collectObject(name, field, schema) {
+        // get the inner child of the object container since collectors look
+        // only in the first level childrens
+        return cons.collect(field.children(ns.$cls("object-fields")), schema);
+    }
+
+    function collectArray(name, field, schema) {
+        var itemSchema = schema.items || {};
+
+        return field.find(ns.$cls("array-item")).map(function (i, node) {
+            return priv.collectField(name, $(node), itemSchema);
+        });
+    }
+
+    function collectEnum(name, field, schema) {
+        var
+            select = field.children("select"),
+            option,
+            value = select.val();
+
+        // if the selected option is the "no-value" option then set value to null
+        if (value === "") {
+            option = select.find("option:selected");
+            if (option.hasClass(ns.cls("no-value"))) {
+                value = null;
+            }
+        }
+
+        return priv.validate(value, schema);
+    }
+
+    function collectDefault(name, field, schema) {
+        if (schema["enum"]) {
+            return collectEnum(name, field, schema);
+        }
+
+        var value = field.children("input").val();
+
+        return priv.validate(value, schema);
+    }
+
+    function validateObject(value, schema) {
+        return cons.collectResult(true, "ok", value);
+    }
+
+    function validateArray(value, schema) {
+        return cons.collectResult(true, "ok", value);
+    }
+
+    function validateDefault(value, schema) {
+        return cons.collectResult(true, "ok", value);
+    }
+
+    // functions to call to format a given type of field, you can add your
+    // own or modify the existing ones, if none matches cons.formatDefault
+    // is called.
     cons.formatters = {
         "object": formatObject,
         "array": formatArray
     };
 
     cons.formatDefault = formatDefault;
+
+    // function to call to collect the value for a given type of field, you can
+    // add your own or modify the existing ones, if none matches
+    // cons.collectDefault is called
+    cons.collectors = {
+        "object": collectObject,
+        "array": collectArray
+    };
+
+    cons.collectDefault = collectDefault;
+
+    cons.validators = {
+        "object": validateObject,
+        "array": validateArray
+    };
+
+    cons.validateDefault = validateDefault;
 
     priv.input = function (name, type, id, opts) {
         opts = opts || {};
@@ -473,3 +610,4 @@
 
     return cons;
 }(jQuery));
+
