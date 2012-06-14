@@ -14,6 +14,39 @@ h3{
  text-align: right;
 }
 
+.demo-wrapper{
+ width: 97.9%;
+ display: table;
+ border: 1px solid #ddd;
+ margin: 0.5%;
+ padding: 0.5%;
+ background-color: #eee;
+}
+
+.demo-box{
+ width: 100%;
+ display: table;
+}
+
+.editor{
+ margin: 0;
+ position: relative;
+ font-size: 1em;
+ width: 45%;
+ height: 25em;
+ float: left;
+}
+
+.demo-out{
+ margin: 0;
+ float: right;
+ border: 1px solid #666;
+ height: 25em;
+ width: 50%;
+ overflow: auto;
+ background-color: #fff;
+}
+
 .project-description{
  margin-left: 20%;
  width: 60%;
@@ -24,4 +57,14 @@ h3{
 .demo-desc{
  text-align: center;
  font-style: italic;
+}
+
+.demo-actions{
+ width: 100%;
+ margin-top: 1em;
+ text-align: center;
+}
+
+.demo-actions button{
+ margin-left: 2em;
 }

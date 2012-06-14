@@ -67,16 +67,18 @@
             $cls: function (suffix) {
                 return "." + id(suffix, true);
             },
-            // return a string with classes separated by spaces
-            classes: dualVarArgs(function (suffixes) {
+            classesList: dualVarArgs(function (suffixes) {
                 return $.map(
                     suffixes,
                     function (suffix) {
                         return id(suffix, true);
                     }
-                )
-                    .join(" ");
+                );
             }),
+            // return a string with classes separated by spaces
+            classes: function () {
+                return this.classesList.apply(this, arguments).join(" ");
+            },
             _reset: function (value) {
                 count = value || 0;
             }
@@ -93,17 +95,19 @@
     ns = nsgen(prefix);
     priv.ns = ns;
 
-    priv.getKeys = function (obj) {
-        return $.map(obj, function (value, key) {
-            return key;
-        });
+    priv.getKeys = function (obj, order) {
+        if (order) {
+            return order;
+        } else {
+            return $.map(obj, function (value, key) {
+                return key;
+            });
+        }
     };
 
 
     priv.genFields = function (order, schema) {
-        if (!order) {
-            order = priv.getKeys(schema);
-        }
+        order = priv.getKeys(schema, order);
 
         return $.map(order, function (item) {
             var itemSchema = schema[item];
@@ -125,6 +129,27 @@
         $.each(priv.genFields(opts.order, opts.properties), function (index, lego) {
             container.append($.lego(lego));
         });
+
+        return {
+            "collect": function () {
+                return cons.collect(id, opts);
+            },
+            "id": id,
+            "opts": opts
+        };
+    };
+
+    cons.collect = function (id, opts) {
+        var cont = $("#" + id),
+            order = priv.getKeys(opts.properties, opts.order);
+
+        $.each(order, function (index, item) {
+            var
+                selector = priv.genFieldClasses(item, opts, ".");
+
+            console.log(selector, cont.children(selector));
+        });
+
     };
 
     cons.Error = function (reason, args) {
@@ -407,10 +432,10 @@
         }
     };
 
-    priv.genField = function (fid, opts) {
+    // return a list of classes for this field separated by sep (" " if not
+    // provided)
+    priv.genFieldClasses = function (fid, opts, sep) {
         var
-            id = ns.id(fid),
-            inputId = ns.id(fid + "-input"),
             type = opts.type || "string",
             classes = ["field", fid, type];
 
@@ -418,10 +443,19 @@
             classes.push("required");
         }
 
+        return ns.classesList(classes).join(sep || " ");
+    };
+
+    priv.genField = function (fid, opts) {
+        var
+            id = ns.id(fid),
+            inputId = ns.id(fid + "-input"),
+            type = opts.type || "string";
+
         return {
             "div": {
                 "id": id,
-                "class": ns.classes(classes),
+                "class": priv.genFieldClasses(fid, opts),
                 "$childs": [
                     priv.label(opts.title, inputId),
                     priv.input(fid, type, inputId, opts)
