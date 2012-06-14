@@ -168,7 +168,7 @@
     priv.inputPatterns = {
     };
 
-    priv.input = function (type, id, opts) {
+    priv.input = function (name, type, id, opts) {
         var inputType = priv.inputTypes[type] || "text", obj, pattern,
             min, max,
             // vars used in case type is array
@@ -201,10 +201,10 @@
             return makeClickable("a", label, onClick, data);
         }
 
-        function makeArrayItem(type, id, schema) {
+        function makeArrayItem(name, type, id, schema) {
             var
                 cont,
-                input = priv.input(type, id, schema);
+                input = priv.input(name, type, id, schema);
 
             function onRemoveClick(event) {
                 var realMinItems = opts.minItems || 0,
@@ -249,9 +249,10 @@
             var
                 items = $("#" + id + " " + ns.$cls("array-items")),
                 item = makeArrayItem(
-                opts.items.type || "string",
-                id + "-" + i,
-                opts.items);
+                    name,
+                    opts.items.type || "string",
+                    id + "-" + i,
+                    opts.items);
 
             if (opts.maxItems && items.children().size() >= opts.maxItems) {
                 defaults.displayError(defaults.msgs.cantAddMaxItems);
@@ -280,6 +281,7 @@
             minItems = opts.minItems || 1;
             for (i = 0; i < minItems; i += 1) {
                 arrayChild = makeArrayItem(
+                    name,
                     opts.items.type || "string",
                     id + "-" + i,
                     opts.items);
@@ -314,6 +316,7 @@
             obj = {
                 "select": {
                     "id": id,
+                    "name": name,
                     "$childs": $.map(opts["enum"], function (item, index) {
                         var opt = {
                             "option": {
@@ -342,6 +345,7 @@
             obj = {
                 "input": {
                     "id": id,
+                    "name": name,
                     "type": inputType
                 }
             };
@@ -418,7 +422,7 @@
                 "class": ns.classes(classes),
                 "$childs": [
                     priv.label(opts.title, inputId),
-                    priv.input(type, inputId, opts)
+                    priv.input(fid, type, inputId, opts)
                 ]
             }
         };

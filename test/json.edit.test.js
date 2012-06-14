@@ -27,32 +27,35 @@
     });
 
     test("generate simple input", function () {
-        deepEqual(priv.input("string", "asd"), {
-            "input": {
-                "id": "asd",
-                "type": "text"
-            }
-        });
-
-        deepEqual(priv.input("string", "asd", {"default": "foo"}), {
+        deepEqual(priv.input("fieldname", "string", "asd"), {
             "input": {
                 "id": "asd",
                 "type": "text",
+                "name": "fieldname"
+            }
+        });
+
+        deepEqual(priv.input("fieldname", "string", "asd", {"default": "foo"}), {
+            "input": {
+                "id": "asd",
+                "type": "text",
+                "name": "fieldname",
                 "value": "foo"
             }
         });
 
-        deepEqual(priv.input("string", "asd", {"default": "foo", "required": true}), {
+        deepEqual(priv.input("fieldname", "string", "asd", {"default": "foo", "required": true}), {
             "input": {
                 "id": "asd",
                 "type": "text",
+                "name": "fieldname",
                 "value": "foo",
                 "required": true
             }
         });
 
         deepEqual(
-            priv.input("string", "asd", {
+            priv.input("fieldname", "string", "asd", {
                 "default": "foo",
                 "required": true,
                 "maxLength": 10
@@ -61,6 +64,7 @@
                 "input": {
                     "id": "asd",
                     "type": "text",
+                    "name": "fieldname",
                     "value": "foo",
                     "required": true,
                     "maxlength": 10
@@ -69,7 +73,7 @@
         );
 
         deepEqual(
-            priv.input("string", "asd", {
+            priv.input("fieldname", "string", "asd", {
                 "default": "foo",
                 "required": true,
                 "maxLength": 10,
@@ -79,6 +83,7 @@
                 "input": {
                     "id": "asd",
                     "type": "text",
+                    "name": "fieldname",
                     "value": "foo",
                     "required": true,
                     "maxlength": 10,
@@ -88,7 +93,29 @@
         );
 
         deepEqual(
-            priv.input("number", "asd", {
+            priv.input("fieldname", "string", "asd", {
+                "default": "foo",
+                "required": true,
+                "maxLength": 10,
+                "description": "the asd field",
+                "pattern": "[1-9]+"
+            }),
+            {
+                "input": {
+                    "id": "asd",
+                    "type": "text",
+                    "name": "fieldname",
+                    "value": "foo",
+                    "required": true,
+                    "maxlength": 10,
+                    "title": "the asd field",
+                    "pattern": "[1-9]+"
+                }
+            }
+        );
+
+        deepEqual(
+            priv.input("fieldname", "number", "asd", {
                 "type": "number",
                 "maximum": 20,
                 "minimum": 10
@@ -96,6 +123,7 @@
             {
                 "input": {
                     "id": "asd",
+                    "name": "fieldname",
                     "type": "number",
                     "max": 20,
                     "min": 10
@@ -104,7 +132,7 @@
         );
 
         deepEqual(
-            priv.input("number", "asd", {
+            priv.input("fieldname", "number", "asd", {
                 "type": "number",
                 "maximum": 20,
                 "minimum": 10,
@@ -114,6 +142,7 @@
             {
                 "input": {
                     "id": "asd",
+                    "name": "fieldname",
                     "type": "number",
                     "max": 19,
                     "min": 11
@@ -124,12 +153,13 @@
 
     function checkInputTypeAndFormat(type, format, expectedType) {
         deepEqual(
-            priv.input(type, "asd", {
+            priv.input("foo", type, "asd", {
                 format: format
             }),
             {
                 "input": {
                     "id": "asd",
+                    "name": "foo",
                     "type": expectedType
                 }
             }
@@ -175,7 +205,7 @@
                 "$childs": [
                     // this should be tested separetely so we trust they work
                     priv.label(title, inputId),
-                    priv.input(opts.type, inputId, opts)
+                    priv.input(id, opts.type, inputId, opts)
                 ]
             }
         });
@@ -191,11 +221,13 @@
     test("generate simple string field", function () {
         checkField({
             "type": "string",
+            "name": "asd",
             "title": "Name"
         }, "je-field je-name je-string");
 
         checkField({
             "type": "number",
+            "name": "asd",
             "title": "Name",
             "required": true
         }, "je-field je-name je-number je-required");
@@ -205,11 +237,13 @@
         var
             nameOpts = {
                 "type": "string",
+                "name": "name",
                 "title": "Name"
             },
             ageOpts = {
                 "type": "number",
-                "title": "Age"
+                "title": "Age",
+                "name": "age"
             },
             fields;
 
