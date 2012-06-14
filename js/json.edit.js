@@ -148,180 +148,196 @@
         "boolean": "checkbox"
     };
 
-    priv.input = function (name, type, id, opts) {
-        var inputType = priv.inputTypes[type] || "text", obj, pattern,
-            min, max,
-            // vars used in case type is array
-            minItems, i, arrayChilds = [], arrayChild;
+    function makeClickable(type, label, onClick, data) {
+        var result = {};
 
-        function makeClickable(type, label, onClick, data) {
-            var result = {};
+        data = data || {};
+        data.$childs = label;
 
-            data = data || {};
-            data.$childs = label;
-
-            if (onClick) {
-                data.$click = onClick;
-            }
-
-            result[type] = data;
-
-            return result;
+        if (onClick) {
+            data.$click = onClick;
         }
 
-        function makeButton(label, onClick, data) {
-            return makeClickable("button", label, onClick, data);
-        }
+        result[type] = data;
 
-        opts = opts || {};
+        return result;
+    }
 
-        function makeLinkAction(label, onClick, data) {
-            data = $.extend(true, {href: "#"}, data);
+    function makeButton(label, onClick, data) {
+        return makeClickable("button", label, onClick, data);
+    }
 
-            return makeClickable("a", label, onClick, data);
-        }
 
-        function makeArrayItem(name, type, id, schema) {
-            var
-                cont,
-                input = priv.input(name, type, id, schema);
+    function makeLinkAction(label, onClick, data) {
+        data = $.extend(true, {href: "#"}, data);
 
-            function onRemoveClick(event) {
-                var realMinItems = opts.minItems || 0,
-                    cont = $("#" + id);
+        return makeClickable("a", label, onClick, data);
+    }
 
-                if (cont.parent().children().size() <= realMinItems) {
-                    defaults.displayError(defaults.msgs.cantRemoveMinItems);
-                } else {
-                    cont.remove();
-                }
+    function makeArrayItem(opts, name, type, id, schema) {
+        var
+            cont,
+            input = priv.input(name, type, id, schema);
 
-                event.preventDefault();
-            }
-
-            cont = {
-                "div": {
-                    "id": id,
-                    "class": ns.cls("array-item"),
-                    "$childs": [
-                        input,
-                        {
-                            "div": {
-                                "class": ns.cls("item-actions"),
-                                "$childs": [
-                                    makeLinkAction(
-                                        "remove",
-                                        onRemoveClick,
-                                        {"class": ns.cls("action")})
-                                ]
-                            }
-                        }
-                    ]
-                }
-            };
-
-            return cont;
-        }
-
-        function onAddItemClick() {
-            i += 1;
-
-            var
-                items = $("#" + id + " " + ns.$cls("array-items")),
-                item = makeArrayItem(
-                    name,
-                    opts.items.type || "string",
-                    id + "-" + i,
-                    opts.items);
-
-            if (opts.maxItems && items.children().size() >= opts.maxItems) {
-                defaults.displayError(defaults.msgs.cantAddMaxItems);
-            } else {
-                items.append($.lego(item));
-            }
-        }
-
-        function onClearItemsClick() {
+        function onRemoveClick(event) {
             var realMinItems = opts.minItems || 0,
-                selectorItems = "#" + id + " " + ns.$cls("array-items"),
-                selectorChildsToRemove = ":not(:lt(" + realMinItems + "))";
+                cont = $("#" + id);
 
-            $(selectorItems).children(selectorChildsToRemove).remove();
+            if (cont.parent().children().size() <= realMinItems) {
+                defaults.displayError(defaults.msgs.cantRemoveMinItems);
+            } else {
+                cont.remove();
+            }
+
+            event.preventDefault();
         }
 
-        if (type === "object") {
-            return {
-                "div": {
-                    "id": id,
-                    "class": ns.classes("field", "object-fields"),
-                    "$childs": priv.genFields(opts.order, opts.properties)
-                }
-            };
-        } else if (type === "array") {
-            minItems = opts.minItems || 1;
-            for (i = 0; i < minItems; i += 1) {
-                arrayChild = makeArrayItem(
-                    name,
-                    opts.items.type || "string",
-                    id + "-" + i,
-                    opts.items);
-
-                arrayChilds.push(arrayChild);
-            }
-
-            return {
-                "div": {
-                    "id": id,
-                    "class": ns.cls("array"),
-                    "$childs": [
-                        {
-                            "div": {
-                                "class": ns.cls("array-items"),
-                                "$childs": arrayChilds
-                            }
-                        },
-                        {
-                            "div": {
-                                "class": ns.cls("array-actions"),
-                                "$childs": [
-                                    makeButton("add", onAddItemClick),
-                                    makeButton("clear", onClearItemsClick)
-                                ]
-                            }
+        cont = {
+            "div": {
+                "id": id,
+                "class": ns.cls("array-item"),
+                "$childs": [
+                    input,
+                    {
+                        "div": {
+                            "class": ns.cls("item-actions"),
+                            "$childs": [
+                                makeLinkAction(
+                                    "remove",
+                                    onRemoveClick,
+                                    {"class": ns.cls("action")})
+                            ]
                         }
-                    ]
-                }
-            };
-        } else if (opts["enum"]) {
-            obj = {
-                "select": {
-                    "id": id,
-                    "name": name,
-                    "$childs": $.map(opts["enum"], function (item, index) {
-                        var opt = {
-                            "option": {
-                                "id": id + "-" + index,
-                                "$childs": item
-                            }
-                        };
-
-                        if (item === opts["default"]) {
-                            opt.option.selected = true;
-                        }
-
-                        return opt;
-                    })
-                }
-            };
-
-            if (!opts.required) {
-                obj.select.$childs.unshift({"option": {"$childs": ""}});
+                    }
+                ]
             }
+        };
 
-            if (opts.description) {
-                obj.select.title = opts.description;
-            }
+        return cont;
+    }
+
+    function onAddItemClick(opts, id, i) {
+        var
+            items = $("#" + id + " " + ns.$cls("array-items")),
+            item = makeArrayItem(
+                opts,
+                name,
+                opts.items.type || "string",
+                id + "-" + i,
+                opts.items);
+
+        if (opts.maxItems && items.children().size() >= opts.maxItems) {
+            defaults.displayError(defaults.msgs.cantAddMaxItems);
         } else {
+            items.append($.lego(item));
+        }
+    }
+
+    function onClearItemsClick(opts, id) {
+        var realMinItems = opts.minItems || 0,
+            selectorItems = "#" + id + " " + ns.$cls("array-items"),
+            selectorChildsToRemove = ":not(:lt(" + realMinItems + "))";
+
+        $(selectorItems).children(selectorChildsToRemove).remove();
+    }
+
+    function formatObject(name, type, id, opts) {
+        return {
+            "div": {
+                "id": id,
+                "class": ns.classes("field", "object-fields"),
+                "$childs": priv.genFields(opts.order, opts.properties)
+            }
+        };
+    }
+
+    function formatArray(name, type, id, opts) {
+        var i, minItems, arrayChild, arrayChilds = [];
+
+        minItems = opts.minItems || 1;
+
+        for (i = 0; i < minItems; i += 1) {
+            arrayChild = makeArrayItem(
+                opts,
+                name,
+                opts.items.type || "string",
+                id + "-" + i,
+                opts.items);
+
+            arrayChilds.push(arrayChild);
+        }
+
+        return {
+            "div": {
+                "id": id,
+                "class": ns.cls("array"),
+                "$childs": [
+                    {
+                        "div": {
+                            "class": ns.cls("array-items"),
+                            "$childs": arrayChilds
+                        }
+                    },
+                    {
+                        "div": {
+                            "class": ns.cls("array-actions"),
+                            "$childs": [
+                                makeButton("add", function () {
+                                    i += 1;
+                                    onAddItemClick(opts, id, i);
+                                }),
+                                makeButton("clear", function () {
+                                    onClearItemsClick(opts, id);
+                                })
+                            ]
+                        }
+                    }
+                ]
+            }
+        };
+    }
+
+    function formatEnum(name, type, id, opts) {
+        var obj = {
+            "select": {
+                "id": id,
+                "name": name,
+                "$childs": $.map(opts["enum"], function (item, index) {
+                    var opt = {
+                        "option": {
+                            "id": id + "-" + index,
+                            "$childs": item
+                        }
+                    };
+
+                    if (item === opts["default"]) {
+                        opt.option.selected = true;
+                    }
+
+                    return opt;
+                })
+            }
+        };
+
+        if (!opts.required) {
+            obj.select.$childs.unshift({"option": {"$childs": ""}});
+        }
+
+        if (opts.description) {
+            obj.select.title = opts.description;
+        }
+
+        return obj;
+    }
+
+
+    function formatDefault(name, type, id, opts) {
+
+        if (opts["enum"]) {
+            return formatEnum(name, type, id, opts);
+        }
+
+        var inputType = priv.inputTypes[type] || "text", min, max,
             obj = {
                 "input": {
                     "id": id,
@@ -330,49 +346,65 @@
                 }
             };
 
-            if (opts["default"]) {
-                obj.input.value = opts["default"];
+        if (opts["default"]) {
+            obj.input.value = opts["default"];
+        }
+
+        if (opts.required) {
+            obj.input.required = true;
+        }
+
+        if (opts.maxLength) {
+            // note the difference in capitalization
+            obj.input.maxlength = opts.maxLength;
+        }
+
+        if (opts.description) {
+            obj.input.title = opts.description;
+        }
+
+        if (opts.maximum) {
+            if (opts.exclusiveMaximum) {
+                max = opts.maximum - 1;
+            } else {
+                max = opts.maximum;
             }
 
-            if (opts.required) {
-                obj.input.required = true;
+            obj.input.max = max;
+        }
+
+        if (opts.minimum) {
+            if (opts.exclusiveMinimum) {
+                min = opts.minimum + 1;
+            } else {
+                min = opts.minimum;
             }
 
-            if (opts.maxLength) {
-                // note the difference in capitalization
-                obj.input.maxlength = opts.maxLength;
-            }
+            obj.input.min = min;
+        }
 
-            if (opts.description) {
-                obj.input.title = opts.description;
-            }
-
-            if (opts.maximum) {
-                if (opts.exclusiveMaximum) {
-                    max = opts.maximum - 1;
-                } else {
-                    max = opts.maximum;
-                }
-
-                obj.input.max = max;
-            }
-
-            if (opts.minimum) {
-                if (opts.exclusiveMinimum) {
-                    min = opts.minimum + 1;
-                } else {
-                    min = opts.minimum;
-                }
-
-                obj.input.min = min;
-            }
-
-            if (opts.pattern) {
-                obj.input.pattern = opts.pattern;
-            }
+        if (opts.pattern) {
+            obj.input.pattern = opts.pattern;
         }
 
         return obj;
+    }
+
+    cons.formatters = {
+        "object": formatObject,
+        "array": formatArray
+    };
+
+    cons.formatDefault = formatDefault;
+
+    priv.input = function (name, type, id, opts) {
+        opts = opts || {};
+
+        if (cons.formatters[type]) {
+            return cons.formatters[type](name, type, id, opts);
+        } else {
+            return cons.formatDefault(name, type, id, opts);
+        }
     };
 
     priv.genField = function (fid, opts) {
