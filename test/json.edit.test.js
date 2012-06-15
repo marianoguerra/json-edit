@@ -1,7 +1,7 @@
 /*global jsonEdit test ok equal deepEqual module*/
 (function () {
     "use strict";
-    var je = jsonEdit, priv = je.priv, ns = priv.ns;
+    var je = jsonEdit, priv = je.priv, ns = priv.ns, defaults = je.defaults;
     window.priv = priv;
     module("json edit");
 
@@ -268,7 +268,7 @@
         ok(field.div.$childs[1].div);
         arrCont = field.div.$childs[1].div;
 
-        equal(arrCont["class"], ns.cls("array"));
+        equal(arrCont["class"], ns.classes("field", "numbers", "array"));
         equal(arrCont.$childs.length, 2);
         equal(arrCont.$childs[0].div["class"], ns.cls("array-items"));
         equal(arrCont.$childs[1].div["class"], ns.cls("array-actions"));
@@ -341,6 +341,72 @@
         ok(childs[2].div.$childs[0].label);
         ok(childs[2].div.$childs[1].input);
         equal(childs[2].div.$childs[0].label.$childs, "Country");
+    });
+
+    module("json edit validate");
+
+    test("validate string", function () {
+        var validate = priv.validate, result,
+            errs = defaults.msgs.err;
+
+        function checkValidation(value, schema, eStatus, name, msgCheck) {
+            name = name || "name";
+
+            var result = validate(name, value, schema);
+            equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
+
+            if (msgCheck) {
+                equal(result.msg, "field '" + name + "' " + msgCheck);
+            }
+
+            return result;
+        }
+
+        checkValidation("foo", {type: "string"}, true);
+        checkValidation("foo", {type: "string", required: true}, true);
+        checkValidation("foo", {type: "string", required: false}, true);
+
+        checkValidation("", {type: "string", required: true}, false, "foo", errs.EMPTY);
+        checkValidation(null, {type: "string", required: true}, false, "foo", errs.NOT_STRING);
+
+        checkValidation("1", {type: "string", pattern: "[0-9]+"}, true);
+        checkValidation("12", {type: "string", pattern: "[0-9]+"}, true);
+        checkValidation("0002353645612", {type: "string", pattern: "[0-9]+"}, true);
+
+        checkValidation("", {type: "string", pattern: "[0-9]+"}, false, "num", errs.INVALID_FORMAT);
+        checkValidation("a", {type: "string", pattern: "[0-9]+"}, false, "num", errs.INVALID_FORMAT);
+        // because it's not from start to end
+        checkValidation("a1", {type: "string", pattern: "[0-9]+"}, true);
+        checkValidation("a1", {type: "string", pattern: "^[0-9]+$"}, false, "num", errs.INVALID_FORMAT);
+        checkValidation("1a", {type: "string", pattern: "^[0-9]+$"}, false, "num", errs.INVALID_FORMAT);
+
+        checkValidation("", {type: "string", minLength: 0}, true);
+        checkValidation("", {type: "string", minLength: 0, required: true}, true);
+
+        checkValidation("a", {type: "string", minLength: 1}, true);
+        checkValidation("aasda", {type: "string", minLength: 1}, true);
+        checkValidation("a", {type: "string", minLength: 1, required: true}, true);
+
+        checkValidation("", {type: "string", minLength: 1}, false, "name", errs.TO_SMALL);
+        checkValidation("", {type: "string", minLength: 0, exclusiveMinimum: true}, false, "name", errs.TO_SMALL);
+        checkValidation("a", {type: "string", minLength: 2}, false, "name", errs.TO_SMALL);
+        checkValidation("a", {type: "string", minLength: 1, exclusiveMinimum: true}, false, "name", errs.TO_SMALL);
+
+        checkValidation("", {type: "string", maxLength: 0}, true);
+        checkValidation("", {type: "string", maxLength: 0, required: true}, false, errs.EMPTY);
+
+        checkValidation("a", {type: "string", maxLength: 1}, true);
+        checkValidation("", {type: "string", maxLength: 1}, true);
+        checkValidation("a", {type: "string", maxLength: 1, required: true}, true);
+
+        checkValidation("aa", {type: "string", maxLength: 1}, false, "name", errs.TO_BIG);
+        checkValidation("aa", {type: "string", maxLength: 2, exclusiveMaximum: true}, false, "name", errs.TO_BIG);
+        checkValidation("a", {type: "string", maxLength: 0}, false, "name", errs.TO_BIG);
+        checkValidation("a", {type: "string", maxLength: 1, exclusiveMaximum: true}, false, "name", errs.TO_BIG);
+
+        checkValidation("a", {type: "string", "enum": ['a']}, true);
+        checkValidation("b", {type: "string", "enum": ['a', 'b']}, true);
+        checkValidation("c", {type: "string", "enum": ['a', 'b']}, false, errs.NOT_IN_ENUM);
     });
 
     /*

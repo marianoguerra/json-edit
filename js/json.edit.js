@@ -15,7 +15,30 @@
         },
         msgs: {
             cantRemoveMinItems: "Can't remove item, minimum number reached",
-            cantAddMaxItems: "Can't add item, maximum number reached"
+            cantAddMaxItems: "Can't add item, maximum number reached",
+            err: {
+                NOT_STRING: "should be of type string",
+                EMPTY: "required but empty",
+                INVALID_FORMAT: "doesn't match the required format",
+                TOO_SMALL: "is too short",
+                TOO_BIG: "is too long",
+                NOT_IN_ENUM: "is not one of valid values"
+            }
+        },
+        // functions to call to validate a given type of field, you can add your
+        // own or modify the existing ones, if none matches
+        // defaults.validators.default_ is called.
+        validators: {
+        },
+        // functions to call to format a given type of field, you can add your
+        // own or modify the existing ones, if none matches
+        // defaults.formatters.default_ is called.
+        formatters: {
+        },
+        // function to call to collect the value for a given type of field, you can
+        // add your own or modify the existing ones, if none matches
+        // defaults.collectors.default_ is called
+        collectors: {
         }
     };
 
@@ -145,10 +168,18 @@
     };
 
     cons.collectResult = function (ok, msg, data) {
+        if (msg === undefined && ok) {
+            msg = "ok";
+        }
+
+        if (data === undefined) {
+            data = {};
+        }
+
         return {
             ok: ok,
             msg: msg,
-            data: data
+            data: (data === undefined) ? {} : data
         };
     };
 
@@ -193,10 +224,10 @@
     };
 
     priv.collectField = function (key, field, schema) {
-        if (cons.collectors[schema.type]) {
-            return cons.collectors[schema.type](key, field, schema);
+        if (defaults.collectors[schema.type]) {
+            return defaults.collectors[schema.type](key, field, schema);
         } else {
-            return cons.collectDefault(key, field, schema);
+            return defaults.collectors.default_(key, field, schema);
         }
     };
 
@@ -314,7 +345,7 @@
         $(selectorItems).children(selectorChildsToRemove).remove();
     }
 
-    function formatObject(name, type, id, opts) {
+    defaults.formatters.object = function (name, type, id, opts) {
         return {
             "div": {
                 "id": id,
@@ -322,9 +353,9 @@
                 "$childs": priv.genFields(opts.order, opts.properties)
             }
         };
-    }
+    };
 
-    function formatArray(name, type, id, opts) {
+    defaults.formatters.array = function (name, type, id, opts) {
         var i, minItems, arrayChild, arrayChilds = [];
 
         minItems = opts.minItems || 1;
@@ -368,9 +399,9 @@
                 ]
             }
         };
-    }
+    };
 
-    function formatEnum(name, type, id, opts) {
+    defaults.formatters.enum_ = function (name, type, id, opts) {
         var hasDefault = false, noValueOption,
             obj = {
                 "select": {
@@ -409,13 +440,13 @@
         }
 
         return obj;
-    }
+    };
 
 
-    function formatDefault(name, type, id, opts) {
+    defaults.formatters.default_ = function (name, type, id, opts) {
 
         if (opts["enum"]) {
-            return formatEnum(name, type, id, opts);
+            return defaults.formatters.enum_(name, type, id, opts);
         }
 
         var inputType = priv.inputTypes[type] || "text", min, max,
@@ -469,31 +500,31 @@
         }
 
         return obj;
-    }
+    };
 
-    priv.validate = function (value, schema) {
-        if (cons.validators[schema.type]) {
-            return cons.validators[schema.type](value, schema);
+    priv.validate = function (name, value, schema) {
+        if (defaults.validators[schema.type]) {
+            return defaults.validators[schema.type](name, value, schema);
         } else {
-            return cons.validatorDefault(value, schema);
+            return defaults.validator.default_(name, value, schema);
         }
     };
 
-    function collectObject(name, field, schema) {
+    defaults.collectors.object = function (name, field, schema) {
         // get the inner child of the object container since collectors look
         // only in the first level childrens
         return cons.collect(field.children(ns.$cls("object-fields")), schema);
-    }
+    };
 
-    function collectArray(name, field, schema) {
+    defaults.collectors.array = function (name, field, schema) {
         var itemSchema = schema.items || {};
 
         return field.find(ns.$cls("array-item")).map(function (i, node) {
             return priv.collectField(name, $(node), itemSchema);
         });
-    }
+    };
 
-    function collectEnum(name, field, schema) {
+    defaults.collectors.enum_ = function (name, field, schema) {
         var
             select = field.children("select"),
             option,
@@ -507,65 +538,115 @@
             }
         }
 
-        return priv.validate(value, schema);
-    }
+        return priv.validate(name, value, schema);
+    };
 
-    function collectDefault(name, field, schema) {
+    defaults.collectors.default_ = function (name, field, schema) {
         if (schema["enum"]) {
-            return collectEnum(name, field, schema);
+            return defaults.collectors.enum_(name, field, schema);
         }
 
         var value = field.children("input").val();
 
-        return priv.validate(value, schema);
-    }
-
-    function validateObject(value, schema) {
-        return cons.collectResult(true, "ok", value);
-    }
-
-    function validateArray(value, schema) {
-        return cons.collectResult(true, "ok", value);
-    }
-
-    function validateDefault(value, schema) {
-        return cons.collectResult(true, "ok", value);
-    }
-
-    // functions to call to format a given type of field, you can add your
-    // own or modify the existing ones, if none matches cons.formatDefault
-    // is called.
-    cons.formatters = {
-        "object": formatObject,
-        "array": formatArray
+        return priv.validate(name, value, schema);
     };
 
-    cons.formatDefault = formatDefault;
-
-    // function to call to collect the value for a given type of field, you can
-    // add your own or modify the existing ones, if none matches
-    // cons.collectDefault is called
-    cons.collectors = {
-        "object": collectObject,
-        "array": collectArray
+    defaults.validators.object = function (name, value, schema) {
+        return cons.collectResult(true, "ok", value);
     };
 
-    cons.collectDefault = collectDefault;
-
-    cons.validators = {
-        "object": validateObject,
-        "array": validateArray
+    defaults.validators.array = function (name, value, schema) {
+        return cons.collectResult(true, "ok", value);
     };
 
-    cons.validateDefault = validateDefault;
+    defaults.validators.string = function (name, value, schema) {
+        var
+            i,
+            size,
+            regex,
+            found,
+            errs = defaults.msgs.err,
+            mResult = cons.collectResult;
+
+        function failed(msg, data) {
+            return mResult(false, "field '" + name + "' " + msg, data);
+        }
+
+        if (typeof value !== "string") {
+            return failed(errs.NOT_STRING);
+        }
+
+        if (schema.pattern) {
+            regex = new RegExp(schema.pattern);
+
+            if (!regex.test(value)) {
+                return failed(errs.INVALID_FORMAT, {
+                    pattern: schema.pattern
+                });
+            }
+        }
+
+        if (schema.minLength !== undefined) {
+            if (schema.exclusiveMinimum) {
+                size = schema.minLength + 1;
+            } else {
+                size = schema.minLength;
+            }
+
+            if (value.length < size) {
+                return failed(errs.TOO_SMALL, {
+                    minLength: schema.minLength
+                });
+            }
+        } else if (schema.required && value === "") {
+            return failed(errs.EMPTY);
+        }
+
+        if (schema.maxLength !== undefined) {
+            if (schema.exclusiveMaximum) {
+                size = schema.maxLength - 1;
+            } else {
+                size = schema.maxLength;
+            }
+
+            if (value.length > size) {
+                return failed(errs.TOO_BIG, {
+                    maxLength: schema.maxLength
+                });
+            }
+        }
+
+        if (schema.enum) {
+            found = false;
+
+            for (i = 0; i < schema.enum.length; i += 1) {
+                if (schema.enum[i] === value) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                return failed(errs.NOT_IN_ENUM, {
+                    enum: schema.enum
+                });
+            }
+        }
+
+        return mResult(true);
+    };
+
+    defaults.validators.default_ = function (name, value, schema) {
+        return cons.collectResult(true, "ok", value);
+    };
 
     priv.input = function (name, type, id, opts) {
         opts = opts || {};
 
-        if (cons.formatters[type]) {
-            return cons.formatters[type](name, type, id, opts);
+        if (defaults.formatters[type]) {
+            return defaults.formatters[type](name, type, id, opts);
         } else {
-            return cons.formatDefault(name, type, id, opts);
+            return defaults.formatters.default_(name, type, id, opts);
         }
     };
 
