@@ -22,7 +22,14 @@
                 INVALID_FORMAT: "doesn't match the required format",
                 TOO_SMALL: "is too short",
                 TOO_BIG: "is too long",
-                NOT_IN_ENUM: "is not one of valid values"
+                NOT_IN_ENUM: "is not one of valid values",
+
+                NOT_BOOLEAN: "should be true of false",
+
+                NUM_TOO_SMALL: "is too small",
+                NUM_TOO_BIG: "is too big",
+                NOT_NUMBER: "should be a number",
+                NOT_DIVISIBLE_BY: "should be divisible by" // TODO
             }
         },
         // functions to call to validate a given type of field, you can add your
@@ -559,12 +566,108 @@
         return cons.collectResult(true, "ok", value);
     };
 
+    defaults.validators.number = function (name, value, schema) {
+        var
+            size,
+            errs = defaults.msgs.err,
+            mResult = cons.collectResult;
+
+        function failed(msg, data) {
+            return mResult(false, "field '" + name + "' " + msg, data);
+        }
+
+        if (typeof value !== "number") {
+            return failed(errs.NOT_NUMBER);
+        }
+
+        if (schema.minimum !== undefined) {
+            if (schema.exclusiveMinimum) {
+                size = schema.minimum + 1;
+            } else {
+                size = schema.minimum;
+            }
+
+            if (value < size) {
+                return failed(errs.NUM_TOO_SMALL, {
+                    minimum: schema.minimum
+                });
+            }
+        }
+
+        if (schema.maximum !== undefined) {
+            if (schema.exclusiveMaximum) {
+                size = schema.maximum - 1;
+            } else {
+                size = schema.maximum;
+            }
+
+            if (value > size) {
+                return failed(errs.NUM_TOO_BIG, {
+                    maximum: schema.maximum
+                });
+            }
+        }
+
+        if (!priv.checkEnum(value, schema)) {
+            return failed(errs.NOT_IN_ENUM, {
+                "enum": schema["enum"]
+            });
+        }
+
+        if (schema.mod) {
+            if ((value % schema.mod) !== 0) {
+                return failed(errs.NOT_DIVISIBLE_BY, {
+                    mod: schema.mod
+                });
+            }
+        }
+
+        return mResult(true);
+    };
+
+    defaults.validators.boolean = function (name, value, schema) {
+        var
+            errs = defaults.msgs.err,
+            mResult = cons.collectResult;
+
+        function failed(msg, data) {
+            return mResult(false, "field '" + name + "' " + msg, data);
+        }
+
+        if (typeof value !== "boolean") {
+            return failed(errs.NOT_BOOLEAN);
+        }
+
+        if (!priv.checkEnum(value, schema)) {
+            return failed(errs.NOT_IN_ENUM, {
+                "enum": schema["enum"]
+            });
+        }
+
+        return mResult(true);
+    };
+
+    priv.checkEnum = function (value, schema) {
+        var enum_, i;
+
+        enum_ = schema["enum"];
+        if (enum_) {
+            for (i = 0; i < enum_.length; i += 1) {
+                if (enum_[i] === value) {
+                    return true;
+                }
+            }
+        } else {
+            return true;
+        }
+
+        return false;
+    };
+
     defaults.validators.string = function (name, value, schema) {
         var
-            i,
             size,
             regex,
-            found,
             errs = defaults.msgs.err,
             mResult = cons.collectResult;
 
@@ -616,21 +719,10 @@
             }
         }
 
-        if (schema.enum) {
-            found = false;
-
-            for (i = 0; i < schema.enum.length; i += 1) {
-                if (schema.enum[i] === value) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                return failed(errs.NOT_IN_ENUM, {
-                    enum: schema.enum
-                });
-            }
+        if (!priv.checkEnum(value, schema)) {
+            return failed(defaults.msgs.err.NOT_IN_ENUM, {
+                "enum": schema["enum"]
+            });
         }
 
         return mResult(true);

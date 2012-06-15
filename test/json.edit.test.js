@@ -409,6 +409,88 @@
         checkValidation("c", {type: "string", "enum": ['a', 'b']}, false, errs.NOT_IN_ENUM);
     });
 
+    test("validate number", function () {
+        var validate = priv.validate, result,
+            errs = defaults.msgs.err;
+
+        function checkValidation(value, schema, eStatus, name, msgCheck) {
+            name = name || "name";
+
+            var result = validate(name, value, schema);
+            equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
+
+            if (msgCheck) {
+                equal(result.msg, "field '" + name + "' " + msgCheck);
+            }
+
+            return result;
+        }
+
+        checkValidation(12, {type: "number"}, true);
+        checkValidation(12.3, {type: "number"}, true);
+        checkValidation("12", {type: "number"}, false, "num", errs.NOT_NUMBER);
+        checkValidation(null, {type: "number"}, false, "num", errs.NOT_NUMBER);
+        checkValidation(null, {type: "number"}, false, "num", errs.NOT_NUMBER);
+
+        checkValidation(0, {type: "number", minimum: 0}, true);
+        checkValidation(1, {type: "number", minimum: 0, exclusiveMinimum: true}, true);
+
+        checkValidation(0, {type: "number", minimum: 1}, false, "num", errs.NUM_TOO_SMALL);
+        checkValidation(0, {type: "number", minimum: 0, exclusiveMinimum: true}, false, "num", errs.NUM_TOO_SMALL);
+
+        checkValidation(1, {type: "number", minimum: 2}, false, "num", errs.NUM_TOO_SMALL);
+        checkValidation(1, {type: "number", minimum: 1, exclusiveMinimum: true}, false, "num", errs.NUM_TOO_SMALL);
+
+        checkValidation(0, {type: "number", maximum: 0}, true);
+        checkValidation(1, {type: "number", maximum: 2, exclusiveMaximum: true}, true);
+
+        checkValidation(3, {type: "number", maximum: 1}, false, "num", errs.NUM_TOO_BIG);
+        checkValidation(2, {type: "number", maximum: 0, exclusiveMaximum: true}, false, "num", errs.NUM_TOO_BIG);
+
+        checkValidation(3, {type: "number", maximum: 2}, false, "num", errs.NUM_TOO_BIG);
+        checkValidation(2, {type: "number", maximum: 1, exclusiveMaximum: true}, false, "num", errs.NUM_TOO_BIG);
+
+        checkValidation(3, {type: "number", "enum": [3]}, true);
+        checkValidation(3, {type: "number", "enum": [2, 3]}, true);
+
+        checkValidation(3, {type: "number", "enum": []}, false, "num", errs.NOT_IN_ENUM);
+        checkValidation(3, {type: "number", "enum": [1, 2]}, false, "num", errs.NOT_IN_ENUM);
+
+        checkValidation(42, {type: "number", mod: 2}, true);
+        checkValidation(42, {type: "number", mod: 9}, false, "num", errs.NOT_DIVISIBLE_BY);
+    });
+
+    test("validate boolean", function () {
+        var validate = priv.validate, result,
+            errs = defaults.msgs.err;
+
+        function checkValidation(value, schema, eStatus, name, msgCheck) {
+            name = name || "name";
+
+            var result = validate(name, value, schema);
+            equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
+
+            if (msgCheck) {
+                equal(result.msg, "field '" + name + "' " + msgCheck);
+            }
+
+            return result;
+        }
+
+        checkValidation(true, {type: "boolean"}, true);
+        checkValidation(false, {type: "boolean"}, true);
+        checkValidation(0, {type: "boolean"}, false, "check", errs.NOT_BOOLEAN);
+        checkValidation(1, {type: "boolean"}, false, "check", errs.NOT_BOOLEAN);
+        checkValidation("", {type: "boolean"}, false, "check", errs.NOT_BOOLEAN);
+
+        checkValidation(true, {type: "boolean", "enum": [true]}, true);
+        checkValidation(true, {type: "boolean", "enum": [false, true]}, true);
+        checkValidation(false, {type: "boolean", "enum": [false]}, true);
+        checkValidation(false, {type: "boolean", "enum": [false, true]}, true);
+
+        checkValidation(false, {type: "boolean", "enum": [true]}, false, "check", errs.NOT_IN_ENUM);
+    });
+
     /*
     test("", function () {
     });
