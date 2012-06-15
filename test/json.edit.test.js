@@ -541,6 +541,29 @@
         checkValidation(false, {type: "boolean", "enum": [true]}, false, "check", errs.NOT_IN_ENUM);
     });
 
+    test("validate null", function () {
+        var validate = priv.validate, result,
+            errs = defaults.msgs.err;
+
+        function checkValidation(value, schema, eStatus, name, msgCheck) {
+            name = name || "name";
+
+            var result = validate(name, value, schema);
+            equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
+
+            if (msgCheck) {
+                equal(result.msg, "field '" + name + "' " + msgCheck);
+            }
+
+            return result;
+        }
+
+        checkValidation(null, {type: "null"}, true);
+        checkValidation(12.3, {type: "null"}, false, "num", errs.NOT_NULL);
+        checkValidation("12", {type: "null"}, false, "num", errs.NOT_NULL);
+        checkValidation("", {type: "null"}, false, "num", errs.NOT_NULL);
+    });
+
     /*
     test("", function () {
     });

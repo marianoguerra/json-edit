@@ -24,6 +24,7 @@
                 TOO_BIG: "is too long",
                 NOT_IN_ENUM: "is not one of valid values",
 
+                NOT_NULL: "should be null",
                 NOT_BOOLEAN: "should be true of false",
                 NOT_INTEGER: "should be an integer",
 
@@ -565,6 +566,15 @@
 
     defaults.validators.array = function (name, value, schema) {
         return cons.collectResult(true, "ok", value);
+    };
+
+    defaults.validators["null"] = function (name, value, schema) {
+        if (value === null) {
+            return cons.collectResult(true, "ok", value);
+        } else {
+            return cons.collectResult(false, "field '" + name + "' " +
+                defaults.msgs.err.NOT_NULL, {});
+        }
     };
 
     defaults.validators.integer = function (name, value, schema) {
