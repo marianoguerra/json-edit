@@ -460,6 +460,56 @@
         checkValidation(42, {type: "number", mod: 9}, false, "num", errs.NOT_DIVISIBLE_BY);
     });
 
+    test("validate integer", function () {
+        var validate = priv.validate, result,
+            errs = defaults.msgs.err;
+
+        function checkValidation(value, schema, eStatus, name, msgCheck) {
+            name = name || "name";
+
+            var result = validate(name, value, schema);
+            equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
+
+            if (msgCheck) {
+                equal(result.msg, "field '" + name + "' " + msgCheck);
+            }
+
+            return result;
+        }
+
+        checkValidation(12, {type: "integer"}, true);
+        checkValidation(12.3, {type: "integer"}, false, "num", errs.NOT_INTEGER);
+        checkValidation("12", {type: "integer"}, false, "num", errs.NOT_INTEGER);
+        checkValidation(null, {type: "integer"}, false, "num", errs.NOT_INTEGER);
+
+        checkValidation(0, {type: "integer", minimum: 0}, true);
+        checkValidation(1, {type: "integer", minimum: 0, exclusiveMinimum: true}, true);
+
+        checkValidation(0, {type: "integer", minimum: 1}, false, "num", errs.NUM_TOO_SMALL);
+        checkValidation(0, {type: "integer", minimum: 0, exclusiveMinimum: true}, false, "num", errs.NUM_TOO_SMALL);
+
+        checkValidation(1, {type: "integer", minimum: 2}, false, "num", errs.NUM_TOO_SMALL);
+        checkValidation(1, {type: "integer", minimum: 1, exclusiveMinimum: true}, false, "num", errs.NUM_TOO_SMALL);
+
+        checkValidation(0, {type: "integer", maximum: 0}, true);
+        checkValidation(1, {type: "integer", maximum: 2, exclusiveMaximum: true}, true);
+
+        checkValidation(3, {type: "integer", maximum: 1}, false, "num", errs.NUM_TOO_BIG);
+        checkValidation(2, {type: "integer", maximum: 0, exclusiveMaximum: true}, false, "num", errs.NUM_TOO_BIG);
+
+        checkValidation(3, {type: "integer", maximum: 2}, false, "num", errs.NUM_TOO_BIG);
+        checkValidation(2, {type: "integer", maximum: 1, exclusiveMaximum: true}, false, "num", errs.NUM_TOO_BIG);
+
+        checkValidation(3, {type: "integer", "enum": [3]}, true);
+        checkValidation(3, {type: "integer", "enum": [2, 3]}, true);
+
+        checkValidation(3, {type: "integer", "enum": []}, false, "num", errs.NOT_IN_ENUM);
+        checkValidation(3, {type: "integer", "enum": [1, 2]}, false, "num", errs.NOT_IN_ENUM);
+
+        checkValidation(42, {type: "integer", mod: 2}, true);
+        checkValidation(42, {type: "integer", mod: 9}, false, "num", errs.NOT_DIVISIBLE_BY);
+    });
+
     test("validate boolean", function () {
         var validate = priv.validate, result,
             errs = defaults.msgs.err;

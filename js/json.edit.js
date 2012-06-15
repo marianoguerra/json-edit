@@ -25,6 +25,7 @@
                 NOT_IN_ENUM: "is not one of valid values",
 
                 NOT_BOOLEAN: "should be true of false",
+                NOT_INTEGER: "should be an integer",
 
                 NUM_TOO_SMALL: "is too small",
                 NUM_TOO_BIG: "is too big",
@@ -566,7 +567,23 @@
         return cons.collectResult(true, "ok", value);
     };
 
-    defaults.validators.number = function (name, value, schema) {
+    defaults.validators.integer = function (name, value, schema) {
+        var
+            notInteger = defaults.msgs.err.NOT_INTEGER,
+            mResult = cons.collectResult;
+
+        function failed(msg, data) {
+            return mResult(false, "field '" + name + "' " + msg, data);
+        }
+
+        if (typeof value === "number" && (value % 1) !== 0) {
+            return failed(notInteger);
+        } else {
+            return defaults.validators.number(name, value, schema, notInteger);
+        }
+    };
+
+    defaults.validators.number = function (name, value, schema, notType) {
         var
             size,
             errs = defaults.msgs.err,
@@ -577,7 +594,7 @@
         }
 
         if (typeof value !== "number") {
-            return failed(errs.NOT_NUMBER);
+            return failed(notType || errs.NOT_NUMBER);
         }
 
         if (schema.minimum !== undefined) {
