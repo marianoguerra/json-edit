@@ -1,4 +1,4 @@
-/*global demos $ jsonEdit ace*/
+/*global demos $ jsonEdit ace prettyPrint*/
 (function () {
     "use strict";
     function startEditor(id, title, description, content) {
@@ -25,6 +25,7 @@
 
             $("#" + id + "-data").html(JSON.stringify(result.data, null, 2));
             $("#" + id + "-validation").html(JSON.stringify(result.result, null, 2));
+            prettyPrint();
             console.log("validation result", result);
         }
 
@@ -60,13 +61,13 @@
                         "$childs": [{
                             "pre": {
                                 "id": id + "-validation",
-                                "class": "demo-validation"
+                                "class": "demo-validation prettyprint"
                             }
                         },
                         {
                             "pre": {
                                 "id": id + "-data",
-                                "class": "demo-data"
+                                "class": "demo-data prettyprint"
                             }
                         }]
                     }
@@ -100,6 +101,7 @@
         editor = ace.edit(id);
         editor.setTheme("ace/theme/merbivore_soft");
         editor.getSession().setMode("ace/mode/json");
+        editor.setFontSize("1em");
         updateDemo();
 
         return editor;
