@@ -62,10 +62,10 @@ var demos = [
         "",
         {
             "order": ["age"],
+            "required": ["age"],
             "properties": {
                 "age": {
                     "type": "number",
-                    "required": true,
                     "title": "Age"
                 }
             }
@@ -76,10 +76,10 @@ var demos = [
         "",
         {
             "order": ["age"],
+            "required": ["age"],
             "properties": {
                 "age": {
                     "type": "number",
-                    "required": true,
                     "title": "Age",
                     "maximum": 100,
                     "minimum": 18
@@ -92,10 +92,10 @@ var demos = [
         "",
         {
             "order": ["age"],
+            "required": ["age"],
             "properties": {
                 "age": {
                     "type": "number",
-                    "required": true,
                     "title": "Age",
                     "maximum": 100,
                     "minimum": 18,
@@ -122,10 +122,10 @@ var demos = [
         "order not provided",
         "gets keys in any order",
         {
+            "required": ["name"],
             "properties": {
                 "name": {
                     "type": "string",
-                    "required": true,
                     "title": "Name"
                 },
                 "city": {
@@ -142,10 +142,10 @@ var demos = [
         "",
         {
             "order": ["name", "location"],
+            "required": ["name"],
             "properties": {
                 "name": {
                     "type": "string",
-                    "required": true,
                     "title": "Name"
                 },
                 "location": {
@@ -175,10 +175,10 @@ var demos = [
         "",
         {
             "order": ["name", "city"],
+            "required": ["name"],
             "properties": {
                 "name": {
                     "type": "string",
-                    "required": true,
                     "title": "Name"
                 },
                 "city": {
@@ -224,12 +224,12 @@ var demos = [
         "",
         {
             "order": ["color"],
+            "required": ["color"],
             "properties": {
                 "color": {
                     "type": "string",
                     "title": "Color",
                     "default": "green",
-                    "required": true,
                     "enum": ["red", "green", "blue"]
                 }
             }

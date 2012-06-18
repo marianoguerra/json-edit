@@ -44,7 +44,7 @@
             }
         });
 
-        deepEqual(priv.input("fieldname", "string", "asd", {"default": "foo", "required": true}), {
+        deepEqual(priv.input("fieldname", "string", "asd", {"default": "foo"}, true), {
             "input": {
                 "id": "asd",
                 "type": "text",
@@ -57,9 +57,8 @@
         deepEqual(
             priv.input("fieldname", "string", "asd", {
                 "default": "foo",
-                "required": true,
                 "maxLength": 10
-            }),
+            }, true),
             {
                 "input": {
                     "id": "asd",
@@ -75,10 +74,9 @@
         deepEqual(
             priv.input("fieldname", "string", "asd", {
                 "default": "foo",
-                "required": true,
                 "maxLength": 10,
                 "description": "the asd field"
-            }),
+            }, true),
             {
                 "input": {
                     "id": "asd",
@@ -95,11 +93,10 @@
         deepEqual(
             priv.input("fieldname", "string", "asd", {
                 "default": "foo",
-                "required": true,
                 "maxLength": 10,
                 "description": "the asd field",
                 "pattern": "[1-9]+"
-            }),
+            }, true),
             {
                 "input": {
                     "id": "asd",
@@ -175,7 +172,7 @@
         check("any", "text");
     });
 
-    function checkGeneratedField(field, id, title, startIndex, classes, opts) {
+    function checkGeneratedField(field, id, title, startIndex, classes, opts, required) {
         var
             divId = "je-" + id + "-" + startIndex,
             inputId = "je-" + id + "-input-" + (startIndex + 1);
@@ -187,17 +184,17 @@
                 "$childs": [
                     // this should be tested separetely so we trust they work
                     priv.label(title, inputId),
-                    priv.input(id, opts.type, inputId, opts)
+                    priv.input(id, opts.type, inputId, opts, required)
                 ]
             }
         });
     }
 
-    function checkField(opts, classes) {
+    function checkField(opts, classes, required) {
         priv.ns._reset();
 
-        var field = priv.genField("name", opts);
-        checkGeneratedField(field, "name", "Name", 0, classes, opts);
+        var field = priv.genField("name", opts, required);
+        checkGeneratedField(field, "name", "Name", 0, classes, opts, required);
     }
 
     test("generate simple string field", function () {
@@ -210,9 +207,8 @@
         checkField({
             "type": "number",
             "name": "asd",
-            "title": "Name",
-            "required": true
-        }, "je-field je-name je-number je-required");
+            "title": "Name"
+        }, "je-field je-name je-number je-required", true);
     });
 
     test("fields are generated in order", function () {
@@ -297,9 +293,8 @@
 
         field = priv.genField("color", {
             "type": "string",
-            "required": true,
             "enum": ["red", "green", "blue"]
-        });
+        }, true);
 
         equal(field.div.$childs[1].select.$childs[0].option.$childs, "red");
 
@@ -363,11 +358,6 @@
         }
 
         checkValidation("foo", {type: "string"}, true);
-        checkValidation("foo", {type: "string", required: true}, true);
-        checkValidation("foo", {type: "string", required: false}, true);
-
-        checkValidation("", {type: "string", required: true}, false, "foo", errs.EMPTY);
-        checkValidation(null, {type: "string", required: true}, false, "foo", errs.NOT_STRING);
 
         checkValidation("1", {type: "string", pattern: "[0-9]+"}, true);
         checkValidation("12", {type: "string", pattern: "[0-9]+"}, true);
@@ -381,11 +371,9 @@
         checkValidation("1a", {type: "string", pattern: "^[0-9]+$"}, false, "num", errs.INVALID_FORMAT);
 
         checkValidation("", {type: "string", minLength: 0}, true);
-        checkValidation("", {type: "string", minLength: 0, required: true}, true);
 
         checkValidation("a", {type: "string", minLength: 1}, true);
         checkValidation("aasda", {type: "string", minLength: 1}, true);
-        checkValidation("a", {type: "string", minLength: 1, required: true}, true);
 
         checkValidation("", {type: "string", minLength: 1}, false, "name", errs.TO_SMALL);
         checkValidation("", {type: "string", minLength: 0, exclusiveMinimum: true}, false, "name", errs.TO_SMALL);
@@ -393,11 +381,9 @@
         checkValidation("a", {type: "string", minLength: 1, exclusiveMinimum: true}, false, "name", errs.TO_SMALL);
 
         checkValidation("", {type: "string", maxLength: 0}, true);
-        checkValidation("", {type: "string", maxLength: 0, required: true}, false, errs.EMPTY);
 
         checkValidation("a", {type: "string", maxLength: 1}, true);
         checkValidation("", {type: "string", maxLength: 1}, true);
-        checkValidation("a", {type: "string", maxLength: 1, required: true}, true);
 
         checkValidation("aa", {type: "string", maxLength: 1}, false, "name", errs.TO_BIG);
         checkValidation("aa", {type: "string", maxLength: 2, exclusiveMaximum: true}, false, "name", errs.TO_BIG);

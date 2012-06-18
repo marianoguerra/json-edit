@@ -50,11 +50,14 @@
     };
 
 
-    priv.genFields = function (order, schema) {
+    priv.genFields = function (order, schema, requiredFields) {
         order = priv.getKeys(schema, order);
 
+        requiredFields = requiredFields || [];
+
         return $.map(order, function (item) {
-            var itemSchema = schema[item];
+            var itemSchema = schema[item],
+                required = $.inArray(item, requiredFields) !== -1;
 
             if (schema[item] === undefined) {
                 throw new cons.Error("attribute not found on schema", {
@@ -63,14 +66,14 @@
                 });
             }
 
-            return priv.genField(item, itemSchema);
+            return priv.genField(item, itemSchema, required);
         });
     };
 
     cons = function (id, opts) {
         var container = $("#" + id);
 
-        $.each(priv.genFields(opts.order, opts.properties), function (index, lego) {
+        $.each(priv.genFields(opts.order, opts.properties, opts.required), function (index, lego) {
             container.append($.lego(lego));
         });
 
@@ -111,7 +114,7 @@
             var
                 value,
                 schema = opts.properties[key],
-                selector = "." + priv.genFieldClasses(key, schema, "."),
+                selector = "." + priv.genFieldClasses(key, schema, ".", schema.required),
                 field = cont.children(selector);
 
             if (field.size() !== 1) {
@@ -261,17 +264,23 @@
         $(selectorItems).children(selectorChildsToRemove).remove();
     }
 
-    defaults.formatters.object = function (name, type, id, opts) {
+    defaults.formatters.object = function (name, type, id, opts, required) {
+        var classes = ["field", "object-fields"];
+
+        if (required) {
+            classes.push("required");
+        }
+
         return {
             "div": {
                 "id": id,
-                "class": ns.classes("field", "object-fields"),
-                "$childs": priv.genFields(opts.order, opts.properties)
+                "class": ns.classes(classes),
+                "$childs": priv.genFields(opts.order, opts.properties, opts.required)
             }
         };
     };
 
-    defaults.formatters.array = function (name, type, id, opts) {
+    defaults.formatters.array = function (name, type, id, opts, required) {
         var i, minItems, arrayChild, arrayChilds = [];
 
         minItems = opts.minItems || 1;
@@ -290,7 +299,7 @@
         return {
             "div": {
                 "id": id,
-                "class": priv.genFieldClasses(name, opts),
+                "class": priv.genFieldClasses(name, opts, " ", required),
                 "$childs": [
                     {
                         "div": {
@@ -317,7 +326,7 @@
         };
     };
 
-    defaults.formatters.enum_ = function (name, type, id, opts) {
+    defaults.formatters.enum_ = function (name, type, id, opts, required) {
         var hasDefault = false, noValueOption,
             obj = {
                 "select": {
@@ -341,7 +350,7 @@
                 }
             };
 
-        if (!opts.required) {
+        if (!required) {
             noValueOption = {"option": {"class": ns.cls("no-value"), "$childs": ""}};
 
             if (!hasDefault) {
@@ -359,10 +368,10 @@
     };
 
 
-    defaults.formatters.default_ = function (name, type, id, opts) {
+    defaults.formatters.default_ = function (name, type, id, opts, required) {
 
         if (opts["enum"]) {
-            return defaults.formatters.enum_(name, type, id, opts);
+            return defaults.formatters.enum_(name, type, id, opts, required);
         }
 
         var inputType = priv.inputTypes[type] || "text", min, max,
@@ -378,7 +387,7 @@
             obj.input.value = opts["default"];
         }
 
-        if (opts.required) {
+        if (required) {
             obj.input.required = true;
         }
 
@@ -460,31 +469,31 @@
     };
 
 
-    priv.input = function (name, type, id, opts) {
+    priv.input = function (name, type, id, opts, required) {
         opts = opts || {};
 
         if (defaults.formatters[type]) {
-            return defaults.formatters[type](name, type, id, opts);
+            return defaults.formatters[type](name, type, id, opts, required);
         } else {
-            return defaults.formatters.default_(name, type, id, opts);
+            return defaults.formatters.default_(name, type, id, opts, required);
         }
     };
 
     // return a list of classes for this field separated by sep (" " if not
     // provided)
-    priv.genFieldClasses = function (fid, opts, sep) {
+    priv.genFieldClasses = function (fid, opts, sep, required) {
         var
             type = opts.type || "string",
             classes = ["field", fid, type];
 
-        if (opts.required) {
+        if (required) {
             classes.push("required");
         }
 
         return ns.classesList(classes).join(sep || " ");
     };
 
-    priv.genField = function (fid, opts) {
+    priv.genField = function (fid, opts, required) {
         var
             id = ns.id(fid),
             inputId = ns.id(fid + "-input"),
@@ -493,10 +502,10 @@
         return {
             "div": {
                 "id": id,
-                "class": priv.genFieldClasses(fid, opts),
+                "class": priv.genFieldClasses(fid, opts, " ", required),
                 "$childs": [
                     priv.label(opts.title, inputId),
-                    priv.input(fid, type, inputId, opts)
+                    priv.input(fid, type, inputId, opts, required)
                 ]
             }
         };
