@@ -673,6 +673,63 @@
         }, false, "items", errs.NOT_STRING, "items 3");
     });
 
+    test("validate object", function () {
+        var validate = JsonSchema.validate, result,
+            errs = JsonSchema.msgs.err;
+
+        function checkValidation(value, schema, eStatus, name, msgCheck, itemName) {
+            name = name || "name";
+            itemName = itemName || name;
+
+            var result = validate(name, value, schema);
+            equal(result.ok, eStatus, "status for '" + JSON.stringify(value) + "' should be " + eStatus + "(" + result.msg + ")");
+
+            if (msgCheck) {
+                equal(result.msg, "field '" + itemName + "' " + msgCheck);
+            }
+
+            return result;
+        }
+
+        checkValidation({}, {type: "object"}, true);
+
+        $.each([null, [], 1, true, "asd", undefined, 1.2], function (i, item) {
+            checkValidation(item, {type: "object"}, false, "obj", errs.NOT_OBJECT);
+        });
+
+        checkValidation({}, {type: "object", minProperties: 0}, true);
+        checkValidation({}, {type: "object", maxProperties: 0}, true);
+
+        checkValidation({}, {type: "object", minProperties: 1}, false, "obj", errs.TOO_FEW_PROPERTIES);
+        checkValidation({a: 1}, {type: "object", minProperties: 2}, false, "obj", errs.TOO_FEW_PROPERTIES);
+
+        checkValidation({a: 1}, {type: "object", maxProperties: 0}, false, "obj", errs.TOO_MANY_PROPERTIES);
+        checkValidation({a: 1, b: 2}, {type: "object", maxProperties: 1}, false, "obj", errs.TOO_MANY_PROPERTIES);
+
+        checkValidation({a: 1, b: 2}, {
+            type: "object",
+            properties: {
+                a: {type: "number"},
+                b: {type: "number"}
+            }
+        }, true);
+
+        checkValidation({a: 1}, {
+            type: "object",
+            properties: {
+                a: {type: "number"},
+                b: {type: "number"}
+            }
+        }, true);
+
+        checkValidation({a: 1, b: 2}, {
+            type: "object",
+            properties: {
+                a: {type: "number"},
+                b: {type: "string"}
+            }
+        }, false, "obj", errs.NOT_STRING, "b");
+    });
 
     /*
     test("", function () {

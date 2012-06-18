@@ -6,23 +6,22 @@
         // own or modify the existing ones, if none matches
         // validators.default_ is called.
         validators = {},
-        priv = {}, deepEqual;
+        priv = {}, deepEqual,
+        objectKeys = typeof Object.keys === 'function'
+            ? Object.keys
+            : function (obj) {
+                var key, keys = [];
 
+                for (key in obj) {
+                    keys.push(key);
+                }
+
+                return keys;
+            };
 
     /* deepEqual adapted from https://github.com/substack/node-deep-equal/ */
     deepEqual = (function () {
         var pSlice = Array.prototype.slice,
-            object_keys = typeof Object.keys === 'function'
-                ? Object.keys
-                : function (obj) {
-                    var key, keys = [];
-
-                    for (key in obj) {
-                        keys.push(key);
-                    }
-
-                    return keys;
-                },
             deepEqual,
             objEquiv;
 
@@ -80,8 +79,8 @@
             }
 
             try {
-                ka = object_keys(a);
-                kb = object_keys(b);
+                ka = objectKeys(a);
+                kb = objectKeys(b);
             } catch (e) {//happens when one is a string literal and the other isn't
                 return false;
             }
@@ -130,11 +129,15 @@
             NOT_ARRAY: "should be an array",
             NOT_BOOLEAN: "should be true of false",
             NOT_INTEGER: "should be an integer",
+            NOT_OBJECT: "should be an object",
 
             ARRAY_TOO_SMALL: "is too small",
             ARRAY_TOO_BIG: "is too big",
             DUPLICATED_ITEMS: "has duplicated items",
             ADDITIONAL_ITEMS: "additional items present and not allowed",
+
+            TOO_FEW_PROPERTIES: "has too few properties",
+            TOO_MANY_PROPERTIES: "has too many properties",
 
             NUM_TOO_SMALL: "is too small",
             NUM_TOO_BIG: "is too big",
@@ -173,13 +176,54 @@
         }
     };
 
-    validators.object = function (name, value, schema, required) {
-        return priv.makeResult(true, "ok", value);
-    };
-
     function isArray(obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
     }
+
+    validators.object = function (name, value, schema, required) {
+        var
+            i, key, requiredKeys, keyRequired, result,
+            errs = cons.msgs.err,
+            mResult = priv.makeResult;
+
+        function failed(msg, data) {
+            return mResult(false, "field '" + name + "' " + msg, data);
+        }
+
+        if (typeof value !== "object" || value === null || isArray(value)) {
+            return failed(errs.NOT_OBJECT);
+        }
+
+        if (typeof schema.minProperties === "number" && objectKeys(value).length < schema.minProperties) {
+            return failed(errs.TOO_FEW_PROPERTIES);
+        }
+
+        if (typeof schema.maxProperties === "number" && objectKeys(value).length > schema.maxProperties) {
+            return failed(errs.TOO_MANY_PROPERTIES);
+        }
+
+        if (schema.properties) {
+            requiredKeys = schema.required || [];
+
+            for (key in schema.properties) {
+                if (schema.properties.hasOwnProperty(key)) {
+                    keyRequired = ($.inArray(key, requiredKeys) !== -1);
+
+                    if (value[key] === undefined && !keyRequired) {
+                        continue;
+                    }
+
+                    result = cons.validate(key, value[key], schema.properties[key], keyRequired);
+
+                    if (!result.ok) {
+                        return result;
+                    }
+                }
+            }
+        }
+
+        return mResult(true, "ok", value);
+    };
 
     validators.array = function (name, value, schema, required) {
         var
