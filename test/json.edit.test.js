@@ -564,14 +564,15 @@
         var validate = JsonSchema.validate, result,
             errs = JsonSchema.msgs.err;
 
-        function checkValidation(value, schema, eStatus, name, msgCheck) {
+        function checkValidation(value, schema, eStatus, name, msgCheck, itemName) {
             name = name || "name";
+            itemName = itemName || name;
 
             var result = validate(name, value, schema);
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + name + "' " + msgCheck);
+                equal(result.msg, "field '" + itemName + "' " + msgCheck);
             }
 
             return result;
@@ -606,6 +607,70 @@
         checkValidation([1, 2, 3], {type: "array", uniqueItems: true}, true);
 
         checkValidation([1, 2, 3, 3], {type: "array", uniqueItems: true}, false, "items", errs.DUPLICATED_ITEMS);
+        checkValidation([1, 2, 3], {
+            type: "array",
+            items: {
+                type: "number"
+            }
+        }, true);
+        checkValidation([1, 2, 3, "4"], {
+            type: "array",
+            items: {
+                type: "number"
+            }
+        }, false, "items", errs.NOT_NUMBER, "items 4");
+
+        checkValidation([1, "4"], {
+            type: "array",
+            items: [
+                {type: "number"},
+                {type: "boolean"}
+            ]
+        }, false, "items", errs.NOT_BOOLEAN, "items 2");
+
+        checkValidation([1, false], {
+            type: "array",
+            items: [
+                {type: "number"},
+                {type: "boolean"}
+            ]
+        }, true, "items");
+
+        checkValidation([1, false, "foo"], {
+            type: "array",
+            additionalItems: false,
+            items: [
+                {type: "number"},
+                {type: "boolean"}
+            ]
+        }, false, "items", errs.ADDITIONAL_ITEMS);
+
+        checkValidation([1, false, "foo", "bar", "baz"], {
+            type: "array",
+            additionalItems: {type: "string"},
+            items: [
+                {type: "number"},
+                {type: "boolean"}
+            ]
+        }, true);
+
+        checkValidation([1, false, "foo", "bar", 12], {
+            type: "array",
+            additionalItems: {type: "string"},
+            items: [
+                {type: "number"},
+                {type: "boolean"}
+            ]
+        }, false, "items", errs.NOT_STRING, "items 5");
+
+        checkValidation([1, false, 12, "foo", "bar"], {
+            type: "array",
+            additionalItems: {type: "string"},
+            items: [
+                {type: "number"},
+                {type: "boolean"}
+            ]
+        }, false, "items", errs.NOT_STRING, "items 3");
     });
 
 

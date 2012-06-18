@@ -134,6 +134,7 @@
             ARRAY_TOO_SMALL: "is too small",
             ARRAY_TOO_BIG: "is too big",
             DUPLICATED_ITEMS: "has duplicated items",
+            ADDITIONAL_ITEMS: "additional items present and not allowed",
 
             NUM_TOO_SMALL: "is too small",
             NUM_TOO_BIG: "is too big",
@@ -176,8 +177,14 @@
         return priv.makeResult(true, "ok", value);
     };
 
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
+
     validators.array = function (name, value, schema, required) {
         var
+            result,
+            offset,
             size,
             errs = cons.msgs.err,
             mResult = priv.makeResult;
@@ -186,7 +193,7 @@
             return mResult(false, "field '" + name + "' " + msg, data);
         }
 
-        if (Object.prototype.toString.call(value) !== '[object Array]') {
+        if (!isArray(value)) {
             return failed(cons.msgs.err.NOT_ARRAY);
         }
 
@@ -226,6 +233,80 @@
             // removed then it has non unique items
             if (value.length !== priv.unique(value).length) {
                 return failed(errs.DUPLICATED_ITEMS);
+            }
+        }
+
+        function checkTupleTyping(schemas, items) {
+            var i, itemSchema, item, result;
+            for (i = 0; i < schemas.length; i += 1) {
+                itemSchema = schemas[i];
+                item = items[i];
+
+                result = cons.validate(name + " " + (i + 1), item, itemSchema, false);
+
+                if (!result.ok) {
+                    return result;
+                }
+            }
+
+            return result;
+        }
+
+        function checkItemSchema(schema, items, indexOffset) {
+            var i, result, item;
+
+            // can pass a value to add to the index other than 1, in case we
+            // are checking additional items
+            indexOffset = indexOffset || 1;
+
+            for (i = 0; i < items.length; i += 1) {
+                item = items[i];
+
+                result = cons.validate(name + " " + (i + indexOffset), item,
+                                       schema, false);
+
+                if (!result.ok) {
+                    return result;
+                }
+            }
+
+            return result;
+        }
+
+        if (schema.items) {
+            if (isArray(schema.items)) {
+                result = checkTupleTyping(schema.items, value);
+
+                // return now if it failed
+                if (!result.ok) {
+                    return result;
+                }
+
+                if (typeof schema.additionalItems === "boolean") {
+                    // if additionalItems is false and the array has more items
+                    // than the schema (tuple typing) then the check fails
+                    if (!schema.additionalItems && schema.items.length < value.length) {
+                        return failed(errs.ADDITIONAL_ITEMS);
+                    }
+                } else if (schema.additionalItems) {
+                    // if not a boolean then it's a schema, check the
+                    // additional items against the schema
+                    offset = schema.items.length;
+                    result = checkItemSchema(schema.additionalItems, value.slice(offset), offset + 1);
+                }
+
+            } else {
+                result = checkItemSchema(schema.items, value);
+            }
+
+            if (!result.ok) {
+                return result;
+            }
+        } else if (schema.additionalItems && typeof schema.additionalItems !== "boolean") {
+            result = checkItemSchema(schema.additionalItems, value);
+
+            if (!result.ok) {
+                return result;
             }
         }
 
