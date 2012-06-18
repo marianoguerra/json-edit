@@ -28,23 +28,25 @@
         }
     };
 
-    cons.validate = function (name, value, schema) {
+    cons.validate = function (name, value, schema, required) {
+        required = (required === true);
+
         if (validators[schema.type]) {
-            return validators[schema.type](name, value, schema);
+            return validators[schema.type](name, value, schema, required);
         } else {
-            return validators.default_(name, value, schema);
+            return validators.default_(name, value, schema, required);
         }
     };
 
-    validators.object = function (name, value, schema) {
+    validators.object = function (name, value, schema, required) {
         return priv.makeResult(true, "ok", value);
     };
 
-    validators.array = function (name, value, schema) {
+    validators.array = function (name, value, schema, required) {
         return priv.makeResult(true, "ok", value);
     };
 
-    validators["null"] = function (name, value, schema) {
+    validators["null"] = function (name, value, schema, required) {
         if (value === null) {
             return priv.makeResult(true, "ok", value);
         } else {
@@ -69,8 +71,7 @@
         };
     };
 
-
-    validators.integer = function (name, value, schema) {
+    validators.integer = function (name, value, schema, required) {
         var
             notInteger = cons.msgs.err.NOT_INTEGER,
             mResult = priv.makeResult;
@@ -82,11 +83,11 @@
         if (typeof value === "number" && (value % 1) !== 0) {
             return failed(notInteger);
         } else {
-            return validators.number(name, value, schema, notInteger);
+            return validators.number(name, value, schema, required, notInteger);
         }
     };
 
-    validators.number = function (name, value, schema, notType) {
+    validators.number = function (name, value, schema, required, notType) {
         var
             size,
             errs = cons.msgs.err,
@@ -145,7 +146,7 @@
         return mResult(true);
     };
 
-    validators.boolean = function (name, value, schema) {
+    validators.boolean = function (name, value, schema, required) {
         var
             errs = cons.msgs.err,
             mResult = priv.makeResult;
@@ -184,7 +185,7 @@
         return false;
     };
 
-    validators.string = function (name, value, schema) {
+    validators.string = function (name, value, schema, required) {
         var
             size,
             regex,
@@ -221,7 +222,7 @@
                     minLength: schema.minLength
                 });
             }
-        } else if (schema.required && value === "") {
+        } else if (required && value === "") {
             return failed(errs.EMPTY);
         }
 
@@ -248,7 +249,7 @@
         return mResult(true);
     };
 
-    validators.default_ = function (name, value, schema) {
+    validators.default_ = function (name, value, schema, required) {
         return priv.makeResult(true, "ok", value);
     };
 

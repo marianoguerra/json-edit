@@ -344,10 +344,11 @@
         var validate = JsonSchema.validate, result,
             errs = JsonSchema.msgs.err;
 
-        function checkValidation(value, schema, eStatus, name, msgCheck) {
+        function checkValidation(value, schema, eStatus, name, msgCheck, required) {
             name = name || "name";
+            required = (required === true);
 
-            var result = validate(name, value, schema);
+            var result = validate(name, value, schema, required);
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
@@ -358,6 +359,10 @@
         }
 
         checkValidation("foo", {type: "string"}, true);
+        checkValidation("foo", {type: "string"}, true, "name", null, true);
+
+        checkValidation("", {type: "string"}, false, "foo", errs.EMPTY, true);
+        checkValidation(null, {type: "string"}, false, "foo", errs.NOT_STRING);
 
         checkValidation("1", {type: "string", pattern: "[0-9]+"}, true);
         checkValidation("12", {type: "string", pattern: "[0-9]+"}, true);
@@ -371,9 +376,12 @@
         checkValidation("1a", {type: "string", pattern: "^[0-9]+$"}, false, "num", errs.INVALID_FORMAT);
 
         checkValidation("", {type: "string", minLength: 0}, true);
+        checkValidation("", {type: "string", minLength: 0}, true, "num", null, true);
 
         checkValidation("a", {type: "string", minLength: 1}, true);
         checkValidation("aasda", {type: "string", minLength: 1}, true);
+        checkValidation("a", {type: "string", minLength: 1}, true, "num", null, true);
+
 
         checkValidation("", {type: "string", minLength: 1}, false, "name", errs.TO_SMALL);
         checkValidation("", {type: "string", minLength: 0, exclusiveMinimum: true}, false, "name", errs.TO_SMALL);
@@ -384,6 +392,8 @@
 
         checkValidation("a", {type: "string", maxLength: 1}, true);
         checkValidation("", {type: "string", maxLength: 1}, true);
+        checkValidation("", {type: "string", maxLength: 0}, false, "num", errs.EMPTY, true);
+        checkValidation("a", {type: "string", maxLength: 1}, true, "num", null, true);
 
         checkValidation("aa", {type: "string", maxLength: 1}, false, "name", errs.TO_BIG);
         checkValidation("aa", {type: "string", maxLength: 2, exclusiveMaximum: true}, false, "name", errs.TO_BIG);
