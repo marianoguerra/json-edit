@@ -1,7 +1,7 @@
-/*global window jQuery*/
+/*global window jQuery nsgen JsonSchema*/
 (function ($) {
     "use strict";
-    var cons, jopts, priv = {}, nsgen, ns, prefix,
+    var cons, jopts, priv = {}, ns, prefix,
         defaults;
 
     defaults = {
@@ -15,29 +15,7 @@
         },
         msgs: {
             cantRemoveMinItems: "Can't remove item, minimum number reached",
-            cantAddMaxItems: "Can't add item, maximum number reached",
-            err: {
-                NOT_STRING: "should be of type string",
-                EMPTY: "required but empty",
-                INVALID_FORMAT: "doesn't match the required format",
-                TOO_SMALL: "is too short",
-                TOO_BIG: "is too long",
-                NOT_IN_ENUM: "is not one of valid values",
-
-                NOT_NULL: "should be null",
-                NOT_BOOLEAN: "should be true of false",
-                NOT_INTEGER: "should be an integer",
-
-                NUM_TOO_SMALL: "is too small",
-                NUM_TOO_BIG: "is too big",
-                NOT_NUMBER: "should be a number",
-                NOT_DIVISIBLE_BY: "should be divisible by" // TODO
-            }
-        },
-        // functions to call to validate a given type of field, you can add your
-        // own or modify the existing ones, if none matches
-        // defaults.validators.default_ is called.
-        validators: {
+            cantAddMaxItems: "Can't add item, maximum number reached"
         },
         // functions to call to format a given type of field, you can add your
         // own or modify the existing ones, if none matches
@@ -49,77 +27,6 @@
         // defaults.collectors.default_ is called
         collectors: {
         }
-    };
-
-    nsgen = function (prefix, sep, count, inc) {
-        sep = sep || "-";
-        count = count || 0;
-        inc = inc || 1;
-
-        function nextCount() {
-            var next = count;
-            count += inc;
-
-            return next;
-        }
-
-        function id(suffix, omitCount, count) {
-            if (count === undefined) {
-                count = nextCount();
-            }
-
-            var countSuffix = (omitCount) ? "" : sep + count;
-            return prefix + sep + suffix + countSuffix;
-        }
-
-        // return a function that can take a list of args as first parameter
-        // or spliced, if it takes just one argument and is an array use that
-        // as the list, otherwise collect the arguments and use that as the list
-        // examples:
-        //  foo([1,2,3]) === foo(1,2,3)
-        function dualVarArgs(fun) {
-            return function () {
-                var args = $.makeArray(arguments);
-
-                // if it's just one argument and is an array then take the
-                // array as the list of arguments
-                // otherwise use all the arguments as the list of arguments
-                if (args.length === 1 && $.isArray(args[0])) {
-                    args = args[0];
-                }
-
-                return fun(args);
-            };
-        }
-
-        return {
-            nextCount: nextCount,
-            id: id,
-            $id: function (suffix, omitCount, count) {
-                return "#" + id(suffix, omitCount, count);
-            },
-            cls: function (suffix) {
-                return id(suffix, true);
-            },
-            $cls: function (suffix) {
-                return "." + id(suffix, true);
-            },
-            classesList: dualVarArgs(function (suffixes) {
-                return $.map(
-                    suffixes,
-                    function (suffix) {
-                        return id(suffix, true);
-                    }
-                );
-            }),
-            // return a string with classes separated by spaces
-            classes: function () {
-                return this.classesList.apply(this, arguments).join(" ");
-            },
-            _reset: function (value) {
-                count = value || 0;
-            }
-        };
     };
 
     if (window._jsonEditOpts) {
@@ -176,7 +83,7 @@
         };
     };
 
-    cons.collectResult = function (ok, msg, data) {
+    priv.collectResult = function (ok, msg, data) {
         if (msg === undefined && ok) {
             msg = "ok";
         }
@@ -211,7 +118,7 @@
                 defaults.displayWarning("expected one item collecting",
                     field.size(), key, selector, cont, field);
 
-                value = cons.collectResult(false,
+                value = priv.collectResult(false,
                     "expected one item collecting", {
                         key: key,
                         size: field.size()
@@ -511,14 +418,6 @@
         return obj;
     };
 
-    priv.validate = function (name, value, schema) {
-        if (defaults.validators[schema.type]) {
-            return defaults.validators[schema.type](name, value, schema);
-        } else {
-            return defaults.validator.default_(name, value, schema);
-        }
-    };
-
     defaults.collectors.object = function (name, field, schema) {
         // get the inner child of the object container since collectors look
         // only in the first level childrens
@@ -547,7 +446,7 @@
             }
         }
 
-        return priv.validate(name, value, schema);
+        return JsonSchema.validate(name, value, schema);
     };
 
     defaults.collectors.default_ = function (name, field, schema) {
@@ -557,207 +456,9 @@
 
         var value = field.children("input").val();
 
-        return priv.validate(name, value, schema);
+        return JsonSchema.validate(name, value, schema);
     };
 
-    defaults.validators.object = function (name, value, schema) {
-        return cons.collectResult(true, "ok", value);
-    };
-
-    defaults.validators.array = function (name, value, schema) {
-        return cons.collectResult(true, "ok", value);
-    };
-
-    defaults.validators["null"] = function (name, value, schema) {
-        if (value === null) {
-            return cons.collectResult(true, "ok", value);
-        } else {
-            return cons.collectResult(false, "field '" + name + "' " +
-                defaults.msgs.err.NOT_NULL, {});
-        }
-    };
-
-    defaults.validators.integer = function (name, value, schema) {
-        var
-            notInteger = defaults.msgs.err.NOT_INTEGER,
-            mResult = cons.collectResult;
-
-        function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
-        }
-
-        if (typeof value === "number" && (value % 1) !== 0) {
-            return failed(notInteger);
-        } else {
-            return defaults.validators.number(name, value, schema, notInteger);
-        }
-    };
-
-    defaults.validators.number = function (name, value, schema, notType) {
-        var
-            size,
-            errs = defaults.msgs.err,
-            mResult = cons.collectResult;
-
-        function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
-        }
-
-        if (typeof value !== "number") {
-            return failed(notType || errs.NOT_NUMBER);
-        }
-
-        if (schema.minimum !== undefined) {
-            if (schema.exclusiveMinimum) {
-                size = schema.minimum + 1;
-            } else {
-                size = schema.minimum;
-            }
-
-            if (value < size) {
-                return failed(errs.NUM_TOO_SMALL, {
-                    minimum: schema.minimum
-                });
-            }
-        }
-
-        if (schema.maximum !== undefined) {
-            if (schema.exclusiveMaximum) {
-                size = schema.maximum - 1;
-            } else {
-                size = schema.maximum;
-            }
-
-            if (value > size) {
-                return failed(errs.NUM_TOO_BIG, {
-                    maximum: schema.maximum
-                });
-            }
-        }
-
-        if (!priv.checkEnum(value, schema)) {
-            return failed(errs.NOT_IN_ENUM, {
-                "enum": schema["enum"]
-            });
-        }
-
-        if (schema.mod) {
-            if ((value % schema.mod) !== 0) {
-                return failed(errs.NOT_DIVISIBLE_BY, {
-                    mod: schema.mod
-                });
-            }
-        }
-
-        return mResult(true);
-    };
-
-    defaults.validators.boolean = function (name, value, schema) {
-        var
-            errs = defaults.msgs.err,
-            mResult = cons.collectResult;
-
-        function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
-        }
-
-        if (typeof value !== "boolean") {
-            return failed(errs.NOT_BOOLEAN);
-        }
-
-        if (!priv.checkEnum(value, schema)) {
-            return failed(errs.NOT_IN_ENUM, {
-                "enum": schema["enum"]
-            });
-        }
-
-        return mResult(true);
-    };
-
-    priv.checkEnum = function (value, schema) {
-        var enum_, i;
-
-        enum_ = schema["enum"];
-        if (enum_) {
-            for (i = 0; i < enum_.length; i += 1) {
-                if (enum_[i] === value) {
-                    return true;
-                }
-            }
-        } else {
-            return true;
-        }
-
-        return false;
-    };
-
-    defaults.validators.string = function (name, value, schema) {
-        var
-            size,
-            regex,
-            errs = defaults.msgs.err,
-            mResult = cons.collectResult;
-
-        function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
-        }
-
-        if (typeof value !== "string") {
-            return failed(errs.NOT_STRING);
-        }
-
-        if (schema.pattern) {
-            regex = new RegExp(schema.pattern);
-
-            if (!regex.test(value)) {
-                return failed(errs.INVALID_FORMAT, {
-                    pattern: schema.pattern
-                });
-            }
-        }
-
-        if (schema.minLength !== undefined) {
-            if (schema.exclusiveMinimum) {
-                size = schema.minLength + 1;
-            } else {
-                size = schema.minLength;
-            }
-
-            if (value.length < size) {
-                return failed(errs.TOO_SMALL, {
-                    minLength: schema.minLength
-                });
-            }
-        } else if (schema.required && value === "") {
-            return failed(errs.EMPTY);
-        }
-
-        if (schema.maxLength !== undefined) {
-            if (schema.exclusiveMaximum) {
-                size = schema.maxLength - 1;
-            } else {
-                size = schema.maxLength;
-            }
-
-            if (value.length > size) {
-                return failed(errs.TOO_BIG, {
-                    maxLength: schema.maxLength
-                });
-            }
-        }
-
-        if (!priv.checkEnum(value, schema)) {
-            return failed(defaults.msgs.err.NOT_IN_ENUM, {
-                "enum": schema["enum"]
-            });
-        }
-
-        return mResult(true);
-    };
-
-    defaults.validators.default_ = function (name, value, schema) {
-        return cons.collectResult(true, "ok", value);
-    };
 
     priv.input = function (name, type, id, opts) {
         opts = opts || {};

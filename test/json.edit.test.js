@@ -1,4 +1,4 @@
-/*global jsonEdit test ok equal deepEqual module*/
+/*global jsonEdit JsonSchema test ok equal deepEqual module*/
 (function () {
     "use strict";
     var je = jsonEdit, priv = je.priv, ns = priv.ns, defaults = je.defaults;
@@ -346,8 +346,8 @@
     module("json edit validate");
 
     test("validate string", function () {
-        var validate = priv.validate, result,
-            errs = defaults.msgs.err;
+        var validate = JsonSchema.validate, result,
+            errs = JsonSchema.msgs.err;
 
         function checkValidation(value, schema, eStatus, name, msgCheck) {
             name = name || "name";
@@ -410,8 +410,8 @@
     });
 
     test("validate number", function () {
-        var validate = priv.validate, result,
-            errs = defaults.msgs.err;
+        var validate = JsonSchema.validate, result,
+            errs = JsonSchema.msgs.err;
 
         function checkValidation(value, schema, eStatus, name, msgCheck) {
             name = name || "name";
@@ -461,8 +461,8 @@
     });
 
     test("validate integer", function () {
-        var validate = priv.validate, result,
-            errs = defaults.msgs.err;
+        var validate = JsonSchema.validate, result,
+            errs = JsonSchema.msgs.err;
 
         function checkValidation(value, schema, eStatus, name, msgCheck) {
             name = name || "name";
@@ -511,8 +511,8 @@
     });
 
     test("validate boolean", function () {
-        var validate = priv.validate, result,
-            errs = defaults.msgs.err;
+        var validate = JsonSchema.validate, result,
+            errs = JsonSchema.msgs.err;
 
         function checkValidation(value, schema, eStatus, name, msgCheck) {
             name = name || "name";
@@ -542,8 +542,8 @@
     });
 
     test("validate null", function () {
-        var validate = priv.validate, result,
-            errs = defaults.msgs.err;
+        var validate = JsonSchema.validate, result,
+            errs = JsonSchema.msgs.err;
 
         function checkValidation(value, schema, eStatus, name, msgCheck) {
             name = name || "name";
