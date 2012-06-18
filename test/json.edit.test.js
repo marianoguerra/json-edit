@@ -560,6 +560,55 @@
         checkValidation("", {type: "null"}, false, "num", errs.NOT_NULL);
     });
 
+    test("validate array", function () {
+        var validate = JsonSchema.validate, result,
+            errs = JsonSchema.msgs.err;
+
+        function checkValidation(value, schema, eStatus, name, msgCheck) {
+            name = name || "name";
+
+            var result = validate(name, value, schema);
+            equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
+
+            if (msgCheck) {
+                equal(result.msg, "field '" + name + "' " + msgCheck);
+            }
+
+            return result;
+        }
+
+        checkValidation([], {type: "array"}, true);
+
+        $.each([null, 1, true, "asd", undefined, 1.2], function (i, item) {
+            checkValidation(item, {type: "array"}, false, "items", errs.NOT_ARRAY);
+        });
+
+        checkValidation([], {type: "array", minItems: 0}, true);
+        checkValidation([1], {type: "array", minItems: 0, exclusiveMinimum: true}, true);
+
+        checkValidation([], {type: "array", minItems: 1}, false, "items", errs.ARRAY_TOO_SMALL);
+        checkValidation([], {type: "array", minItems: 0, exclusiveMinimum: true}, false, "items", errs.ARRAY_TOO_SMALL);
+
+        checkValidation([1], {type: "array", minItems: 2}, false, "items", errs.ARRAY_TOO_SMALL);
+        checkValidation([1], {type: "array", minItems: 1, exclusiveMinimum: true}, false, "items", errs.ARRAY_TOO_SMALL);
+
+        checkValidation([], {type: "array", maxItems: 0}, true);
+        checkValidation([1], {type: "array", maxItems: 2, exclusiveMaximum: true}, true);
+
+        checkValidation([1, 2, 3], {type: "array", maxItems: 1}, false, "items", errs.ARRAY_TOO_BIG);
+        checkValidation([1, 2], {type: "array", maxItems: 0, exclusiveMaximum: true}, false, "items", errs.ARRAY_TOO_BIG);
+
+        checkValidation([1, 2, 3], {type: "array", maxItems: 2}, false, "items", errs.ARRAY_TOO_BIG);
+        checkValidation([1, 2], {type: "array", maxItems: 1, exclusiveMaximum: true}, false, "items", errs.ARRAY_TOO_BIG);
+
+        checkValidation([], {type: "array", uniqueItems: true}, true);
+        checkValidation([1], {type: "array", uniqueItems: true}, true);
+        checkValidation([1, 2, 3], {type: "array", uniqueItems: true}, true);
+
+        checkValidation([1, 2, 3, 3], {type: "array", uniqueItems: true}, false, "items", errs.DUPLICATED_ITEMS);
+    });
+
+
     /*
     test("", function () {
     });
