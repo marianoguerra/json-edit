@@ -63,8 +63,29 @@ h3{
  width: 100%;
  margin-top: 1em;
  text-align: center;
+ display: table;
+}
+
+.demo-outputs{
+ width: 100%;
+ margin-top: 1em;
+ display: table;
 }
 
 .demo-actions button{
  margin-left: 2em;
+}
+
+.demo-validation{
+ float: left;
+ width: 49%;
+}
+
+.demo-validation pre, .demo-data pre{
+ width: 100%;
+}
+
+.demo-data{
+ float: right;
+ width: 50%;
 }

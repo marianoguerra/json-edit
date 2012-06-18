@@ -108,7 +108,7 @@
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
             order = priv.getKeys(opts.properties, opts.order),
-            result = {ok: true, msg: "ok", data: {}};
+            result = {ok: true, msg: "ok", data: {}}, data = {};
 
         $.each(order, function (i, key) {
             var
@@ -131,15 +131,16 @@
                 value = priv.collectField(key, field, schema);
             }
 
-            if (!value.ok) {
+            if (!value.result.ok) {
                 result.ok = false;
                 result.msg = "one or more errors in object fields";
+                result.data[key] = value.result;
             }
 
-            result.data[key] = value;
+            data[key] = value.data;
         });
 
-        return result;
+        return {result: result, data: data};
     };
 
     priv.collectField = function (key, field, schema) {
@@ -434,18 +435,30 @@
     };
 
     defaults.collectors.array = function (name, field, schema) {
-        var itemSchema = schema.items || {};
+        var itemSchema = schema.items || {}, errors = [],
+            ok = true, msg = "ok", data = [];
 
-        return field.find(ns.$cls("array-item")).map(function (i, node) {
-            return priv.collectField(name, $(node), itemSchema);
+        field.find(ns.$cls("array-item")).each(function (i, node) {
+            var itemResult = priv.collectField(name, $(node), itemSchema);
+
+            if (!itemResult.ok) {
+                msg = "one or more errors in array items";
+                ok = false;
+                errors.push(itemResult);
+            }
+
+            data.push(itemResult.data);
         });
+
+        return {result: priv.collectResult(ok, msg, errors), data: data};
     };
 
     defaults.collectors.enum_ = function (name, field, schema) {
         var
             select = field.children("select"),
             option,
-            value = select.val();
+            value = select.val(),
+            result = {};
 
         // if the selected option is the "no-value" option then set value to null
         if (value === "") {
@@ -455,7 +468,34 @@
             }
         }
 
-        return JsonSchema.validate(name, value, schema);
+        result.result = JsonSchema.validate(name, value, schema);
+        result.data = value;
+
+        return result;
+    };
+
+    defaults.collectors.number = function (name, field, schema) {
+        var value, strValue = field.children("input").val();
+
+        try {
+            value = JSON.parse(strValue);
+            return {result: JsonSchema.validate(name, value, schema), data: value};
+        } catch (error) {
+            return {
+                result: priv.collectResult(false, "invalid format", {
+                    error: error.toString()
+                }),
+                data: strValue
+            };
+        }
+    };
+
+    defaults.collectors.integer = defaults.collectors.number;
+
+    defaults.collectors.boolean = function (name, field, schema) {
+        var value = (field.children("input").attr("checked") === "checked");
+
+        return {result: JsonSchema.validate(name, value, schema), data: value};
     };
 
     defaults.collectors.default_ = function (name, field, schema) {
@@ -465,7 +505,7 @@
 
         var value = field.children("input").val();
 
-        return JsonSchema.validate(name, value, schema);
+        return {result: JsonSchema.validate(name, value, schema), data: value};
     };
 
 

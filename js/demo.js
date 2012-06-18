@@ -23,6 +23,8 @@
         function validateForm() {
             var result = jsonEditData.collect();
 
+            $("#" + id + "-data").html(JSON.stringify(result.data, null, 2));
+            $("#" + id + "-validation").html(JSON.stringify(result.result, null, 2));
             console.log("validation result", result);
         }
 
@@ -49,6 +51,22 @@
                             "div": {
                                 "id": outputId,
                                 "class": "demo-out"
+                            }
+                        }]
+                    }
+                }, {
+                    "div": {
+                        "class": "demo-outputs",
+                        "$childs": [{
+                            "pre": {
+                                "id": id + "-validation",
+                                "class": "demo-validation"
+                            }
+                        },
+                        {
+                            "pre": {
+                                "id": id + "-data",
+                                "class": "demo-data"
                             }
                         }]
                     }
