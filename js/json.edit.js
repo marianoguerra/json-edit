@@ -3,17 +3,17 @@
     "use strict";
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['json.schema', 'nsgen'], function (JsonSchema, NsGen) {
+        define(['json.schema', 'nsgen', 'json'], function (JsonSchema, NsGen, JSON) {
             // Also create a global in case some scripts
             // that are loaded still are looking for
             // a global even when an AMD loader is in use.
-            return (root.JsonEdit = factory(root.jQuery, JsonSchema, NsGen));
+            return (root.JsonEdit = factory(root.jQuery, JsonSchema, NsGen, JSON));
         });
     } else {
         // Browser globals
-        root.JsonEdit = factory(root.jQuery, root.JsonSchema, root.NsGen);
+        root.JsonEdit = factory(root.jQuery, root.JsonSchema, root.NsGen, root.JSON);
     }
-}(this, function ($, JsonSchema, NsGen) {
+}(this, function ($, JsonSchema, NsGen, JSON) {
     "use strict";
     var cons, jopts, priv = {}, ns, prefix,
         defaults;

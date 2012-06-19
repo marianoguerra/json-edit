@@ -2,6 +2,7 @@
 require.config({
     baseUrl: "js/",
     paths: {
+        "json": "http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2",
         "ace": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/ace",
         "ace.json": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-json",
         "ace.theme": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-merbivore_soft",
@@ -11,6 +12,9 @@ require.config({
     },
 
     shim: {
+        json: {
+            exports: "JSON"
+        },
         ace: {
             exports: "ace",
             deps: ["ace.json", "ace.theme"]
@@ -28,7 +32,7 @@ require.config({
     }
 });
 
-require(["json.edit", "demos", "ace", "jquery.lego", "prettyPrint"], function (mJsonEdit, demos, ace, $, prettyPrint) {
+require(["json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json"], function (mJsonEdit, demos, ace, $, prettyPrint, JSON) {
     "use strict";
     function startEditor(id, title, description, content) {
         var editor, outputId = id + "-out",

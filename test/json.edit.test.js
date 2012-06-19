@@ -2,11 +2,15 @@
 require.config({
     baseUrl: "../js/",
     paths: {
+        "json": "http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2",
         "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
         "qunit": "http://code.jquery.com/qunit/qunit-git"
     },
 
     shim: {
+        json: {
+            exports: "JSON"
+        },
         jquery: {
             exports: "jQuery"
         },
@@ -16,7 +20,7 @@ require.config({
     }
 });
 
-require(["json.edit", "json.schema", "jquery", "qunit"], function (jsonEdit, JsonSchema, $, QUnit) {
+require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonEdit, JsonSchema, $, QUnit, JSON) {
     "use strict";
     var je = jsonEdit, priv = je.priv, ns = priv.ns, defaults = je.defaults;
     window.priv = priv;
