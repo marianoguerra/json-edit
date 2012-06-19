@@ -171,6 +171,52 @@ var demos = [
         }
     ],
     [
+        "more nested objects",
+        "",
+        {
+            "order": ["name", "location", "interests"],
+            "required": ["name"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "Name"
+                },
+                "location": {
+                    "type": "object",
+                    "title": "Location",
+                    "order": ["city", "state", "country"],
+                    "properties": {
+                        "city": {
+                            "type": "string",
+                            "title": "City"
+                        },
+                        "state": {
+                            "type": "string",
+                            "title": "State"
+                        },
+                        "country": {
+                            "type": "string",
+                            "title": "Country"
+                        }
+                    }
+                },
+                "interests": {
+                    "title": "Interests",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "order": ["name", "description"],
+                        "required": ["name"],
+                        "properties": {
+                            "name": {"type": "string", "title": "Name"},
+                            "description": {"type": "string", "title": "Description"}
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    [
         "Two fields, required, description and maxLength",
         "",
         {

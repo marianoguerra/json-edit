@@ -203,6 +203,11 @@
             cont,
             input = priv.input(name, type, id, schema);
 
+        // if it's just an input field
+        if (input.input) {
+            input.input["class"] = (input.input["class"] || "") + " " + ns.cls("array-item-input");
+        }
+
         function onRemoveClick(event) {
             var realMinItems = opts.minItems || 0,
                 cont = $("#" + id);
@@ -224,7 +229,7 @@
                     input,
                     {
                         "div": {
-                            "class": ns.cls("item-actions"),
+                            "class": ns.cls("array-item-actions"),
                             "$childs": [
                                 makeLinkAction(
                                     "remove",
@@ -240,13 +245,38 @@
         return cont;
     }
 
+    function getType(schema) {
+        if (
+                schema.properties ||
+                schema.additionalProperties !== undefined ||
+                schema.patternProperties ||
+                schema.minProperties ||
+                schema.maxProperties) {
+
+            return "object";
+        } else if (
+                schema.items ||
+                schema.additionalItems ||
+                schema.minItems ||
+                schema.maxItems ||
+                schema.uniqueItems) {
+            return "array";
+        } else if (
+                schema.minimum ||
+                schema.maximum) {
+            return "number";
+        } else {
+            return "string";
+        }
+    }
+
     function onAddItemClick(opts, id, i) {
         var
             items = $("#" + id + " " + ns.$cls("array-items")),
             item = makeArrayItem(
                 opts,
                 name,
-                opts.items.type || "string",
+                opts.items.type || getType(opts.items),
                 id + "-" + i,
                 opts.items);
 
@@ -290,7 +320,7 @@
             arrayChild = makeArrayItem(
                 opts,
                 name,
-                opts.items.type || "string",
+                opts.items.type || getType(opts.items),
                 id + "-" + i,
                 opts.items);
 
@@ -441,7 +471,7 @@
         field.find(ns.$cls("array-item")).each(function (i, node) {
             var itemResult = priv.collectField(name, $(node), itemSchema);
 
-            if (!itemResult.ok) {
+            if (!itemResult.result.ok) {
                 msg = "one or more errors in array items";
                 ok = false;
                 errors.push(itemResult);
@@ -523,7 +553,7 @@
     // provided)
     priv.genFieldClasses = function (fid, opts, sep, required) {
         var
-            type = opts.type || "string",
+            type = opts.type || getType(opts),
             classes = ["field", fid, type];
 
         if (required) {
@@ -537,7 +567,7 @@
         var
             id = ns.id(fid),
             inputId = ns.id(fid + "-input"),
-            type = opts.type || "string";
+            type = opts.type || getType(opts);
 
         return {
             "div": {

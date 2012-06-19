@@ -2,6 +2,7 @@
  width: 99%;
  margin: 0.25%;
  padding: 0.25%;
+ display: table;
 }
 
 .je-field label{
@@ -28,13 +29,12 @@
 }
 
 .je-array-item{
- text-align: right;
  display: table;
  width: 100%;
 }
 
-.je-array-item input{
- float: left;
+.je-array-item-input{
+ float: left !important;
  margin-left: 25%;
 }
 
