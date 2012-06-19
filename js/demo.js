@@ -59,7 +59,6 @@ require(["json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json"], fun
             $("#" + id + "-data").html(JSON.stringify(result.data, null, 2));
             $("#" + id + "-validation").html(JSON.stringify(result.result, null, 2));
             prettyPrint();
-            console.log("validation result", result);
         }
 
         $("body").append($.lego({
