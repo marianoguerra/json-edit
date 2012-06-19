@@ -5,20 +5,15 @@
 	<title>Test Suite</title>
 	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-git.css">
 	<link rel="stylesheet" href="../css/json.edit.css">
-	<script src="http://code.jquery.com/qunit/qunit-git.js"></script>
 
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script src="https://raw.github.com/marianoguerra/legojs/master/jquery.lego.web.js"></script>
  <script>
   window._jsonEditOpts = {
-   "global": true,
    "exportPrivates": true
   };
   </script>
-	<script src="../js/nsgen.js"></script>
-	<script src="../js/json.schema.js"></script>
-	<script src="../js/json.edit.js"></script>
-	<script src="json.edit.test.js"></script>
+
+	<script data-main="json.edit.test" src="http://requirejs.org/docs/release/2.0.2/minified/require.js"></script>
+
 </head>
 <body>
 	<div id="qunit"></div>

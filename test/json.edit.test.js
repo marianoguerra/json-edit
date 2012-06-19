@@ -1,5 +1,22 @@
-/*global jsonEdit JsonSchema test ok equal deepEqual module*/
-(function () {
+/*global require module test deepEqual ok equal*/
+require.config({
+    baseUrl: "../js/",
+    paths: {
+        "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
+        "qunit": "http://code.jquery.com/qunit/qunit-git"
+    },
+
+    shim: {
+        jquery: {
+            exports: "jQuery"
+        },
+        qunit: {
+            exports: "QUnit"
+        }
+    }
+});
+
+require(["json.edit", "json.schema", "jquery", "qunit"], function (jsonEdit, JsonSchema, $, QUnit) {
     "use strict";
     var je = jsonEdit, priv = je.priv, ns = priv.ns, defaults = je.defaults;
     window.priv = priv;
@@ -735,4 +752,4 @@
     test("", function () {
     });
     */
-}());
+});
