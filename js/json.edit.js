@@ -1,5 +1,19 @@
-/*global window jQuery nsgen JsonSchema*/
-(function ($) {
+/*global window define*/
+(function (root, factory) {
+    "use strict";
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['json.schema', 'nsgen'], function (JsonSchema, NsGen) {
+            // Also create a global in case some scripts
+            // that are loaded still are looking for
+            // a global even when an AMD loader is in use.
+            return (root.JsonEdit = factory(root.jQuery, JsonSchema, NsGen));
+        });
+    } else {
+        // Browser globals
+        root.JsonEdit = factory(root.jQuery, root.JsonSchema, root.NsGen);
+    }
+}(this, function ($, JsonSchema, NsGen) {
     "use strict";
     var cons, jopts, priv = {}, ns, prefix,
         defaults;
@@ -36,7 +50,7 @@
     }
 
     prefix = jopts.prefix || "je";
-    ns = nsgen(prefix);
+    ns = NsGen(prefix);
     priv.ns = ns;
 
     priv.getKeys = function (obj, order) {
@@ -582,12 +596,8 @@
     };
 
     if (jopts.exportPrivates) {
-        window.jsonEdit = cons;
-        window.jsonEdit.priv = priv;
-    } else if (jopts.global) {
-        window.jsonEdit = cons;
+        cons.priv = priv;
     }
 
     return cons;
-}(jQuery));
-
+}));

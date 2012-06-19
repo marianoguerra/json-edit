@@ -1,5 +1,34 @@
-/*global demos $ jsonEdit ace prettyPrint*/
-(function () {
+/*global require */
+require.config({
+    baseUrl: "js/",
+    paths: {
+        "ace": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/ace",
+        "ace.json": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-json",
+        "ace.theme": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-merbivore_soft",
+        "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
+        "jquery.lego": "https://raw.github.com/marianoguerra/legojs/master/jquery.lego.web",
+        "prettyPrint": "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify"
+    },
+
+    shim: {
+        ace: {
+            exports: "ace",
+            deps: ["ace.json", "ace.theme"]
+        },
+        jquery: {
+            exports: "jQuery"
+        },
+        "jquery.lego": {
+            deps: ["jquery"],
+            exports: "jQuery"
+        },
+        prettyPrint: {
+            exports: "prettyPrint"
+        }
+    }
+});
+
+require(["json.edit", "demos", "ace", "jquery.lego", "prettyPrint"], function (mJsonEdit, demos, ace, $, prettyPrint) {
     "use strict";
     function startEditor(id, title, description, content) {
         var editor, outputId = id + "-out",
@@ -17,7 +46,7 @@
             }
 
             $("#" + outputId).html("");
-            jsonEditData = jsonEdit(outputId, data);
+            jsonEditData = mJsonEdit(outputId, data);
         }
 
         function validateForm() {
@@ -100,7 +129,7 @@
 
         editor = ace.edit(id);
         editor.setTheme("ace/theme/merbivore_soft");
-        editor.getSession().setMode("ace/mode/json");
+        //editor.getSession().setMode("ace/mode/json");
         editor.setFontSize("1em");
         updateDemo();
 
@@ -113,4 +142,4 @@
             startEditor("editor" + i, demos[i][0], demos[i][1], demos[i][2]);
         }
     });
-}());
+});

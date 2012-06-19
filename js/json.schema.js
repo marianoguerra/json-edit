@@ -1,5 +1,19 @@
-/*global window*/
-(function () {
+/*global window define*/
+(function (root, factory) {
+    "use strict";
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], function () {
+            // Also create a global in case some scripts
+            // that are loaded still are looking for
+            // a global even when an AMD loader is in use.
+            return (root.JsonSchema = factory());
+        });
+    } else {
+        // Browser globals
+        root.JsonSchema = factory();
+    }
+}(this, function () {
     "use strict";
     var cons = {},
         // functions to call to validate a given type of field, you can add your
@@ -564,6 +578,5 @@
         return priv.makeResult(false, cons.msgs.err.UNKNOWN_TYPE, value);
     };
 
-    window.JsonSchema = cons;
     return cons;
-}());
+}));

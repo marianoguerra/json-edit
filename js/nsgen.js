@@ -1,5 +1,19 @@
-/*global window*/
-(function () {
+/*global define*/
+(function (root, factory) {
+    "use strict";
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], function () {
+            // Also create a global in case some scripts
+            // that are loaded still are looking for
+            // a global even when an AMD loader is in use.
+            return (root.NsGen = factory());
+        });
+    } else {
+        // Browser globals
+        root.NsGen = factory();
+    }
+}(this, function () {
     "use strict";
     var cons;
 
@@ -74,6 +88,5 @@
         };
     };
 
-    window.nsgen = cons;
     return cons;
-}());
+}));
