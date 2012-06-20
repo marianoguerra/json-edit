@@ -13,7 +13,7 @@
         // Browser globals
         root.JsonEdit = factory(root.jQuery, root.legojs, root.JsonSchema, root.NsGen, root.JSON);
     }
-}(this, function ($, legojs, JsonSchema, mNsGen, JSON) {
+}(this, function ($, legojs, JsonSchema, NsGen, JSON) {
     "use strict";
     var cons, jopts, priv = {}, ns, prefix,
         defaults;
@@ -50,7 +50,7 @@
     }
 
     prefix = jopts.prefix || "je";
-    ns = mNsGen(prefix);
+    ns = NsGen.namespace(prefix);
     priv.ns = ns;
 
     priv.getKeys = function (obj, order) {
