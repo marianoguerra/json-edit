@@ -7,7 +7,8 @@ require.config({
         "ace.json": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-json",
         "ace.theme": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-merbivore_soft",
         "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
-        "jquery.lego": "https://raw.github.com/marianoguerra/legojs/master/jquery.lego.web",
+        "legoparser": "http://marianoguerra.github.com/legojs/src/legoparser",
+        "jquery.lego": "http://marianoguerra.github.com/legojs/src/jquery.lego",
         "prettyPrint": "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify"
     },
 
@@ -22,17 +23,13 @@ require.config({
         jquery: {
             exports: "jQuery"
         },
-        "jquery.lego": {
-            deps: ["jquery"],
-            exports: "jQuery"
-        },
         prettyPrint: {
             exports: "prettyPrint"
         }
     }
 });
 
-require(["json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json"], function (mJsonEdit, demos, ace, $, prettyPrint, JSON) {
+require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json"], function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
     function startEditor(id, title, description, content) {
         var editor, outputId = id + "-out",
