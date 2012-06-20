@@ -43,12 +43,12 @@
                 return prefix + sep + suffix;
             }
 
-            function id(suffix, omitCount, count) {
+            function id(suffix, addCount, count) {
                 if (count === undefined) {
                     count = nextCount();
                 }
 
-                var countSuffix = (omitCount) ? "" : sep + count;
+                var countSuffix = (addCount) ? sep + count : "";
                 return prefix + num + sep + suffix + countSuffix;
             }
 
@@ -75,8 +75,8 @@
             return {
                 nextCount: nextCount,
                 id: id,
-                $id: function (suffix, omitCount, count) {
-                    return "#" + id(suffix, omitCount, count);
+                $id: function (suffix, addCount, count) {
+                    return "#" + id(suffix, addCount, count);
                 },
                 cls: cls,
                 $cls: function (suffix) {

@@ -579,8 +579,8 @@
 
     priv.genField = function (fid, opts, required) {
         var
-            id = ns.id(fid),
-            inputId = ns.id(fid + "-input"),
+            id = ns.id(fid, true),
+            inputId = ns.id(fid + "-input", true),
             type = opts.type || getType(opts);
 
         return {
