@@ -213,7 +213,7 @@
         return makeClickable("a", label, onClick, data);
     }
 
-    function makeArrayItem(opts, name, type, id, schema, value) {
+    function makeArrayItem(opts, name, type, id, schema) {
         var
             cont,
             input = priv.input(name, type, id, schema);
