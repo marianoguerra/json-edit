@@ -85,7 +85,8 @@
     };
 
     cons = function (id, opts) {
-        var container = $("#" + id);
+        // if id is not a string assume it's a jquery object
+        var container = (typeof id === "string") ? $("#" + id) : id;
 
         $.each(priv.genFields(opts.order, opts.properties, opts.required), function (index, lego) {
             container.append($.lego(lego));
