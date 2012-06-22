@@ -317,6 +317,25 @@
             }
         ],
         [
+            "Array with default",
+            "",
+            {
+                "order": [
+                    "nums"
+                ],
+                "properties": {
+                    "nums": {
+                        "type": "array",
+                        "title": "Nums",
+                        "default": [1, 2, 3],
+                        "items": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "Array with minItems",
             "try removing an item when there are 3, try the same with clear",
             {
@@ -328,6 +347,26 @@
                         "type": "array",
                         "title": "Nums",
                         "minItems": 3,
+                        "items": {
+                            "type": "number"
+                        }
+                    }
+                }
+            }
+        ],
+        [
+            "Array with minItems and default",
+            "",
+            {
+                "order": [
+                    "nums"
+                ],
+                "properties": {
+                    "nums": {
+                        "type": "array",
+                        "title": "Nums",
+                        "minItems": 2,
+                        "default": [1, 2, 3],
                         "items": {
                             "type": "number"
                         }

@@ -213,7 +213,7 @@
         return makeClickable("a", label, onClick, data);
     }
 
-    function makeArrayItem(opts, name, type, id, schema) {
+    function makeArrayItem(opts, name, type, id, schema, value) {
         var
             cont,
             input = priv.input(name, type, id, schema);
@@ -327,17 +327,30 @@
     };
 
     defaults.formatters.array = function (name, type, id, opts, required) {
-        var i, minItems, arrayChild, arrayChilds = [];
+        var i, minItems, arrayChild, arrayChilds = [], defaultValues = opts["default"] || [], itemOpts;
 
         minItems = opts.minItems || 1;
 
+        // if there are more default values than minItems then use that size to
+        // initialize the items
+        if (defaultValues.length > minItems) {
+            minItems = defaultValues.length;
+        }
+
         for (i = 0; i < minItems; i += 1) {
+            // default will be undefined if not set
+            if (defaultValues[i]) {
+                itemOpts = $.extend(true, {}, opts.items, {"default": defaultValues[i]});
+            } else {
+                itemOpts = opts.items;
+            }
+
             arrayChild = makeArrayItem(
                 opts,
                 name,
                 opts.items.type || getType(opts.items),
                 id + "-" + i,
-                opts.items);
+                itemOpts);
 
             arrayChilds.push(arrayChild);
         }
