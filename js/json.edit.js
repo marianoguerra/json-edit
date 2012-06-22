@@ -494,7 +494,7 @@
 
     defaults.collectors.array = function (name, field, schema) {
         var itemSchema = schema.items || {}, errors = [],
-            ok = true, msg = "ok", data = [];
+            ok = true, msg = "ok", data = [], result, arrayResult;
 
         field.find(ns.$cls("array-item")).each(function (i, node) {
             var itemResult = priv.collectField(name, $(node), itemSchema);
@@ -507,6 +507,14 @@
 
             data.push(itemResult.data);
         });
+
+        arrayResult = JsonSchema.validate(name, data, schema, false);
+
+        if (!arrayResult.ok) {
+            ok = false;
+            msg = "one or more errors in array";
+            errors.unshift(arrayResult);
+        }
 
         return {result: priv.collectResult(ok, msg, errors), data: data};
     };

@@ -309,6 +309,7 @@
                     "nums": {
                         "type": "array",
                         "title": "Nums",
+                        "uniqueItems": true,
                         "items": {
                             "type": "number"
                         }
