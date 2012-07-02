@@ -3,17 +3,17 @@
     "use strict";
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define([], function () {
+        define(['jquery'], function ($) {
             // Also create a global in case some scripts
             // that are loaded still are looking for
             // a global even when an AMD loader is in use.
-            return (root.NsGen = factory());
+            return (root.NsGen = factory($));
         });
     } else {
         // Browser globals
-        root.NsGen = factory();
+        root.NsGen = factory(root.jQuery);
     }
-}(this, function () {
+}(this, function ($) {
     "use strict";
     var cons, globalCount = 0;
 
