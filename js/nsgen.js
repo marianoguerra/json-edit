@@ -59,12 +59,16 @@
             //  foo([1,2,3]) === foo(1,2,3)
             function dualVarArgs(fun) {
                 return function () {
-                    var args = $.makeArray(arguments);
+                    var args = Array.prototype.slice.apply(arguments);
+
+                    function isArray(obj) {
+                        return Object.prototype.toString.call(obj) === '[object Array]';
+                    }
 
                     // if it's just one argument and is an array then take the
                     // array as the list of arguments
                     // otherwise use all the arguments as the list of arguments
-                    if (args.length === 1 && $.isArray(args[0])) {
+                    if (args.length === 1 && isArray(args[0])) {
                         args = args[0];
                     }
 
@@ -83,12 +87,11 @@
                     return "." + cls(suffix);
                 },
                 classesList: dualVarArgs(function (suffixes) {
-                    return $.map(
-                        suffixes,
-                        function (suffix) {
-                            return cls(suffix);
-                        }
-                    );
+                    var i, result = [];
+                    for (i = 0; i < suffixes.length; i += 1) {
+                        result.push(cls(suffixes[0]));
+                    }
+                    return result;
                 }),
                 // return a string with classes separated by spaces
                 classes: function () {
