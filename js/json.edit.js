@@ -1,4 +1,4 @@
-/*global window define*/
+/*global window define alert*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -285,7 +285,7 @@
         }
     }
 
-    function onAddItemClick(opts, id, i) {
+    function onAddItemClick(opts, id, i, name) {
         var
             items = $("#" + id + " " + ns.$cls("array-items")),
             item = makeArrayItem(
@@ -372,7 +372,7 @@
                             "$childs": [
                                 makeButton("add", function () {
                                     i += 1;
-                                    onAddItemClick(opts, id, i);
+                                    onAddItemClick(opts, id, i, name);
                                 }),
                                 makeButton("clear", function () {
                                     onClearItemsClick(opts, id);
