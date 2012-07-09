@@ -200,8 +200,8 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
 
     function checkGeneratedField(field, id, title, startIndex, classes, opts, required) {
         var
-            divId = "je-" + id + "-" + startIndex,
-            inputId = "je-" + id + "-input-" + (startIndex + 1);
+            divId = "je0-" + id + "-" + startIndex,
+            inputId = "je0-" + id + "-input-" + (startIndex + 1);
 
         deepEqual(field, {
             "div": {
@@ -259,7 +259,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
         });
 
         checkGeneratedField(fields[0], "name", "Name", 0, "je-field je-name je-string", nameOpts);
-        checkGeneratedField(fields[1], "age", "Age", 5, "je-field je-age je-number", ageOpts);
+        checkGeneratedField(fields[1], "age", "Age", 2, "je-field je-age je-number", ageOpts);
     });
 
     test("error is thrown if order item is not in schema", function () {
@@ -284,7 +284,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             }
         });
 
-        equal(field.div.id, priv.ns.id("numbers", false, 0));
+        equal(field.div.id, priv.ns.id("numbers", true, 0));
         equal(field.div["class"], priv.ns.classes("field", "numbers", "array"));
         ok(field.div.$childs[0].label);
         ok(field.div.$childs[1].div);
