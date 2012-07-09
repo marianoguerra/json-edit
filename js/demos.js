@@ -17,6 +17,21 @@
     "use strict";
     return [
         [
+            "autocomplete hint (addon)",
+            "",
+            {
+                "order": ["language"],
+                "properties": {
+                    "language": {
+                        "type": "string",
+                        "title": "Programming Language",
+                        "je:hint": "autocomplete",
+                        "je:availableValues": ["C", "C++", "Python", "Scheme", "Lisp"]
+                    }
+                }
+            }
+        ],
+        [
             "tags hint (addon)",
             "",
             {

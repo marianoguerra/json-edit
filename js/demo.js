@@ -17,7 +17,8 @@ require.config({
         "nsgen": "../src/nsgen",
 
         // hints
-        "hint.tags": "../src/addons/tags"
+        "hint.tags": "../src/addons/tags",
+        "hint.autocomplete": "../src/addons/autocomplete"
     },
 
     shim: {
@@ -34,7 +35,7 @@ require.config({
     }
 });
 
-require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json", "hint.tags"], function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
+require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json", "hint.tags", "hint.autocomplete"], function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
     function startEditor(id, title, description, content) {
         var editor, outputId = id + "-out",

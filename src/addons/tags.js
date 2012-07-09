@@ -1,5 +1,7 @@
-/*global window define alert*/
-//ioncache.github.com/Tag-Handler/css/taghandler.css
+/*global window define*/
+// need to add this style ioncache.github.com/Tag-Handler/css/taghandler.css
+// need to add jqeuryui css style
+// jquery dependency is only required for autocompletion
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
