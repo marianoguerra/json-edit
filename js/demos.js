@@ -17,6 +17,47 @@
     "use strict";
     return [
         [
+            "tags hint (addon)",
+            "",
+            {
+                "order": ["languages"],
+                "properties": {
+                    "languages": {
+                        "type": "array",
+                        "je:hint": "tags",
+                        "default": ["C", "Python"],
+                        "title": "Programming Languages",
+                        "je:allowAdd": true,
+                        "je:availableValues": ["C", "C++", "Python", "Scheme", "Lisp"],
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        ],
+        [
+            "tags hint, max, min, don't allow add (addon)",
+            "",
+            {
+                "order": ["languages"],
+                "properties": {
+                    "languages": {
+                        "type": "array",
+                        "je:hint": "tags",
+                        "default": ["C", "Python"],
+                        "title": "Programming Languages",
+                        "maxItems": 3,
+                        "minItems": 1,
+                        "items": {
+                            "type": "string",
+                            "enum": ["C", "C++", "Python", "Scheme", "Lisp"]
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "Simple field",
             "",
             {

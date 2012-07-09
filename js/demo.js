@@ -7,12 +7,17 @@ require.config({
         "ace.json": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-json",
         "ace.theme": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-merbivore_soft",
         "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
+        "jqueryui": "http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.19/jquery-ui.min",
         "legoparser": "http://marianoguerra.github.com/legojs/src/legoparser",
         "jquery.lego": "http://marianoguerra.github.com/legojs/src/jquery.lego",
         "prettyPrint": "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify",
+        "jquery.taghandler": "https://raw.github.com/ioncache/Tag-Handler/master/js/jquery.taghandler",
         "json.edit": "../src/json.edit",
         "json.schema": "../src/json.schema",
-        "nsgen": "../src/nsgen"
+        "nsgen": "../src/nsgen",
+
+        // hints
+        "hint.tags": "../src/addons/tags"
     },
 
     shim: {
@@ -23,16 +28,13 @@ require.config({
             exports: "ace",
             deps: ["ace.json", "ace.theme"]
         },
-        jquery: {
-            exports: "jQuery"
-        },
         prettyPrint: {
             exports: "prettyPrint"
         }
     }
 });
 
-require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json"], function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
+require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json", "hint.tags"], function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
     function startEditor(id, title, description, content) {
         var editor, outputId = id + "-out",

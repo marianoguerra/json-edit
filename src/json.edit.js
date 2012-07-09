@@ -31,10 +31,29 @@
             cantRemoveMinItems: "Can't remove item, minimum number reached",
             cantAddMaxItems: "Can't add item, maximum number reached"
         },
+        // this is a map that has as keys the base types and then an object
+        // that has as keys the hints of how the element should be formatted
+        // this allows to "hint" json-edit on how to format and display a field
+        // for example:
+        // hintedFormatters.array.tags can have a function to enter an array
+        // of tags in a different way as the standard one, the field used to
+        // check for hints is je:hint
+        hintedFormatters: {
+        },
         // functions to call to format a given type of field, you can add your
         // own or modify the existing ones, if none matches
         // defaults.formatters.default_ is called.
         formatters: {
+        },
+        // this is a map that has as keys the base types and then an object
+        // that has as keys the hints of how the element should be formatted
+        // this allows to "hint" json-edit on how to format, display and
+        // collect a field
+        // for example:
+        // hintedCollectors.array.tags can have a function to collect an array
+        // of tags in a different way as the standard one, the field used to
+        // check for hints is je:hint
+        hintedCollectors: {
         },
         // function to call to collect the value for a given type of field, you can
         // add your own or modify the existing ones, if none matches
@@ -53,6 +72,31 @@
     ns = NsGen.namespace(prefix);
     priv.ns = ns;
 
+    function getType(schema) {
+        if (
+                schema.properties ||
+                schema.additionalProperties !== undefined ||
+                schema.patternProperties ||
+                schema.minProperties ||
+                schema.maxProperties) {
+
+            return "object";
+        } else if (
+                schema.items ||
+                schema.additionalItems ||
+                schema.minItems ||
+                schema.maxItems ||
+                schema.uniqueItems) {
+            return "array";
+        } else if (
+                schema.minimum ||
+                schema.maximum) {
+            return "number";
+        } else {
+            return "string";
+        }
+    }
+
     priv.getKeys = function (obj, order) {
         if (order) {
             return order;
@@ -64,7 +108,7 @@
     };
 
 
-    priv.genFields = function (order, schema, requiredFields) {
+    priv.genFields = function (order, schema, requiredFields, util) {
         order = priv.getKeys(schema, order);
 
         requiredFields = requiredFields || [];
@@ -80,17 +124,23 @@
                 });
             }
 
-            return priv.genField(item, itemSchema, required);
+            return priv.genField(item, itemSchema, required, util);
         });
     };
 
     cons = function (id, opts) {
         // if id is not a string assume it's a jquery object
-        var container = (typeof id === "string") ? $("#" + id) : id;
+        var container = (typeof id === "string") ? $("#" + id) : id,
+            util = {};
 
-        $.each(priv.genFields(opts.order, opts.properties, opts.required), function (index, lego) {
+        util.events = {};
+        util.events.rendered = $.Callbacks();
+
+        $.each(priv.genFields(opts.order, opts.properties, opts.required, util), function (index, lego) {
             container.append($.lego(lego));
         });
+
+        util.events.rendered.fire(container, id, opts);
 
         return {
             "collect": function () {
@@ -159,8 +209,13 @@
     };
 
     priv.collectField = function (key, field, schema) {
-        if (defaults.collectors[schema.type]) {
-            return defaults.collectors[schema.type](key, field, schema);
+        var hint = schema['je:hint'], hints = defaults.hintedCollectors,
+            type = schema.type || getType(schema);
+
+        if (hint && hints[type] && hints[type][hint]) {
+            return hints[type][hint](key, field, schema, priv);
+        } else if (defaults.collectors[type]) {
+            return defaults.collectors[type](key, field, schema);
         } else {
             return defaults.collectors.default_(key, field, schema);
         }
@@ -213,10 +268,10 @@
         return makeClickable("a", label, onClick, data);
     }
 
-    function makeArrayItem(opts, name, type, id, schema) {
+    function makeArrayItem(opts, name, type, id, schema, util) {
         var
             cont,
-            input = priv.input(name, type, id, schema);
+            input = priv.input(name, type, id, schema, util);
 
         // if it's just an input field
         if (input.input) {
@@ -260,32 +315,7 @@
         return cont;
     }
 
-    function getType(schema) {
-        if (
-                schema.properties ||
-                schema.additionalProperties !== undefined ||
-                schema.patternProperties ||
-                schema.minProperties ||
-                schema.maxProperties) {
-
-            return "object";
-        } else if (
-                schema.items ||
-                schema.additionalItems ||
-                schema.minItems ||
-                schema.maxItems ||
-                schema.uniqueItems) {
-            return "array";
-        } else if (
-                schema.minimum ||
-                schema.maximum) {
-            return "number";
-        } else {
-            return "string";
-        }
-    }
-
-    function onAddItemClick(opts, id, i, name) {
+    function onAddItemClick(opts, id, i, name, util) {
         var
             items = $("#" + id + " " + ns.$cls("array-items")),
             item = makeArrayItem(
@@ -293,7 +323,8 @@
                 name,
                 opts.items.type || getType(opts.items),
                 id + "-" + i,
-                opts.items);
+                opts.items,
+                util);
 
         if (opts.maxItems && items.children().size() >= opts.maxItems) {
             defaults.displayError(defaults.msgs.cantAddMaxItems);
@@ -310,7 +341,7 @@
         $(selectorItems).children(selectorChildsToRemove).remove();
     }
 
-    defaults.formatters.object = function (name, type, id, opts, required) {
+    defaults.formatters.object = function (name, type, id, opts, required, util) {
         var classes = ["field", "object-fields"];
 
         if (required) {
@@ -321,12 +352,12 @@
             "div": {
                 "id": id,
                 "class": ns.classes(classes),
-                "$childs": priv.genFields(opts.order, opts.properties, opts.required)
+                "$childs": priv.genFields(opts.order, opts.properties, opts.required, util)
             }
         };
     };
 
-    defaults.formatters.array = function (name, type, id, opts, required) {
+    defaults.formatters.array = function (name, type, id, opts, required, util) {
         var i, minItems, arrayChild, arrayChilds = [], defaultValues = opts["default"] || [], itemOpts;
 
         minItems = opts.minItems || 1;
@@ -372,7 +403,7 @@
                             "$childs": [
                                 makeButton("add", function () {
                                     i += 1;
-                                    onAddItemClick(opts, id, i, name);
+                                    onAddItemClick(opts, id, i, name, util);
                                 }),
                                 makeButton("clear", function () {
                                     onClearItemsClick(opts, id);
@@ -385,7 +416,7 @@
         };
     };
 
-    defaults.formatters.enum_ = function (name, type, id, opts, required) {
+    defaults.formatters.enum_ = function (name, type, id, opts, required, util) {
         var hasDefault = false, noValueOption,
             obj = {
                 "select": {
@@ -427,10 +458,10 @@
     };
 
 
-    defaults.formatters.default_ = function (name, type, id, opts, required) {
+    defaults.formatters.default_ = function (name, type, id, opts, required, util) {
 
         if (opts["enum"]) {
-            return defaults.formatters.enum_(name, type, id, opts, required);
+            return defaults.formatters.enum_(name, type, id, opts, required, util);
         }
 
         var inputType = priv.inputTypes[type] || "text", min, max,
@@ -574,14 +605,16 @@
         return {result: JsonSchema.validate(name, value, schema), data: value};
     };
 
-
-    priv.input = function (name, type, id, opts, required) {
+    priv.input = function (name, type, id, opts, required, util) {
         opts = opts || {};
+        var hint = opts['je:hint'], hints = defaults.hintedFormatters;
 
-        if (defaults.formatters[type]) {
-            return defaults.formatters[type](name, type, id, opts, required);
+        if (hint && hints[type] && hints[type][hint]) {
+            return hints[type][hint](name, type, id, opts, required, priv, util);
+        } else if (defaults.formatters[type]) {
+            return defaults.formatters[type](name, type, id, opts, required, util);
         } else {
-            return defaults.formatters.default_(name, type, id, opts, required);
+            return defaults.formatters.default_(name, type, id, opts, required, util);
         }
     };
 
@@ -599,7 +632,7 @@
         return ns.classesList(classes).join(sep || " ");
     };
 
-    priv.genField = function (fid, opts, required) {
+    priv.genField = function (fid, opts, required, util) {
         var
             id = ns.id(fid, true),
             inputId = ns.id(fid + "-input", true),
@@ -611,7 +644,7 @@
                 "class": priv.genFieldClasses(fid, opts, " ", required),
                 "$childs": [
                     priv.label(opts.title, inputId),
-                    priv.input(fid, type, inputId, opts, required)
+                    priv.input(fid, type, inputId, opts, required, util)
                 ]
             }
         };
