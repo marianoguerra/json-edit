@@ -9,7 +9,10 @@ require.config({
         "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min",
         "legoparser": "http://marianoguerra.github.com/legojs/src/legoparser",
         "jquery.lego": "http://marianoguerra.github.com/legojs/src/jquery.lego",
-        "prettyPrint": "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify"
+        "prettyPrint": "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify",
+        "json.edit": "../src/json.edit",
+        "json.schema": "../src/json.schema",
+        "nsgen": "../src/nsgen"
     },
 
     shim: {
