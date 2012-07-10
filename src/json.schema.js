@@ -256,11 +256,7 @@
         }
 
         if (schema.minItems !== undefined) {
-            if (schema.exclusiveMinimum) {
-                size = schema.minItems + 1;
-            } else {
-                size = schema.minItems;
-            }
+            size = schema.minItems;
 
             if (value.length < size) {
                 return failed(errs.ARRAY_TOO_SMALL, {
@@ -272,11 +268,7 @@
         }
 
         if (schema.maxItems !== undefined) {
-            if (schema.exclusiveMaximum) {
-                size = schema.maxItems - 1;
-            } else {
-                size = schema.maxItems;
-            }
+            size = schema.maxItems;
 
             if (value.length > size) {
                 return failed(errs.ARRAY_TOO_BIG, {
@@ -427,31 +419,42 @@
         }
 
         if (schema.minimum !== undefined) {
+            size = schema.minimum;
+
             if (schema.exclusiveMinimum) {
+                if (value <= size) {
+                    return failed(errs.NUM_TOO_SMALL, {
+                        minimum: size
+                    });
+                }
                 size = schema.minimum + 1;
             } else {
-                size = schema.minimum;
+                if (value < size) {
+                    return failed(errs.NUM_TOO_SMALL, {
+                        minimum: size
+                    });
+                }
             }
 
-            if (value < size) {
-                return failed(errs.NUM_TOO_SMALL, {
-                    minimum: schema.minimum
-                });
-            }
         }
 
         if (schema.maximum !== undefined) {
+            size = schema.maximum;
+
             if (schema.exclusiveMaximum) {
-                size = schema.maximum - 1;
+                if (value >= size) {
+                    return failed(errs.NUM_TOO_BIG, {
+                        maximum: size
+                    });
+                }
             } else {
-                size = schema.maximum;
+                if (value > size) {
+                    return failed(errs.NUM_TOO_BIG, {
+                        maximum: size
+                    });
+                }
             }
 
-            if (value > size) {
-                return failed(errs.NUM_TOO_BIG, {
-                    maximum: schema.maximum
-                });
-            }
         }
 
         if (!priv.checkEnum(value, schema)) {
@@ -536,11 +539,7 @@
         }
 
         if (schema.minLength !== undefined) {
-            if (schema.exclusiveMinimum) {
-                size = schema.minLength + 1;
-            } else {
-                size = schema.minLength;
-            }
+            size = schema.minLength;
 
             if (value.length < size) {
                 return failed(errs.TOO_SMALL, {
@@ -552,11 +551,7 @@
         }
 
         if (schema.maxLength !== undefined) {
-            if (schema.exclusiveMaximum) {
-                size = schema.maxLength - 1;
-            } else {
-                size = schema.maxLength;
-            }
+            size = schema.maxLength;
 
             if (value.length > size) {
                 return failed(errs.TOO_BIG, {

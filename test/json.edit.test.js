@@ -410,9 +410,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
 
 
         checkValidation("", {type: "string", minLength: 1}, false, "name", errs.TO_SMALL);
-        checkValidation("", {type: "string", minLength: 0, exclusiveMinimum: true}, false, "name", errs.TO_SMALL);
         checkValidation("a", {type: "string", minLength: 2}, false, "name", errs.TO_SMALL);
-        checkValidation("a", {type: "string", minLength: 1, exclusiveMinimum: true}, false, "name", errs.TO_SMALL);
 
         checkValidation("", {type: "string", maxLength: 0}, true);
 
@@ -422,9 +420,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
         checkValidation("a", {type: "string", maxLength: 1}, true, "num", null, true);
 
         checkValidation("aa", {type: "string", maxLength: 1}, false, "name", errs.TO_BIG);
-        checkValidation("aa", {type: "string", maxLength: 2, exclusiveMaximum: true}, false, "name", errs.TO_BIG);
         checkValidation("a", {type: "string", maxLength: 0}, false, "name", errs.TO_BIG);
-        checkValidation("a", {type: "string", maxLength: 1, exclusiveMaximum: true}, false, "name", errs.TO_BIG);
 
         checkValidation("a", {type: "string", "enum": ['a']}, true);
         checkValidation("b", {type: "string", "enum": ['a', 'b']}, true);
@@ -611,22 +607,16 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
         });
 
         checkValidation([], {type: "array", minItems: 0}, true);
-        checkValidation([1], {type: "array", minItems: 0, exclusiveMinimum: true}, true);
 
         checkValidation([], {type: "array", minItems: 1}, false, "items", errs.ARRAY_TOO_SMALL);
-        checkValidation([], {type: "array", minItems: 0, exclusiveMinimum: true}, false, "items", errs.ARRAY_TOO_SMALL);
 
         checkValidation([1], {type: "array", minItems: 2}, false, "items", errs.ARRAY_TOO_SMALL);
-        checkValidation([1], {type: "array", minItems: 1, exclusiveMinimum: true}, false, "items", errs.ARRAY_TOO_SMALL);
 
         checkValidation([], {type: "array", maxItems: 0}, true);
-        checkValidation([1], {type: "array", maxItems: 2, exclusiveMaximum: true}, true);
 
         checkValidation([1, 2, 3], {type: "array", maxItems: 1}, false, "items", errs.ARRAY_TOO_BIG);
-        checkValidation([1, 2], {type: "array", maxItems: 0, exclusiveMaximum: true}, false, "items", errs.ARRAY_TOO_BIG);
 
         checkValidation([1, 2, 3], {type: "array", maxItems: 2}, false, "items", errs.ARRAY_TOO_BIG);
-        checkValidation([1, 2], {type: "array", maxItems: 1, exclusiveMaximum: true}, false, "items", errs.ARRAY_TOO_BIG);
 
         checkValidation([], {type: "array", uniqueItems: true}, true);
         checkValidation([1], {type: "array", uniqueItems: true}, true);
