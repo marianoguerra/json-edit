@@ -127,10 +127,19 @@
         });
     };
 
-    cons = function (id, opts) {
+    cons = function (id, opts, fireRendered) {
         // if id is not a string assume it's a jquery object
         var container = (typeof id === "string") ? $("#" + id) : id,
-            util = {}, lego, name = "root";
+            util = {}, lego, name = "root", renderedFired = false;
+
+        // pass false to avoid firing the rendered event on this function,
+        // in this case you have to explicitly call fireRendered on the
+        // returned object when container is in the dom
+        // pass true or any other non boolean value (such as undefined)
+        // to fire it here
+        if (typeof fireRendered !== "boolean") {
+            fireRendered = true;
+        }
 
         util.events = {};
         util.events.rendered = $.Callbacks();
@@ -141,14 +150,21 @@
         //    container.append($.lego(lego));
         //});
 
-        util.events.rendered.fire(container, id, opts);
+        function doFireRendered() {
+            // if it's not already fired fire it
+            if (!renderedFired) {
+                util.events.rendered.fire(container, id, opts);
+                renderedFired = true;
+            }
+        }
 
         return {
             "collect": function () {
                 return priv.collectField(name, container, opts);
             },
             "id": id,
-            "opts": opts
+            "opts": opts,
+            "fireRendered": doFireRendered
         };
     };
 
