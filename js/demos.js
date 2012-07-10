@@ -17,7 +17,21 @@
     "use strict";
     return [
         [
-            "datepicker hint (addon)",
+            "color hint (addon)",
+            "",
+            {
+                "order": ["color"],
+                "properties": {
+                    "color": {
+                        "type": "string",
+                        "title": "Color",
+                        "je:hint": "color"
+                    }
+                }
+            }
+        ],
+        [
+            "date hint (addon)",
             "",
             {
                 "order": ["date"],
@@ -31,7 +45,7 @@
             }
         ],
         [
-            "datepicker hint with format (addon)",
+            "date hint with format (addon)",
             "",
             {
                 "order": ["date"],

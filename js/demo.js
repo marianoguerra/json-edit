@@ -19,7 +19,12 @@ require.config({
         // hints
         "hint.tags": "../src/addons/tags",
         "hint.autocomplete": "../src/addons/autocomplete",
-        "hint.datepicker": "../src/addons/datepicker"
+        "hint.date": "../src/addons/date",
+        "hint.color": "../src/addons/color/color",
+
+        // needed by hints
+        // by color hint
+        "colorPicker": "../src/addons/color/picker/colorPicker"
     },
 
     shim: {
@@ -32,13 +37,16 @@ require.config({
         },
         prettyPrint: {
             exports: "prettyPrint"
+        },
+        colorPicker: {
+            exports: "colorPicker"
         }
     }
 });
 
 require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json",
 
-        "hint.tags", "hint.autocomplete", "hint.datepicker"],
+        "hint.tags", "hint.autocomplete", "hint.date", "hint.color"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
