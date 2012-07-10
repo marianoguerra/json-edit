@@ -18,7 +18,8 @@ require.config({
 
         // hints
         "hint.tags": "../src/addons/tags",
-        "hint.autocomplete": "../src/addons/autocomplete"
+        "hint.autocomplete": "../src/addons/autocomplete",
+        "hint.datepicker": "../src/addons/datepicker"
     },
 
     shim: {
@@ -35,7 +36,11 @@ require.config({
     }
 });
 
-require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json", "hint.tags", "hint.autocomplete"], function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
+require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json",
+
+        "hint.tags", "hint.autocomplete", "hint.datepicker"],
+
+        function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
     function startEditor(id, title, description, content) {
         var editor, outputId = id + "-out",

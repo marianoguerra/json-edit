@@ -17,6 +17,35 @@
     "use strict";
     return [
         [
+            "datepicker hint (addon)",
+            "",
+            {
+                "order": ["date"],
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "title": "Birthday",
+                        "je:hint": "date"
+                    }
+                }
+            }
+        ],
+        [
+            "datepicker hint with format (addon)",
+            "",
+            {
+                "order": ["date"],
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "title": "Birthday",
+                        "je:hint": "date",
+                        "je:format": "dd-mm-yy"
+                    }
+                }
+            }
+        ],
+        [
             "autocomplete hint (addon)",
             "",
             {
