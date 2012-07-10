@@ -107,7 +107,6 @@
         }
     };
 
-
     priv.genFields = function (order, schema, requiredFields, util) {
         order = priv.getKeys(schema, order);
 
@@ -131,20 +130,22 @@
     cons = function (id, opts) {
         // if id is not a string assume it's a jquery object
         var container = (typeof id === "string") ? $("#" + id) : id,
-            util = {};
+            util = {}, lego, name = "root";
 
         util.events = {};
         util.events.rendered = $.Callbacks();
 
-        $.each(priv.genFields(opts.order, opts.properties, opts.required, util), function (index, lego) {
-            container.append($.lego(lego));
-        });
+        lego = priv.input(name, "object", id, opts, true, util);
+        container.append($.lego(lego));
+        //$.each(priv.genFields(opts.order, opts.properties, opts.required, util), function (index, lego) {
+        //    container.append($.lego(lego));
+        //});
 
         util.events.rendered.fire(container, id, opts);
 
         return {
             "collect": function () {
-                return cons.collect(id, opts);
+                return priv.collectField(name, container, opts);
             },
             "id": id,
             "opts": opts
@@ -168,7 +169,7 @@
     };
 
     cons.defaults = defaults;
-    cons.collect = function (id, opts) {
+    priv.collectObject = function (id, opts) {
         var
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
@@ -520,7 +521,7 @@
     defaults.collectors.object = function (name, field, schema) {
         // get the inner child of the object container since collectors look
         // only in the first level childrens
-        return cons.collect(field.children(ns.$cls("object-fields")), schema);
+        return priv.collectObject(field.children(ns.$cls("object-fields")), schema);
     };
 
     defaults.collectors.array = function (name, field, schema) {

@@ -1,7 +1,7 @@
 .je-field, .je-array, .je-object, .je-object-fields, .je-array-actions, .je-array-items{
  width: 99%;
  margin: 0.25%;
- padding: 0.25%;
+ padding: 0.25% !important;
  display: table;
 }
 

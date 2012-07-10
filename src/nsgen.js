@@ -77,6 +77,12 @@
             }
 
             return {
+                count: function () {
+                    return count;
+                },
+                inc: function () {
+                    return inc;
+                },
                 nextCount: nextCount,
                 id: id,
                 $id: function (suffix, addCount, count) {
