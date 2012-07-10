@@ -158,6 +158,10 @@
             }
         }
 
+        if (fireRendered) {
+            doFireRendered();
+        }
+
         return {
             "collect": function () {
                 return priv.collectField(name, container, opts);
