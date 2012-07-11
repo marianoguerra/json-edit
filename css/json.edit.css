@@ -10,7 +10,7 @@
  width: 49%;
 }
 
-.je-field.je-required label{
+.je-field.je-required>label{
  font-weight: bold;
 }
 
