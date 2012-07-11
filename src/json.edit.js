@@ -146,9 +146,6 @@
 
         lego = priv.input(name, "object", id, opts, true, util);
         container.append($.lego(lego));
-        //$.each(priv.genFields(opts.order, opts.properties, opts.required, util), function (index, lego) {
-        //    container.append($.lego(lego));
-        //});
 
         function doFireRendered() {
             // if it's not already fired fire it
