@@ -164,6 +164,39 @@
             }
         ],
         [
+            "readonly hint (addon)",
+            "",
+            {
+                "order": ["username", "age", "money", "married"],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "je:hint": "readonly",
+                        "title": "Username",
+                        "default": "bob"
+                    },
+                    "age": {
+                        "type": "integer",
+                        "je:hint": "readonly",
+                        "title": "Age",
+                        "default": 27
+                    },
+                    "money": {
+                        "type": "number",
+                        "je:hint": "readonly",
+                        "title": "Money",
+                        "default": 12.3
+                    },
+                    "married": {
+                        "type": "boolean",
+                        "je:hint": "readonly",
+                        "title": "Married?",
+                        "default": false
+                    }
+                }
+            }
+        ],
+        [
             "Password hint (addon)",
             "",
             {

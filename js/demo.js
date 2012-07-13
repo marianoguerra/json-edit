@@ -23,6 +23,7 @@ require.config({
         "hint.color": "../src/addons/color/color",
         "hint.tabs": "../src/addons/tabs",
         "hint.password": "../src/addons/password",
+        "hint.readonly": "../src/addons/readonly",
 
         // needed by hints
         // by color hint
@@ -49,7 +50,7 @@ require.config({
 require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json",
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
-        "hint.password"],
+        "hint.password", "hint.readonly"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
