@@ -22,7 +22,6 @@
     function readonly(name, type, id, opts, required, priv, util) {
         var obj = priv.formatForType(name, type, id, opts, required, util);
 
-        console.log(obj);
         obj.input.disabled = "disabled";
 
         return obj;
