@@ -21,7 +21,7 @@
     formatHints.string = formatHints.string || {};
 
     formatHints.string.password = function (name, type, id, opts, required, priv, util) {
-        var obj = JsonEdit.defaults.formatters.default_(name, type, id, opts, required, util);
+        var obj = priv.formatForType(name, type, id, opts, required, util);
 
         obj.input.type = "password";
 

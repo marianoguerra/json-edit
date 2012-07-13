@@ -623,16 +623,23 @@
         return {result: JsonSchema.validate(name, value, schema), data: value};
     };
 
+    // format the given field according to its type without resolving hints
+    priv.formatForType = function (name, type, id, opts, required, util) {
+        if (defaults.formatters[type]) {
+            return defaults.formatters[type](name, type, id, opts, required, util);
+        } else {
+            return defaults.formatters.default_(name, type, id, opts, required, util);
+        }
+    };
+
     priv.input = function (name, type, id, opts, required, util) {
         opts = opts || {};
         var hint = opts['je:hint'], hints = defaults.hintedFormatters;
 
         if (hint && hints[type] && hints[type][hint]) {
             return hints[type][hint](name, type, id, opts, required, priv, util);
-        } else if (defaults.formatters[type]) {
-            return defaults.formatters[type](name, type, id, opts, required, util);
         } else {
-            return defaults.formatters.default_(name, type, id, opts, required, util);
+            return priv.formatForType(name, type, id, opts, required, util);
         }
     };
 
