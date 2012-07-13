@@ -303,7 +303,7 @@
         }
 
         function checkItemSchema(schema, items, indexOffset) {
-            var i, result, item;
+            var i, result = priv.makeResult(true), item;
 
             // can pass a value to add to the index other than 1, in case we
             // are checking additional items
