@@ -449,6 +449,25 @@
             }
         ],
         [
+            "enum labels (addon)",
+            "see how the empty option is at the top since it's not required",
+            {
+                "order": ["color"],
+                "properties": {
+                    "color": {
+                        "type": "string",
+                        "je:hint": "enumlabels",
+                        "je:enumlabels": {
+                            "red": "Passion Red",
+                            "blue": "Kind of Blue"
+                        },
+                        "title": "Color",
+                        "enum": ["red", "green", "blue"]
+                    }
+                }
+            }
+        ],
+        [
             "Field with enumerated values",
             "see how the empty option is at the top since it's not required",
             {
