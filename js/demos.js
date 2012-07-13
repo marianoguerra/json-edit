@@ -164,6 +164,21 @@
             }
         ],
         [
+            "Password hint (addon)",
+            "",
+            {
+                "order": ["password"],
+                "properties": {
+                    "password": {
+                        "type": "string",
+                        "je:hint": "password",
+                        "title": "Password",
+                        "default": "secret"
+                    }
+                }
+            }
+        ],
+        [
             "Simple field",
             "",
             {
