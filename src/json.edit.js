@@ -143,6 +143,7 @@
 
         util.events = {};
         util.events.rendered = $.Callbacks();
+        util.events.activated = $.Callbacks();
 
         lego = priv.input(name, "object", id, opts, true, util);
         container.append($.lego(lego));
@@ -165,6 +166,7 @@
             },
             "id": id,
             "opts": opts,
+            "events": util.events,
             "fireRendered": doFireRendered
         };
     };
@@ -486,6 +488,11 @@
             obj = {
                 "input": {
                     "id": id,
+                    "$keyup": function (event) {
+                        if (event.keyCode === 13) {
+                            util.events.activated.fire(name, this);
+                        }
+                    },
                     "name": name,
                     "type": inputType
                 }
