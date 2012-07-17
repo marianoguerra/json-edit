@@ -43,4 +43,4 @@ the javascript is in the js folder, you will also need jquery and legojs.
 license
 -------
 
-MIT + optional beer for the creator
+LGPL + optional beer for the creator
