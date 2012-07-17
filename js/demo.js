@@ -25,10 +25,23 @@ require.config({
         "hint.password": "../src/addons/password",
         "hint.readonly": "../src/addons/readonly",
         "hint.enumlabels": "../src/addons/enumlabels",
+        "hint.squim": "../src/addons/squim",
 
         // needed by hints
         // by color hint
-        "colorPicker": "../src/addons/color/picker/colorPicker"
+        "colorPicker": "../src/addons/color/picker/colorPicker",
+
+        // by squide hint
+        "squim": "http://marianoguerra.github.com/squim/src/squim",
+        "squim.types": "http://marianoguerra.github.com/squim/src/squim.types",
+        "squim.parser": "http://marianoguerra.github.com/squim/src/squim.parser",
+        "squim.error": "http://marianoguerra.github.com/squim/src/squim.error",
+        "squim.ground": "http://marianoguerra.github.com/squim/src/squim.ground",
+        "squim.util": "http://marianoguerra.github.com/squim/src/squim.util",
+
+        "squide": "http://marianoguerra.github.com/squide/src/squide",
+        "squide.types": "http://marianoguerra.github.com/squide/src/squide.types",
+        "squide.ui": "http://marianoguerra.github.com/squide/src/squide.ui"
     },
 
     shim: {
@@ -51,7 +64,7 @@ require.config({
 require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json",
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
-        "hint.password", "hint.readonly", "hint.enumlabels"],
+        "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";

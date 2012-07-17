@@ -17,6 +17,35 @@
     "use strict";
     return [
         [
+            "code hint (addon)",
+            "",
+            {
+                "order": ["code"],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "je:hint": "squim"
+                    }
+                }
+            }
+        ],
+        [
+            "code hint with default (addon)",
+            "",
+            {
+                "order": ["code"],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "je:hint": "squim",
+                        "default": "($lambda (foo bar) ($sequence 1 2))"
+                    }
+                }
+            }
+        ],
+        [
             "tabs hint (addon)",
             "",
             {
