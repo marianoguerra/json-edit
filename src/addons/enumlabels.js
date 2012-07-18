@@ -19,6 +19,7 @@
     var formatHints = JsonEdit.defaults.hintedFormatters;
 
     formatHints.string = formatHints.string || {};
+    formatHints.array = formatHints.array || {};
 
     formatHints.string.enumlabels = function (name, type, id, opts, required, priv, util) {
         var i, obj = priv.formatForType(name, type, id, opts, required, util),
@@ -40,6 +41,9 @@
 
         return obj;
     };
+
+    // will work when array schema has items.enum set
+    formatHints.array.enumlabels = formatHints.string.enumlabels;
 
     // no need for collectHints since it's a common input field
     return JsonEdit;
