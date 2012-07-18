@@ -7,14 +7,14 @@
 
 .je-field label{
  float: left;
- width: 49%;
+ width: 45%;
 }
 
 .je-field.je-required>label{
  font-weight: bold;
 }
 
-.je-field input, .je-field select{
+.je-field>input, .je-field>select{
  float: right;
  width: 50%;
 }
@@ -36,6 +36,7 @@
 .je-array-item-input{
  float: left !important;
  margin-left: 25%;
+ width: 50%;
 }
 
 .je-array-item-actions{
