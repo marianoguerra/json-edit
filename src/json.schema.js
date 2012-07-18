@@ -180,6 +180,23 @@
 
     cons.deepEqual = deepEqual;
 
+    cons.isType = function (value, type) {
+        switch (type) {
+        case "integer":
+            return typeof value === "number" && (value % 1) === 0;
+        case "number":
+            return typeof value === "number";
+        case "boolean":
+            return typeof value === "boolean";
+        case "string":
+            return typeof value === "string";
+        case "array":
+            return $.isArray(value);
+        default:
+            throw "don't know how to check for type " + type;
+        }
+    };
+
     cons.validate = function (name, value, schema, required) {
         required = (required === true);
 

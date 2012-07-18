@@ -561,6 +561,64 @@
             }
         ],
         [
+            "Array with enum options",
+            "",
+            {
+                "order": [
+                    "names"
+                ],
+                "properties": {
+                    "names": {
+                        "type": "array",
+                        "title": "Names",
+                        "items": {
+                            "type": "string",
+                            "enum": ["Pablo", "Ignacio", "Mariano", "Luis", "Marisel"]
+                        }
+                    }
+                }
+            }
+        ],
+        [
+            "Array with enum options",
+            "no type specified for items defaults to string",
+            {
+                "order": [
+                    "names"
+                ],
+                "properties": {
+                    "names": {
+                        "type": "array",
+                        "title": "Names",
+                        "items": {
+                            "enum": ["Pablo", "Ignacio", "Mariano", "Luis", "Marisel"]
+                        }
+                    }
+                }
+            }
+        ],
+        [
+            "Array with integer enum options",
+            "",
+            {
+                "order": [
+                    "nums"
+                ],
+                "properties": {
+                    "nums": {
+                        "type": "array",
+                        "title": "Nums",
+                        "minItems": 2,
+                        "maxItems": 4,
+                        "items": {
+                            "type": "integer",
+                            "enum": [1, 3, 7, 9, 13]
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "Array with default",
             "",
             {

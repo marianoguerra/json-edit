@@ -378,62 +378,74 @@
     };
 
     defaults.formatters.array = function (name, type, id, opts, required, util) {
-        var i, minItems, arrayChild, arrayChilds = [], defaultValues = opts["default"] || [], itemOpts;
+        var i, minItems, arrayChild, arrayChilds = [], select,
+            defaultValues = opts["default"] || [], itemOpts;
 
-        minItems = opts.minItems || 1;
+        // if it has an items field and an enum field then the selection is
+        // restricted to the values in the enum, display a select tag with
+        // multiple option enabled
+        if (opts.items && opts.items["enum"]) {
+            select = defaults.formatters.enum_(name, opts.items.type, id, opts.items, true, util);
 
-        // if there are more default values than minItems then use that size to
-        // initialize the items
-        if (defaultValues.length > minItems) {
-            minItems = defaultValues.length;
-        }
+            select.select.multiple = "multiple";
 
-        for (i = 0; i < minItems; i += 1) {
-            // default will be undefined if not set
-            if (defaultValues[i]) {
-                itemOpts = $.extend(true, {}, opts.items, {"default": defaultValues[i]});
-            } else {
-                itemOpts = opts.items;
+            return select;
+        } else {
+            minItems = opts.minItems || 1;
+
+            // if there are more default values than minItems then use that size to
+            // initialize the items
+            if (defaultValues.length > minItems) {
+                minItems = defaultValues.length;
             }
 
-            arrayChild = makeArrayItem(
-                opts,
-                name,
-                opts.items.type || getType(opts.items),
-                id + "-" + i,
-                itemOpts);
+            for (i = 0; i < minItems; i += 1) {
+                // default will be undefined if not set
+                if (defaultValues[i]) {
+                    itemOpts = $.extend(true, {}, opts.items, {"default": defaultValues[i]});
+                } else {
+                    itemOpts = opts.items;
+                }
 
-            arrayChilds.push(arrayChild);
-        }
+                arrayChild = makeArrayItem(
+                    opts,
+                    name,
+                    opts.items.type || getType(opts.items),
+                    id + "-" + i,
+                    itemOpts);
 
-        return {
-            "div": {
-                "id": id,
-                "class": priv.genFieldClasses(name, opts, " ", required),
-                "$childs": [
-                    {
-                        "div": {
-                            "class": ns.cls("array-items"),
-                            "$childs": arrayChilds
-                        }
-                    },
-                    {
-                        "div": {
-                            "class": ns.cls("array-actions"),
-                            "$childs": [
-                                makeButton("add", function () {
-                                    i += 1;
-                                    onAddItemClick(opts, id, i, name, util);
-                                }),
-                                makeButton("clear", function () {
-                                    onClearItemsClick(opts, id);
-                                })
-                            ]
-                        }
-                    }
-                ]
+                arrayChilds.push(arrayChild);
             }
-        };
+
+            return {
+                "div": {
+                    "id": id,
+                    "class": priv.genFieldClasses(name, opts, " ", required),
+                    "$childs": [
+                        {
+                            "div": {
+                                "class": ns.cls("array-items"),
+                                "$childs": arrayChilds
+                            }
+                        },
+                        {
+                            "div": {
+                                "class": ns.cls("array-actions"),
+                                "$childs": [
+                                    makeButton("add", function () {
+                                        i += 1;
+                                        onAddItemClick(opts, id, i, name, util);
+                                    }),
+                                    makeButton("clear", function () {
+                                        onClearItemsClick(opts, id);
+                                    })
+                                ]
+                            }
+                        }
+                    ]
+                }
+            };
+        }
     };
 
     defaults.formatters.enum_ = function (name, type, id, opts, required, util) {
@@ -550,21 +562,45 @@
 
     defaults.collectors.array = function (name, field, schema) {
         var itemSchema = schema.items || {}, errors = [],
-            ok = true, msg = "ok", data = [], result, arrayResult;
+            ok = true, msg = "ok", data = [], result, arrayResult, castResult;
 
-        field.find(ns.$cls("array-item")).each(function (i, node) {
-            var itemResult = priv.collectField(name, $(node), itemSchema);
+        if (schema.items && schema.items["enum"]) {
+            data = field
+                .find("option:selected")
+                .map(function (index, item) {
+                    return $(item).attr("value");
+                })
+                .toArray();
 
-            if (!itemResult.result.ok) {
-                msg = "one or more errors in array items";
+            castResult = priv.castToType(data, schema.items.type || "string");
+            data = castResult.data;
+
+            if (castResult.ok) {
+                arrayResult = JsonSchema.validate(name, data, schema, false);
+            } else {
                 ok = false;
-                errors.push(itemResult);
+                msg = castResult.msg;
+
+                // just to pass the if below in this function
+                arrayResult = {ok: true};
             }
 
-            data.push(itemResult.data);
-        });
+        } else {
+            field.find(ns.$cls("array-item")).each(function (i, node) {
+                var itemResult = priv.collectField(name, $(node), itemSchema);
 
-        arrayResult = JsonSchema.validate(name, data, schema, false);
+                if (!itemResult.result.ok) {
+                    msg = "one or more errors in array items";
+                    ok = false;
+                    errors.push(itemResult);
+                }
+
+                data.push(itemResult.data);
+            });
+
+            arrayResult = JsonSchema.validate(name, data, schema, false);
+
+        }
 
         if (!arrayResult.ok) {
             ok = false;
@@ -628,6 +664,62 @@
         var value = field.children("input").val();
 
         return {result: JsonSchema.validate(name, value, schema), data: value};
+    };
+
+    priv.castSingleToType = function (data, type) {
+        var value, ok = true, msg = "ok";
+
+        switch (type) {
+        case "integer":
+        case "number":
+        case "boolean":
+            try {
+                value = JSON.parse(data);
+            } catch (error) {
+                ok = false;
+                msg = "error converting " + data + " to " + type;
+            }
+            break;
+        case "string":
+            value = data;
+            break;
+        default:
+            ok = false;
+            msg = "don't know how to convert '" + data + "' to " + type;
+        }
+
+        if (ok) {
+            if (JsonSchema.isType(value, type)) {
+                return priv.collectResult(ok, msg, value);
+            } else {
+                return priv.collectResult(false, "expected " + type + " got " + data, value);
+            }
+        } else {
+            return priv.collectResult(ok, msg, value);
+        }
+    };
+
+    // try converting data to type return a collect result object to signal
+    // if all casts worked or not
+    priv.castToType = function (data, type) {
+        var i, result, newData = [];
+
+
+        if ($.isArray(data)) {
+            for (i = 0; i < data.length; i += 1) {
+                result = priv.castSingleToType(data[i], type);
+
+                if (result.ok) {
+                    newData.push(result.data);
+                } else {
+                    return result;
+                }
+            }
+
+            return priv.collectResult(true, "ok", newData);
+        } else {
+            return priv.castSingleToType(data, type);
+        }
     };
 
     // format the given field according to its type without resolving hints

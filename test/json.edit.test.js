@@ -747,6 +747,102 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
         }, false, "obj", errs.NOT_STRING, "b");
     });
 
+    test("isType", function () {
+        function check(value, type, expected) {
+            equal(JsonSchema.isType(value, type), expected, "checking " + value + " for type " + type + " should return " + expected);
+        }
+
+        check(1, "integer", true);
+        check(1, "number", true);
+        check(1.2, "number", true);
+        check(true, "boolean", true);
+        check(false, "boolean", true);
+        check("asd", "string", true);
+        check([], "array", true);
+        check([1], "array", true);
+
+        check(1, "string", false);
+        check(1, "array", false);
+        check(1, "boolean", false);
+
+        check(false, "string", false);
+        check(false, "array", false);
+        check(false, "integer", false);
+        check(false, "number", false);
+
+        check("asd", "boolean", false);
+        check("asd", "array", false);
+        check("asd", "integer", false);
+        check("asd", "number", false);
+
+        check(1.2, "string", false);
+        check(1.2, "array", false);
+        check(1.2, "integer", false);
+        check(1.2, "boolean", false);
+
+        check([], "boolean", false);
+        check([], "string", false);
+        check([], "integer", false);
+        check([], "number", false);
+    });
+
+    test("castSingleToType", function () {
+        function check(value, type, expected) {
+            var result = priv.castSingleToType(value, type);
+
+            ok(result.ok);
+            equal(result.data, expected, "" + value + " casted to " + type + " should be " + expected);
+        }
+
+        function checkFail(value, type, msg) {
+            var result = priv.castSingleToType(value, type);
+
+            ok(!result.ok);
+            equal(result.msg, msg);
+        }
+
+        check("1", "integer", 1);
+        check("1.2", "number", 1.2);
+        check("true", "boolean", true);
+        check("true", "boolean", true);
+        check("hello", "string", "hello");
+
+        checkFail("1.2", "integer", "expected integer got 1.2");
+        checkFail("true", "integer", "expected integer got true");
+        checkFail("true", "number", "expected number got true");
+        checkFail("1", "boolean", "expected boolean got 1");
+    });
+
+    test("castToType", function () {
+        function check(value, type, expected) {
+            var result = priv.castToType(value, type);
+
+            ok(result.ok);
+            deepEqual(result.data, expected, "" + value + " casted to " + type + " should be " + expected);
+        }
+
+        function checkFail(value, type, msg) {
+            var result = priv.castToType(value, type);
+
+            ok(!result.ok);
+            equal(result.msg, msg, "expect: " + msg);
+        }
+
+        check([], "integer", []);
+        check(["1", "2", "3"], "integer", [1, 2, 3]);
+        check(["1", "2", "3"], "number", [1, 2, 3]);
+        check(["1.2", "2.2", "3"], "number", [1.2, 2.2, 3]);
+        check(["1.2", "2.2", "3.2"], "number", [1.2, 2.2, 3.2]);
+
+        check(["true", "false", "true"], "boolean", [true, false, true]);
+        check(["1.2", "2.2", "3.2"], "string", ["1.2", "2.2", "3.2"]);
+
+        checkFail(["1.2"], "integer", "expected integer got 1.2");
+        checkFail(["true"], "integer", "expected integer got true");
+        checkFail(["true"], "number", "expected number got true");
+        checkFail(["1"], "boolean", "expected boolean got 1");
+    });
+
     /*
     test("", function () {
     });
