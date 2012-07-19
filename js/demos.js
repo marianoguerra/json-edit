@@ -379,6 +379,38 @@
             }
         ],
         [
+            "tabarray hint (addon)",
+            "manipulate an array as tabs",
+            {
+                "order": ["locations"],
+                "properties": {
+                    "locations": {
+                        "type": "array",
+                        "je:hint": "tabarray",
+                        "items": {
+                            "type": "object",
+                            "title": "Location",
+                            "order": ["city", "state", "country"],
+                            "properties": {
+                                "city": {
+                                    "type": "string",
+                                    "title": "City"
+                                },
+                                "state": {
+                                    "type": "string",
+                                    "title": "State"
+                                },
+                                "country": {
+                                    "type": "string",
+                                    "title": "Country"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "nested objects",
             "",
             {

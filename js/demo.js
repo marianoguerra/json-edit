@@ -26,6 +26,7 @@ require.config({
         "hint.readonly": "../src/addons/readonly",
         "hint.enumlabels": "../src/addons/enumlabels",
         "hint.squim": "../src/addons/squim",
+        "hint.tabarray": "../src/addons/tabarray",
 
         // needed by hints
         // by color hint
@@ -64,7 +65,7 @@ require.config({
 require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json",
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
-        "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim"],
+        "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim", "hint.tabarray"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";

@@ -616,7 +616,6 @@
             });
 
             arrayResult = JsonSchema.validate(name, data, schema, false);
-
         }
 
         if (!arrayResult.ok) {
