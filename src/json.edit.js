@@ -398,6 +398,8 @@
 
                         if ($.inArray(jqOption.attr("value"), defs) !== -1) {
                             jqOption.attr("selected", "selected");
+                        } else {
+                            jqOption.removeAttr("selected");
                         }
                     });
                 });
