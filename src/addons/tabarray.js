@@ -30,7 +30,11 @@
             addButton,
             $tabs;
 
-        minItems = opts.minItems || 1;
+        if (typeof opts.minItems !== "number") {
+            minItems = 1;
+        } else {
+            minItems = opts.minItems;
+        }
 
         // if there are more default values than minItems then use that size to
         // initialize the items
