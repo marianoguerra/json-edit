@@ -24,7 +24,10 @@
 
     formatHints.object.tabs = function (name, type, id, opts, required, priv, util) {
         var classes = ["field", "object-fields"], tabs, childs, order,
-            panels = priv.genFields(opts.order, opts.properties, opts.required, util);
+            panels = priv.genFields(opts.order, opts.properties, opts.required, util),
+            idStr = (typeof id === "string") ? id : id.attr("id"),
+            // if you change innerId format here change it in collector below
+            innerId = idStr + "-inner";
 
         order = priv.getKeys(opts, opts.order);
         tabs = $.map(order, function (key, index) {
@@ -57,7 +60,7 @@
 
         return {
             "div": {
-                "id": id,
+                "id": innerId,
                 "class": priv.ns.classes(classes),
                 "$childs": childs
             }
@@ -67,7 +70,11 @@
     collectHints.object = collectHints.object || {};
 
     collectHints.object.tabs = function (key, field, schema, priv) {
-        return priv.collectObject(field.children(priv.ns.$cls("object-fields")), schema);
+        // if you change innerId format here change it in formatter above
+        var
+            innerId = field.attr("id") + "-inner";
+
+        return priv.collectObject(innerId, schema);
     };
 
     return JsonEdit;
