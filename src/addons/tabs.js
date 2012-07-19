@@ -50,7 +50,9 @@
         }
 
         util.events.rendered.add(function () {
-            $("#" + id).tabs();
+            var container = (typeof id === "string") ? $("#" + id) : id;
+
+            container.tabs();
         });
 
         return {
