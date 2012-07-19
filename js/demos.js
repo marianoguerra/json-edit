@@ -607,6 +607,34 @@
             }
         ],
         [
+            "Array with enum options, defaults and enumlabels hint (addon)",
+            "",
+            {
+                "order": [
+                    "names"
+                ],
+                "properties": {
+                    "names": {
+                        "type": "array",
+                        "title": "Names",
+                        "default": ["pablo", "luis", "marisel"],
+                        "je:hint": "enumlabels",
+                        "je:enumlabels": {
+                            "pablo": "Pablo",
+                            "ignacio": "Ignacio",
+                            "mariano": "Mariano",
+                            "luis": "Luis",
+                            "marisel": "Maria Isabel"
+                        },
+                        "items": {
+                            "type": "string",
+                            "enum": ["pablo", "ignacio", "mariano", "luis", "marisel"]
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "Array with enum options",
             "no type specified for items defaults to string",
             {

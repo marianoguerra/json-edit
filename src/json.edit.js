@@ -389,6 +389,20 @@
 
             select.select.multiple = "multiple";
 
+            if (opts["default"]) {
+                util.events.rendered.add(function () {
+                    var defs = opts["default"];
+
+                    $("#" + id + " option").filter(function (i, option) {
+                        var jqOption = $(option);
+
+                        if ($.inArray(jqOption.attr("value"), defs) !== -1) {
+                            jqOption.attr("selected", "selected");
+                        }
+                    });
+                });
+            }
+
             return select;
         } else {
             minItems = opts.minItems || 1;
@@ -458,6 +472,7 @@
                         var opt = {
                             "option": {
                                 "id": id + "-" + index,
+                                "value": item,
                                 "$childs": item
                             }
                         };
