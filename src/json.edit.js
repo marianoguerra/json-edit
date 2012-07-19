@@ -199,7 +199,8 @@
             var
                 value,
                 schema = opts.properties[key],
-                selector = "." + priv.genFieldClasses(key, schema, ".", schema.required),
+                required = $.inArray(key, schema.required) !== -1,
+                selector = "." + priv.genFieldClasses(key, schema, ".", required),
                 field = cont.children(selector);
 
             if (field.size() !== 1) {
