@@ -141,6 +141,9 @@
                     Dust.render(templateName, newData, function (err, text) {
                         dataItem.find(".summary-text").html(text);
                     });
+
+
+                    util.events.array.item.edited.fire(name, newData, data, schema);
                 });
             }
 
@@ -156,7 +159,8 @@
 
             function onRemoveClick(event, id) {
                 $("#" + id).remove();
-                console.log("remove", data);
+
+                util.events.array.item.removed.fire(name, data, schema);
                 event.preventDefault();
             }
 
@@ -211,6 +215,7 @@
             function onEditOkClick() {
                 collectEditItem(schema, false, function (newData) {
                     addItem(newData, schema);
+                    util.events.array.item.edited.fire(name, newData, schema);
                 });
             }
 

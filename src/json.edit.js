@@ -153,6 +153,15 @@
         util.events = {};
         util.events.rendered = $.Callbacks();
         util.events.activated = $.Callbacks();
+        util.events.array = {};
+        util.events.array.item = {};
+        // array_name, new_item_data, item_schema
+        util.events.array.item.created = $.Callbacks();
+        // array_name, removed_item_data, item_schema
+        util.events.array.item.edited = $.Callbacks();
+        // array_name, new_item_data, old_item_data, item_schema
+        util.events.array.item.removed = $.Callbacks();
+
 
         lego = priv.input(name, "object", id, opts, true, util);
         container.append($.lego(lego));
