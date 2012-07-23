@@ -35,6 +35,12 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
         return $.inArray(cls, obj["class"].split()) !== -1;
     }
 
+    function deepEqualNoKey(objA, objB, name) {
+        delete objA[name].$keyup;
+
+        deepEqual(objA, objB);
+    }
+
     test("constructor exists", function () {
         ok($.isFunction(je), "json edit constructor exists and is a function");
     });
@@ -53,24 +59,24 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
     });
 
     test("generate simple input", function () {
-        deepEqual(priv.input("fieldname", "string", "asd"), {
+        deepEqualNoKey(priv.input("fieldname", "string", "asd"), {
             "input": {
                 "id": "asd",
                 "type": "text",
                 "name": "fieldname"
             }
-        });
+        }, "input");
 
-        deepEqual(priv.input("fieldname", "string", "asd", {"default": "foo"}), {
+        deepEqualNoKey(priv.input("fieldname", "string", "asd", {"default": "foo"}), {
             "input": {
                 "id": "asd",
                 "type": "text",
                 "name": "fieldname",
                 "value": "foo"
             }
-        });
+        }, "input");
 
-        deepEqual(priv.input("fieldname", "string", "asd", {"default": "foo"}, true), {
+        deepEqualNoKey(priv.input("fieldname", "string", "asd", {"default": "foo"}, true), {
             "input": {
                 "id": "asd",
                 "type": "text",
@@ -78,9 +84,9 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                 "value": "foo",
                 "required": true
             }
-        });
+        }, "input");
 
-        deepEqual(
+        deepEqualNoKey(
             priv.input("fieldname", "string", "asd", {
                 "default": "foo",
                 "maxLength": 10
@@ -94,10 +100,9 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                     "required": true,
                     "maxlength": 10
                 }
-            }
-        );
+            }, "input");
 
-        deepEqual(
+        deepEqualNoKey(
             priv.input("fieldname", "string", "asd", {
                 "default": "foo",
                 "maxLength": 10,
@@ -113,10 +118,10 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                     "maxlength": 10,
                     "title": "the asd field"
                 }
-            }
+            }, "input"
         );
 
-        deepEqual(
+        deepEqualNoKey(
             priv.input("fieldname", "string", "asd", {
                 "default": "foo",
                 "maxLength": 10,
@@ -134,10 +139,10 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                     "title": "the asd field",
                     "pattern": "[1-9]+"
                 }
-            }
+            }, "input"
         );
 
-        deepEqual(
+        deepEqualNoKey(
             priv.input("fieldname", "number", "asd", {
                 "type": "number",
                 "maximum": 20,
@@ -151,10 +156,10 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                     "max": 20,
                     "min": 10
                 }
-            }
+            }, "input"
         );
 
-        deepEqual(
+        deepEqualNoKey(
             priv.input("fieldname", "number", "asd", {
                 "type": "number",
                 "maximum": 20,
@@ -170,12 +175,12 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                     "max": 19,
                     "min": 11
                 }
-            }
+            }, "input"
         );
     });
 
     function checkInputType(type, expectedType) {
-        deepEqual(
+        deepEqualNoKey(
             priv.input("foo", type, "asd", {}),
             {
                 "input": {
@@ -183,7 +188,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                     "name": "foo",
                     "type": expectedType
                 }
-            }
+            }, "input"
         );
     }
 
@@ -201,7 +206,10 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
     function checkGeneratedField(field, id, title, startIndex, classes, opts, required) {
         var
             divId = "je0-" + id + "-" + startIndex,
-            inputId = "je0-" + id + "-input-" + (startIndex + 1);
+            inputId = "je0-" + id + "-input-" + (startIndex + 1),
+            input = priv.input(id, opts.type, inputId, opts, required);
+
+        delete input.input.$keyup;
 
         deepEqual(field, {
             "div": {
@@ -210,7 +218,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                 "$childs": [
                     // this should be tested separetely so we trust they work
                     priv.label(title, inputId),
-                    priv.input(id, opts.type, inputId, opts, required)
+                    input
                 ]
             }
         });
@@ -220,6 +228,8 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
         priv.ns._reset();
 
         var field = priv.genField("name", opts, required);
+
+        delete field.div.$childs[1].input.$keyup;
         checkGeneratedField(field, "name", "Name", 0, classes, opts, required);
     }
 
@@ -257,6 +267,9 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             "name": nameOpts,
             "age": ageOpts
         });
+
+        delete fields[0].div.$childs[1].input.$keyup;
+        delete fields[1].div.$childs[1].input.$keyup;
 
         checkGeneratedField(fields[0], "name", "Name", 0, "je-field je-name je-string", nameOpts);
         checkGeneratedField(fields[1], "age", "Age", 2, "je-field je-age je-number", ageOpts);
