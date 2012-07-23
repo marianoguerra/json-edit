@@ -386,7 +386,7 @@
                 "properties": {
                     "locations": {
                         "default": [
-                            {"city": "Cordoba.", "state": "Cordoba", "country": "Argentina"},
+                            {"city": "Cordoba.", "state": "Cordoba", "country": "Argentina", "other": "some value"},
                             {"city": "Santa Fe.", "state": "Santa Fe", "country": "Argentina"},
                             {"city": "Buenos Aires.", "state": "Buenos Aires", "country": "Argentina"},
                             {"city": "Stuttgart", "state": "Baden Wuertemberg", "country": "Germany"}

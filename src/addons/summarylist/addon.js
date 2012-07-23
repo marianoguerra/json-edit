@@ -135,7 +135,10 @@
                     var dataItem = $("#" + id);
 
                     // attach the new data
-                    dataItem.data("data", newData);
+                    // extend an empty object with the old data and then the
+                    // new to preserve fields that are in the original object
+                    // but not in the form
+                    dataItem.data("data", $.extend(true, {}, data, newData));
 
                     // rerender the list item summary text and replace it
                     Dust.render(templateName, newData, function (err, text) {
