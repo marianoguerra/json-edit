@@ -34,6 +34,7 @@
             template = Dust.compile(conf.template, templateName),
             $cont,
             $list,
+            $buttons,
             editImgPath   = require.toUrl("../src/addons/summarylist/img/edit.png"),
             removeImgPath = require.toUrl("../src/addons/summarylist/img/remove.png"),
             defaultValues = opts["default"] || [],
@@ -91,6 +92,7 @@
                 onEditSucceeded(newData);
                 editor.remove();
                 $list.show();
+                $buttons.show();
             } else {
                 alert("error in item fields");
             }
@@ -119,12 +121,14 @@
                 };
 
             $list.hide();
+            $buttons.hide();
             $cont.prepend($.lego(cont));
         }
 
         function onEditCancelClick() {
             $cont.children(".summary-item-editor").remove();
             $list.show();
+            $buttons.show();
         }
 
 
@@ -230,6 +234,7 @@
 
             $cont = $("#" + id);
             $list = $("#" + id + "-list");
+            $buttons = $cont.children(".summary-action-buttons");
 
             for (i = 0; i < defaultValues.length; i += 1) {
                 addItem(defaultValues[i], opts.items);
@@ -249,7 +254,13 @@
                 onAddClick(opts.items);
             });
 
-            widgetChilds.unshift({"div": {"style": "display: table; width: 100%; text-align: right;", "$childs": addButton}});
+            widgetChilds.unshift({
+                "div": {
+                    "class": "summary-action-buttons",
+                    "style": "display: table; width: 100%; text-align: right;",
+                    "$childs": addButton
+                }
+            });
         }
 
         return {
