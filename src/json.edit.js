@@ -107,13 +107,16 @@
         }
     };
 
-    priv.genFields = function (order, schema, requiredFields, util) {
+    priv.genFields = function (order, schema, requiredFields, defaults, util) {
         order = priv.getKeys(schema, order);
 
+        defaults = defaults || {};
         requiredFields = requiredFields || [];
 
         return $.map(order, function (item) {
-            var itemSchema = schema[item],
+            var
+                newItemSchema,
+                itemSchema = schema[item],
                 required = $.inArray(item, requiredFields) !== -1;
 
             if (schema[item] === undefined) {
@@ -123,7 +126,13 @@
                 });
             }
 
-            return priv.genField(item, itemSchema, required, util);
+            if (defaults[item]) {
+                newItemSchema = $.extend(true, {}, itemSchema, {"default": defaults[item]});
+            } else {
+                newItemSchema = itemSchema;
+            }
+
+            return priv.genField(item, newItemSchema, required, util);
         });
     };
 
@@ -363,7 +372,9 @@
     }
 
     defaults.formatters.object = function (name, type, id, opts, required, util) {
-        var classes = ["field", "object-fields"];
+        var
+            defaults = opts["default"] || {},
+            classes = ["field", "object-fields"];
 
         if (required) {
             classes.push("required");
@@ -373,7 +384,7 @@
             "div": {
                 "id": id,
                 "class": ns.classes(classes),
-                "$childs": priv.genFields(opts.order, opts.properties, opts.required, util)
+                "$childs": priv.genFields(opts.order, opts.properties, opts.required, defaults, util)
             }
         };
     };

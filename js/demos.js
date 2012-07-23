@@ -379,6 +379,50 @@
             }
         ],
         [
+            "summary list hint (addon)",
+            "manipulate an array as a list of summary item lines",
+            {
+                "order": ["locations"],
+                "properties": {
+                    "locations": {
+                        "default": [
+                            {"city": "Cordoba.", "state": "Cordoba", "country": "Argentina"},
+                            {"city": "Santa Fe.", "state": "Santa Fe", "country": "Argentina"},
+                            {"city": "Buenos Aires.", "state": "Buenos Aires", "country": "Argentina"},
+                            {"city": "Stuttgart", "state": "Baden Wuertemberg", "country": "Germany"}
+                        ],
+                        "type": "array",
+                        "je:hint": "summarylist",
+                        "je:summarylist": {
+                            "template": "{city} {state} {country}",
+                            "allowEdit": true,
+                            "allowRemove": true,
+                            "allowAdd": true
+                        },
+                        "items": {
+                            "type": "object",
+                            "title": "Location",
+                            "order": ["city", "state", "country"],
+                            "properties": {
+                                "city": {
+                                    "type": "string",
+                                    "title": "City"
+                                },
+                                "state": {
+                                    "type": "string",
+                                    "title": "State"
+                                },
+                                "country": {
+                                    "type": "string",
+                                    "title": "Country"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "tabarray hint (addon)",
             "manipulate an array as tabs",
             {

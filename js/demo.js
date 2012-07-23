@@ -27,6 +27,7 @@ require.config({
         "hint.enumlabels": "../src/addons/enumlabels",
         "hint.squim": "../src/addons/squim",
         "hint.tabarray": "../src/addons/tabarray",
+        "hint.summarylist": "../src/addons/summarylist/addon",
 
         // needed by hints
         // by color hint
@@ -42,7 +43,10 @@ require.config({
 
         "squide": "http://marianoguerra.github.com/squide/src/squide",
         "squide.types": "http://marianoguerra.github.com/squide/src/squide.types",
-        "squide.ui": "http://marianoguerra.github.com/squide/src/squide.ui"
+        "squide.ui": "http://marianoguerra.github.com/squide/src/squide.ui",
+
+        // by summarylist
+        "dustjs": "http://linkedin.github.com/dustjs/dist/dust-full-1.0.0"
     },
 
     shim: {
@@ -58,6 +62,9 @@ require.config({
         },
         colorPicker: {
             exports: "colorPicker"
+        },
+        dustjs: {
+            exports: "dust"
         }
     }
 });
@@ -65,7 +72,8 @@ require.config({
 require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json",
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
-        "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim", "hint.tabarray"],
+        "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim", "hint.tabarray",
+        "hint.summarylist"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";

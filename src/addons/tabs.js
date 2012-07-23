@@ -24,7 +24,7 @@
 
     formatHints.object.tabs = function (name, type, id, opts, required, priv, util) {
         var classes = ["field", "object-fields"], tabs, childs, order,
-            panels = priv.genFields(opts.order, opts.properties, opts.required, util),
+            panels = priv.genFields(opts.order, opts.properties, opts.required, opts["default"], util),
             idStr = (typeof id === "string") ? id : id.attr("id"),
             // if you change innerId format here change it in collector below
             innerId = idStr + "-inner";

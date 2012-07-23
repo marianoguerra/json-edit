@@ -1,0 +1,17 @@
+.summary-buttons{
+ float: right;
+}
+
+.summary-text{
+ float: left;
+}
+
+.summary-edit-buttons{
+ width: 100%;
+ text-align: center;
+ margin: 1em 0;
+}
+
+.summary-edit-buttons button{
+ margin-right: 1em;
+}
