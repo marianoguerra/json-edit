@@ -131,31 +131,33 @@
             $buttons.show();
         }
 
-
-        function addItem(data, schema) {
+        function addItem(data, schema, onItemAdded) {
 
             function onEditOkClick(id) {
                 collectEditItem(schema, true, function (newData) {
-                    var dataItem = $("#" + id);
+                    var
+                        dataItem = $("#" + id),
+                        itemData = dataItem.data("data");
 
                     // attach the new data
                     // extend an empty object with the old data and then the
                     // new to preserve fields that are in the original object
                     // but not in the form
-                    dataItem.data("data", $.extend(true, {}, data, newData));
+                    dataItem.data("data", $.extend(true, {}, itemData, newData));
 
                     // rerender the list item summary text and replace it
                     Dust.render(templateName, newData, function (err, text) {
                         dataItem.find(".summary-text").html(text);
                     });
 
-
-                    util.events.array.item.edited.fire(name, newData, data, schema);
+                    util.events.array.item.edited.fire(name, newData, itemData, schema, {listItem: dataItem});
                 });
             }
 
             function onEditClick(event, id) {
-                var itemOpts = $.extend(true, {}, opts.items, {"default": data});
+                var
+                    itemData = $("#" + id).data("data"),
+                    itemOpts = $.extend(true, {}, opts.items, {"default": itemData});
 
                 editItem(itemOpts, true, function () {
                     onEditOkClick(id);
@@ -165,14 +167,19 @@
             }
 
             function onRemoveClick(event, id) {
-                $("#" + id).remove();
+                var
+                    dataItem = $("#" + id),
+                    itemData = dataItem.data("data");
 
-                util.events.array.item.removed.fire(name, data, schema);
+                dataItem.remove();
+
+                util.events.array.item.removed.fire(name, itemData, schema, {listItem: dataItem});
                 event.preventDefault();
             }
 
             Dust.render(templateName, data, function (err, text) {
                 var
+                    listItem,
                     id = "summary-item-" + (new Date()).getTime(),
                     summary = {
                         "span": {
