@@ -220,16 +220,23 @@
                     buttonChilds.push(removeButton);
                 }
 
-                $list.append($.lego(tpl));
-            });
+                listItem = $.lego(tpl);
 
+                $list.append(listItem);
+
+                if (onItemAdded) {
+                    onItemAdded(listItem);
+                }
+
+            });
         }
 
         function onAddClick(schema) {
             function onEditOkClick() {
                 collectEditItem(schema, false, function (newData) {
-                    addItem(newData, schema);
-                    util.events.array.item.edited.fire(name, newData, schema);
+                    addItem(newData, schema, function (listItem) {
+                        util.events.array.item.created.fire(name, newData, schema, {listItem: listItem});
+                    });
                 });
             }
 
