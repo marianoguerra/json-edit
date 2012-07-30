@@ -97,11 +97,20 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
         }
 
         function validateForm() {
-            var result = jsonEditData.collect();
+            var
+                result = jsonEditData.collect(),
+                errors;
+
+            if (result.ok) {
+                errors = [];
+            } else {
+                errors = jsonEditData.getErrors(result.result);
+            }
 
             $("#" + id + "-data").html(JSON.stringify(result.data, null, 2));
             $("#" + id + "-validation").html(JSON.stringify(result.result, null, 2));
             prettyPrint();
+            console.log(errors);
         }
 
         $("body").append($.lego({
