@@ -219,11 +219,12 @@
             ok = true,
             msg = "ok",
             data = {},
+            isRoot = true,
             errs = cons.msgs.err,
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
+            return mResult(false, "field '" + name + "' " + msg, data, true);
         }
 
         if (typeof value !== "object" || value === null || isArray(value)) {
@@ -255,12 +256,13 @@
                         ok = false;
                         msg = errs.ERRORS_IN_OBJ;
                         data[key] = result;
+                        isRoot = false;
                     }
                 }
             }
         }
 
-        return mResult(ok, msg, data);
+        return mResult(ok, msg, data, isRoot);
     };
 
     validators.array = function (name, value, schema, required) {
@@ -396,7 +398,7 @@
         }
     };
 
-    priv.makeResult = function (ok, msg, data) {
+    priv.makeResult = function (ok, msg, data, isRoot) {
         if (msg === undefined && ok) {
             msg = "ok";
         }
@@ -405,10 +407,15 @@
             data = {};
         }
 
+        if (isRoot === undefined) {
+            isRoot = true;
+        }
+
         return {
             ok: ok,
             msg: msg,
-            data: (data === undefined) ? {} : data
+            data: (data === undefined) ? {} : data,
+            isRoot: isRoot
         };
     };
 
