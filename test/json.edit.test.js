@@ -773,7 +773,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                 a: {type: "number"},
                 b: {type: "string"}
             }
-        }, errs.ERRORS_IN_OBJ, {"b": {"data": {}, "msg": "field 'b' should be of type string", "ok": false }});
+        }, errs.ERRORS_IN_OBJ, {"b": {"data": {}, "msg": "field 'b' should be of type string", "ok": false, isRoot: true}});
     });
 
     test("isType", function () {

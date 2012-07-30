@@ -224,7 +224,7 @@
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data, true);
+            return mResult(false, "field '" + name + "' " + msg, data);
         }
 
         if (typeof value !== "object" || value === null || isArray(value)) {
