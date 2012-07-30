@@ -185,11 +185,35 @@
             "id": id,
             "opts": opts,
             "events": util.events,
-            "fireRendered": doFireRendered
+            "fireRendered": doFireRendered,
+            "getErrors": priv.getErrors
         };
     };
 
-    priv.collectResult = function (ok, msg, data) {
+    priv.getErrors = function (result, errors) {
+        var i, key;
+        errors = errors || [];
+
+        if (!result.ok) {
+            if (result.isRoot) {
+                errors.push(result.msg);
+            }
+
+            if ($.isArray(result.data)) {
+                for (i = 0; i < result.data.length; i += 1) {
+                    errors = errors.concat(priv.getErrors(result.data[i]));
+                }
+            } else {
+                for (key in result.data) {
+                    errors = errors.concat(priv.getErrors(result.data[key]));
+                }
+            }
+        }
+
+        return errors;
+    };
+
+    priv.collectResult = function (ok, msg, data, isRoot) {
         if (msg === undefined && ok) {
             msg = "ok";
         }
@@ -198,10 +222,15 @@
             data = {};
         }
 
+        if (isRoot === undefined) {
+            isRoot = true;
+        }
+
         return {
             ok: ok,
             msg: msg,
-            data: (data === undefined) ? {} : data
+            data: (data === undefined) ? {} : data,
+            isRoot: isRoot
         };
     };
 
@@ -211,7 +240,7 @@
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
             order = priv.getKeys(opts.properties, opts.order),
-            result = {ok: true, msg: "ok", data: {}}, data = {};
+            result = priv.collectResult(true), data = {};
 
         $.each(order, function (i, key) {
             var
@@ -239,6 +268,7 @@
                 result.ok = false;
                 result.msg = "one or more errors in object fields";
                 result.data[key] = value.result;
+                result.isRoot = false;
             }
 
             data[key] = value.data;
@@ -603,7 +633,7 @@
     };
 
     defaults.collectors.array = function (name, field, schema) {
-        var itemSchema = schema.items || {}, errors = [],
+        var itemSchema = schema.items || {}, errors = [], isRoot = true,
             ok = true, msg = "ok", data = [], result, arrayResult, castResult;
 
         if (schema.items && schema.items["enum"]) {
@@ -618,7 +648,7 @@
             data = castResult.data;
 
             if (castResult.ok) {
-                arrayResult = JsonSchema.validate(name, data, schema, false);
+                arrayResult = priv.validateJson(name, data, schema, false);
             } else {
                 ok = false;
                 msg = castResult.msg;
@@ -634,13 +664,14 @@
                 if (!itemResult.result.ok) {
                     msg = "one or more errors in array items";
                     ok = false;
+                    isRoot = false;
                     errors.push(itemResult);
                 }
 
                 data.push(itemResult.data);
             });
 
-            arrayResult = JsonSchema.validate(name, data, schema, false);
+            arrayResult = priv.validateJson(name, data, schema, false);
         }
 
         if (!arrayResult.ok) {
@@ -649,7 +680,7 @@
             errors.unshift(arrayResult);
         }
 
-        return {result: priv.collectResult(ok, msg, errors), data: data};
+        return {result: priv.collectResult(ok, msg, errors, isRoot), data: data};
     };
 
     defaults.collectors.enum_ = function (name, field, schema) {
@@ -667,7 +698,7 @@
             }
         }
 
-        result.result = JsonSchema.validate(name, value, schema);
+        result.result = priv.validateJson(name, value, schema);
         result.data = value;
 
         return result;
@@ -678,7 +709,7 @@
 
         try {
             value = JSON.parse(strValue);
-            return {result: JsonSchema.validate(name, value, schema), data: value};
+            return {result: priv.validateJson(name, value, schema), data: value};
         } catch (error) {
             return {
                 result: priv.collectResult(false, "invalid format", {
@@ -694,7 +725,7 @@
     defaults.collectors.boolean = function (name, field, schema) {
         var value = (field.children("input").attr("checked") === "checked");
 
-        return {result: JsonSchema.validate(name, value, schema), data: value};
+        return {result: priv.validateJson(name, value, schema), data: value};
     };
 
     defaults.collectors.default_ = function (name, field, schema) {
@@ -704,7 +735,7 @@
 
         var value = field.children("input").val();
 
-        return {result: JsonSchema.validate(name, value, schema), data: value};
+        return {result: priv.validateJson(name, value, schema), data: value};
     };
 
     priv.castSingleToType = function (data, type) {
@@ -813,6 +844,12 @@
                 ]
             }
         };
+    };
+
+    priv.validateJson = function (name, value, schema, required) {
+        var result = JsonSchema.validate(name, value, schema, required);
+
+        return result;
     };
 
     if (jopts.exportPrivates) {
