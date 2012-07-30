@@ -714,8 +714,24 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             equal(result.ok, eStatus, "status for '" + JSON.stringify(value) + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + itemName + "' " + msgCheck);
+                if (itemName) {
+                    equal(result.msg, "field '" + itemName + "' " + msgCheck);
+                } else {
+                    equal(result.msg, msgCheck);
+                }
             }
+
+            return result;
+        }
+
+        function checkChildValidation(value, schema, msgCheck, expectedData) {
+            var result = validate(name, value, schema);
+
+            if (msgCheck) {
+                equal(result.msg, msgCheck);
+            }
+
+            deepEqual(result.data, expectedData);
 
             return result;
         }
@@ -751,13 +767,13 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             }
         }, true);
 
-        checkValidation({a: 1, b: 2}, {
+        checkChildValidation({a: 1, b: 2}, {
             type: "object",
             properties: {
                 a: {type: "number"},
                 b: {type: "string"}
             }
-        }, false, "obj", errs.NOT_STRING, "b");
+        }, errs.ERRORS_IN_OBJ, {"b": {"data": {}, "msg": "field 'b' should be of type string", "ok": false }});
     });
 
     test("isType", function () {

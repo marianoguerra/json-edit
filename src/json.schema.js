@@ -156,7 +156,9 @@
             NUM_TOO_SMALL: "is too small",
             NUM_TOO_BIG: "is too big",
             NOT_NUMBER: "should be a number",
-            NOT_DIVISIBLE_BY: "should be divisible by" // TODO
+            NOT_DIVISIBLE_BY: "should be divisible by", // TODO
+
+            ERRORS_IN_OBJ: "one or more errors in object field"
         }
     };
 
@@ -214,6 +216,9 @@
     validators.object = function (name, value, schema, required) {
         var
             i, key, requiredKeys, keyRequired, result,
+            ok = true,
+            msg = "ok",
+            data = {},
             errs = cons.msgs.err,
             mResult = priv.makeResult;
 
@@ -247,13 +252,15 @@
                     result = cons.validate(key, value[key], schema.properties[key], keyRequired);
 
                     if (!result.ok) {
-                        return result;
+                        ok = false;
+                        msg = errs.ERRORS_IN_OBJ;
+                        data[key] = result;
                     }
                 }
             }
         }
 
-        return mResult(true, "ok", value);
+        return mResult(ok, msg, data);
     };
 
     validators.array = function (name, value, schema, required) {
