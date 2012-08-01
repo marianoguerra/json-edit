@@ -340,7 +340,7 @@
     function makeArrayItem(opts, name, type, id, schema, util) {
         var
             cont,
-            input = priv.input(name, type, id, schema, util);
+            input = priv.input(name, type, id, schema, true, util);
 
         // if it's just an input field
         if (input.input) {
@@ -483,7 +483,7 @@
                     name,
                     opts.items.type || getType(opts.items),
                     id + "-" + i,
-                    itemOpts);
+                    itemOpts, util);
 
                 arrayChilds.push(arrayChild);
             }
