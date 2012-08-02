@@ -152,6 +152,40 @@
             }
         ],
         [
+            "textarea hint (addon)",
+            "",
+            {
+                "order": ["css"],
+                "properties": {
+                    "css": {
+                        "type": "string",
+                        "title": "Css",
+                        "je:hint": "textarea",
+                        "default": "body{\n color: #c00;\n}"
+                    }
+                }
+            }
+        ],
+        [
+            "textarea hint with options (addon)",
+            "",
+            {
+                "order": ["css"],
+                "properties": {
+                    "css": {
+                        "type": "string",
+                        "title": "Css",
+                        "je:hint": "textarea",
+                        "je:textarea": {
+                            width: "50%",
+                            cols: 6
+                        },
+                        "default": "body{\n color: #c00;\n}"
+                    }
+                }
+            }
+        ],
+        [
             "tags hint (addon)",
             "",
             {

@@ -23,6 +23,7 @@ require.config({
         "hint.color": "../src/addons/color/color",
         "hint.tabs": "../src/addons/tabs",
         "hint.password": "../src/addons/password",
+        "hint.textarea": "../src/addons/textarea",
         "hint.readonly": "../src/addons/readonly",
         "hint.enumlabels": "../src/addons/enumlabels",
         "hint.squim": "../src/addons/squim",
@@ -73,7 +74,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
         "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim", "hint.tabarray",
-        "hint.summarylist"],
+        "hint.summarylist", "hint.textarea"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
