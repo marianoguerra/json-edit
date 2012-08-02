@@ -16,7 +16,14 @@
     }
 }(this, function (JsonEdit) {
     "use strict";
-    var formatHints = JsonEdit.defaults.hintedFormatters;
+    var
+        escaper = document.createElement("textarea"),
+        formatHints = JsonEdit.defaults.hintedFormatters;
+
+    function escape(text) {
+        escaper.innerHTML = text;
+        return escaper.innerHTML;
+    }
 
     formatHints.string = formatHints.string || {};
 
@@ -31,7 +38,7 @@
             "textarea": {
                 "rows": rows,
                 "style": "width: " + width,
-                "$childs": content
+                "$childs": escape(content)
             }
         };
     };
