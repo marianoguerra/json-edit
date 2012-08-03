@@ -3,22 +3,23 @@
     "use strict";
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['require', 'jquery', 'jqueryui', 'json.edit', 'json.schema', 'nsgen',
+        define(['module', 'jquery', 'jqueryui', 'json.edit', 'json.schema', 'nsgen',
                'json', 'dustjs'],
-               function (require, $, $ui, JsonEdit, JsonSchema, NsGen, JSON, Dust) {
+               function (module, $, $ui, JsonEdit, JsonSchema, NsGen, JSON, Dust) {
             // Also create a global in case some scripts
             // that are loaded still are looking for
             // a global even when an AMD loader is in use.
-            return (root.JsonEdit = factory(require, $, $ui, JsonEdit,
+            return (root.JsonEdit = factory(module, $, $ui, JsonEdit,
                                             JsonSchema, NsGen, JSON, Dust));
         });
     } else {
         // Browser globals
-        root.JsonEdit = factory(root.require, root.$, root.$, root.JsonEdit,
+        // TODO: send module.uri in some way
+        root.JsonEdit = factory(null, root.$, root.$, root.JsonEdit,
                                 root.JsonSchema, root.NsGen, root.JSON,
                                 root.dust);
     }
-}(this, function (require, $, $ui, JsonEdit, JsonSchema, NsGen, JSON, Dust) {
+}(this, function (module, $, $ui, JsonEdit, JsonSchema, NsGen, JSON, Dust) {
     "use strict";
     var formatHints = JsonEdit.defaults.hintedFormatters,
         collectHints = JsonEdit.defaults.hintedCollectors;
@@ -27,6 +28,8 @@
 
     formatHints.array.summarylist = function (name, type, id, opts, required, priv, util) {
         var
+            modulePath = module.uri,
+            moduleBasePath = modulePath.slice(0, modulePath.lastIndexOf("/") + 1),
             i,
             minItems,
             conf = opts["je:summarylist"],
@@ -35,8 +38,8 @@
             $cont,
             $list,
             $buttons,
-            editImgPath   = require.toUrl("../src/addons/summarylist/img/edit.png"),
-            removeImgPath = require.toUrl("../src/addons/summarylist/img/remove.png"),
+            editImgPath   = moduleBasePath + "img/edit.png",
+            removeImgPath = moduleBasePath + "img/remove.png",
             defaultValues = opts["default"] || [],
             addButton,
             widgetChilds;
@@ -201,7 +204,7 @@
                         }
                     },
                     tpl = {
-                        "li": {
+                        "div": {
                             "id": id,
                             "@data": data,
                             "class": "summary-item",
@@ -256,7 +259,7 @@
         });
 
         widgetChilds = [{
-            "ul": {
+            "div": {
                 "class": "summary-list",
                 "id": id + "-list",
                 "$childs": []
