@@ -231,6 +231,8 @@
                     onItemAdded(listItem);
                 }
 
+                // remove the empty message if it's there
+                $list.parent().find(".summary-empty-msg").remove();
             });
         }
 
@@ -276,6 +278,16 @@
                     "class": "summary-action-buttons",
                     "style": "display: table; width: 100%; text-align: right;",
                     "$childs": addButton
+                }
+            });
+        }
+
+        if (defaultValues.length === 0 && conf.noItemsMsg) {
+            widgetChilds.unshift({
+                "div": {
+                    "class": "summary-empty-msg",
+                    "style": "display: table; width: 100%; text-align: center;",
+                    "$childs": conf.noItemsMsg
                 }
             });
         }

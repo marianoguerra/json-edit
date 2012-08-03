@@ -413,6 +413,45 @@
             }
         ],
         [
+            "summary list hint empty with empty message (addon)",
+            "manipulate an array as a list of summary item lines",
+            {
+                "order": ["locations"],
+                "properties": {
+                    "locations": {
+                        "type": "array",
+                        "je:hint": "summarylist",
+                        "je:summarylist": {
+                            "template": "{city} {state} {country}",
+                            "allowEdit": true,
+                            "allowRemove": true,
+                            "allowAdd": true,
+                            "noItemsMsg": "No Items"
+                        },
+                        "items": {
+                            "type": "object",
+                            "title": "Location",
+                            "order": ["city", "state", "country"],
+                            "properties": {
+                                "city": {
+                                    "type": "string",
+                                    "title": "City"
+                                },
+                                "state": {
+                                    "type": "string",
+                                    "title": "State"
+                                },
+                                "country": {
+                                    "type": "string",
+                                    "title": "Country"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "summary list hint (addon)",
             "manipulate an array as a list of summary item lines",
             {
