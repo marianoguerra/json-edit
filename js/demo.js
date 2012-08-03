@@ -78,13 +78,22 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
+    var hideEditor = (window.location.search.indexOf("hideEditor=true") !== -1); // lazy :)
+
     function startEditor(id, title, description, content) {
         var editor, outputId = id + "-out",
             jsonEditData;
 
         function updateDemo() {
-            var content = editor.getSession().getDocument().getValue(),
+            var content,
                 data;
+
+            if (hideEditor) {
+                content = $("#" + id).text();
+            } else {
+                content = editor.getSession().getDocument().getValue();
+            }
+
 
             try {
                 data = JSON.parse(content);
@@ -183,10 +192,13 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
             }
         }));
 
-        editor = ace.edit(id);
-        editor.setTheme("ace/theme/merbivore_soft");
-        //editor.getSession().setMode("ace/mode/json");
-        editor.setFontSize("1em");
+        if (!hideEditor) {
+            editor = ace.edit(id);
+            editor.setTheme("ace/theme/merbivore_soft");
+            //editor.getSession().setMode("ace/mode/json");
+            editor.setFontSize("1em");
+        }
+
         updateDemo();
 
         return editor;
