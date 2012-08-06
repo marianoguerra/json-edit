@@ -21,8 +21,7 @@
         // validators.default_ is called.
         validators = {},
         priv = {}, deepEqual,
-        objectKeys = typeof Object.keys === 'function'
-            ? Object.keys
+        objectKeys = typeof Object.keys === 'function' ? Object.keys
             : function (obj) {
                 var key, keys = [];
 
@@ -182,6 +181,10 @@
 
     cons.deepEqual = deepEqual;
 
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
+
     cons.isType = function (value, type) {
         switch (type) {
         case "integer":
@@ -193,7 +196,7 @@
         case "string":
             return typeof value === "string";
         case "array":
-            return $.isArray(value);
+            return isArray(value);
         default:
             throw "don't know how to check for type " + type;
         }
@@ -208,10 +211,6 @@
             return validators.default_(name, value, schema, required);
         }
     };
-
-    function isArray(obj) {
-        return Object.prototype.toString.call(obj) === '[object Array]';
-    }
 
     validators.object = function (name, value, schema, required) {
         var
@@ -239,12 +238,24 @@
             return failed(errs.TOO_MANY_PROPERTIES);
         }
 
+        function inArray(needle, items) {
+            var i = 0;
+
+            for (i = 0; i < items.length; i += 1) {
+                if (needle === items[i]) {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         if (schema.properties) {
             requiredKeys = schema.required || [];
 
             for (key in schema.properties) {
                 if (schema.properties.hasOwnProperty(key)) {
-                    keyRequired = ($.inArray(key, requiredKeys) !== -1);
+                    keyRequired = (inArray(key, requiredKeys) !== -1);
 
                     if (value[key] === undefined && !keyRequired) {
                         continue;

@@ -1,4 +1,4 @@
-/*global window define*/
+/*global window define alert*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
