@@ -192,6 +192,7 @@
                     },
                     editButton = linkButton(editImgPath, "edit", function (event) {
                         onEditClick(event, id);
+                        util.events.rendered.fire();
                     }),
                     removeButton = linkButton(removeImgPath, "remove", function (event) {
                         onRemoveClick(event, id);
