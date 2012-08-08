@@ -18,7 +18,8 @@
     "use strict";
     var
         escaper = document.createElement("textarea"),
-        formatHints = JsonEdit.defaults.hintedFormatters;
+        formatHints = JsonEdit.defaults.hintedFormatters,
+        collectHints = JsonEdit.defaults.hintedCollectors;
 
     function escape(text) {
         escaper.innerHTML = text;
@@ -43,6 +44,11 @@
         };
     };
 
-    // no need for collectHints since it's a common input field
+    collectHints.string = collectHints.array || {};
+
+    collectHints.string.textarea = function (key, field, schema, priv) {
+        return priv.collectChildTag("textarea", key, field, schema);
+    };
+
     return JsonEdit;
 }));

@@ -728,14 +728,18 @@
         return {result: priv.validateJson(name, value, schema), data: value};
     };
 
-    defaults.collectors.default_ = function (name, field, schema) {
+    priv.collectChildTag = function (selector, name, field, schema) {
         if (schema["enum"]) {
             return defaults.collectors.enum_(name, field, schema);
         }
 
-        var value = field.children("input").val();
+        var value = field.children(selector).val();
 
         return {result: priv.validateJson(name, value, schema), data: value};
+    };
+
+    defaults.collectors.default_ = function (name, field, schema) {
+        return priv.collectChildTag("input");
     };
 
     priv.castSingleToType = function (data, type) {
