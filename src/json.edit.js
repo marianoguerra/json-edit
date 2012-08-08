@@ -739,7 +739,7 @@
     };
 
     defaults.collectors.default_ = function (name, field, schema) {
-        return priv.collectChildTag("input");
+        return priv.collectChildTag("input", name, field, schema);
     };
 
     priv.castSingleToType = function (data, type) {
