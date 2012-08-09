@@ -583,7 +583,13 @@
             };
 
         if (opts["default"]) {
-            obj.input.value = opts["default"];
+            if (inputType === "checkbox") {
+                if (opts["default"] === true) {
+                    obj.input.checked = "checked";
+                }
+            } else {
+                obj.input.value = opts["default"];
+            }
         }
 
         if (required) {
