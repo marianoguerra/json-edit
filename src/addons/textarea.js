@@ -44,7 +44,7 @@
         };
     };
 
-    collectHints.string = collectHints.array || {};
+    collectHints.string = collectHints.string || {};
 
     collectHints.string.textarea = function (key, field, schema, priv) {
         return priv.collectChildTag("textarea", key, field, schema);
