@@ -87,6 +87,7 @@
 
         function collectEditItem(schema, isEdit, onEditSucceeded) {
             var
+                errors,
                 editor = $cont.children(".summary-item-editor"),
                 result = priv.collectField(name, editor, schema),
                 newData = result.data;
@@ -97,7 +98,9 @@
                 $list.show();
                 $buttons.show();
             } else {
-                alert("error in item fields");
+                errors = priv.getErrors(result.result);
+                JsonEdit.defaults.displayError(errors.join("\n"));
+                JsonEdit.defaults.log("summary list error", result);
             }
         }
 

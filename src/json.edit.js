@@ -27,6 +27,11 @@
                 window.console.warn.apply(window.console, arguments);
             }
         },
+        log: function () {
+            if (window.console && window.console.log) {
+                window.console.log.apply(window.console, arguments);
+            }
+        },
         msgs: {
             cantRemoveMinItems: "Can't remove item, minimum number reached",
             cantAddMaxItems: "Can't add item, maximum number reached"
