@@ -23,19 +23,37 @@
     formatHints.object = formatHints.object || {};
 
     formatHints.object.tabs = function (name, type, id, opts, required, priv, util) {
-        var classes = ["field", "object-fields"], tabs, childs, order,
+        var
+            tabs, childs, order,
+            classes = ["field", "object-fields"],
             panels = priv.genFields(opts.order, opts.properties, opts.required, opts["default"], util),
             idStr = (typeof id === "string") ? id : id.attr("id"),
             // if you change innerId format here change it in collector below
-            innerId = idStr + "-inner";
+            innerId = idStr + "-inner",
+            firstVisible = null;
 
         order = priv.getKeys(opts, opts.order);
         tabs = $.map(order, function (key, index) {
-            var val = opts.properties[key], label = val.title || key,
+            var
+                style,
+                val = opts.properties[key],
+                label = val.title || key,
                 id = panels[index].div.id;
+
+            // if the item is an object and has no properties and the option
+            // hideIfNoSelection is set then hide this tab
+            if (priv.hasOption(opts, "hideIfNoSelection") &&
+                val.type === "object" &&
+                (val.properties === undefined ||
+                 priv.getKeys(val.properties).length === 0)) {
+                style = "display: none";
+            } else if (firstVisible === null) {
+                firstVisible = id;
+            }
 
             return {
                 "li": {
+                    "style": style,
                     "$childs": [{
                         "a": {
                             "href": "#" + id,
@@ -56,6 +74,10 @@
             var container = (typeof id === "string") ? $("#" + id) : id;
 
             container.tabs();
+
+            if (firstVisible !== null) {
+                container.tabs("select", firstVisible);
+            }
         });
 
         return {

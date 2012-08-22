@@ -94,6 +94,55 @@
             }
         ],
         [
+            "tabs hint (addon) with hideIfNoSelection",
+            "will hide name property since it has nothing to select",
+            {
+                "order": ["name", "location", "interests"],
+                "required": ["name"],
+                "je:hint": "tabs",
+                "je:options": "hideIfNoSelection",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "object",
+                        "properties": {}
+                    },
+                    "location": {
+                        "type": "object",
+                        "title": "Location",
+                        "order": ["city", "state", "country"],
+                        "properties": {
+                            "city": {
+                                "type": "string",
+                                "title": "City"
+                            },
+                            "state": {
+                                "type": "string",
+                                "title": "State"
+                            },
+                            "country": {
+                                "type": "string",
+                                "title": "Country"
+                            }
+                        }
+                    },
+                    "interests": {
+                        "title": "Interests",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "order": ["name", "description"],
+                            "required": ["name"],
+                            "properties": {
+                                "name": {"type": "string", "title": "Name"},
+                                "description": {"type": "string", "title": "Description"}
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "color hint (addon)",
             "",
             {
