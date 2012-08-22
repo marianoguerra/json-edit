@@ -838,22 +838,45 @@
         return ns.classesList(classes).join(sep || " ");
     };
 
+    priv.hasOption = function (opts, optionName) {
+        var options = opts["je:options"];
+
+        if ($.isArray(options)) {
+            return $.inArray(optionName, options) !== -1;
+        } else if (typeof options === "string") {
+            return options === optionName;
+        } else {
+            return false;
+        }
+    };
+
     priv.genField = function (fid, opts, required, util) {
         var
             id = ns.id(fid, true),
             inputId = ns.id(fid + "-input", true),
-            type = opts.type || getType(opts);
+            type = opts.type || getType(opts),
+            input = priv.input(fid, type, inputId, opts, required, util),
+            result;
 
-        return {
+        result = {
             "div": {
                 "id": id,
                 "class": priv.genFieldClasses(fid, opts, " ", required),
                 "$childs": [
                     priv.label(opts.title, inputId),
-                    priv.input(fid, type, inputId, opts, required, util)
+                    input
                 ]
             }
         };
+
+        if (priv.hasOption(opts, "hideIfNoSelection") &&
+            input.select &&
+            input.select.$childs.length === 1) {
+
+            result.div.style = "display: none";
+        }
+
+        return result;
     };
 
     priv.validateJson = function (name, value, schema, required) {

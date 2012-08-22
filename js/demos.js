@@ -691,6 +691,22 @@
             }
         ],
         [
+            "Field required with only one enumerated value and option hideIfNoSelection",
+            "this widget will be hidde since there is nothing to select",
+            {
+                "order": ["color"],
+                "required": ["color"],
+                "properties": {
+                    "color": {
+                        "je:options": "hideIfNoSelection",
+                        "type": "string",
+                        "title": "Color",
+                        "enum": ["green"]
+                    }
+                }
+            }
+        ],
+        [
             "Array",
             "",
             {
