@@ -40,6 +40,7 @@
             $buttons,
             editImgPath   = moduleBasePath + "img/edit.png",
             removeImgPath = moduleBasePath + "img/remove.png",
+            workingImgPath = moduleBasePath + "img/loading.gif",
             defaultValues = opts["default"] || [],
             addButton,
             widgetChilds;
@@ -85,7 +86,7 @@
             };
         }
 
-        function collectEditItem(schema, isEdit, onEditSucceeded) {
+        function collectEditItem(schema, isEdit, showItemsAfterCollect, onEditSucceeded) {
             var
                 errors,
                 editor = $cont.children(".summary-item-editor"),
@@ -95,8 +96,11 @@
             if (result.result.ok) {
                 onEditSucceeded(newData);
                 editor.remove();
-                $list.show();
-                $buttons.show();
+
+                if (showItemsAfterCollect) {
+                    $list.show();
+                    $buttons.show();
+                }
             } else {
                 errors = priv.getErrors(result.result);
                 JsonEdit.defaults.displayError(errors.join("\n"));
@@ -137,26 +141,61 @@
             $buttons.show();
         }
 
+        function setWorking(isWorking) {
+            // they don't control the means of production
+            var workingClass = "summarylist-working";
+
+            if (isWorking) {
+                if (!$cont.hasClass(workingClass)) {
+                    $cont.children().hide();
+                    $cont
+                        .prepend("<img src='" + workingImgPath + "' alt='working' class='summarylist-working-image'>")
+                        .addClass(workingClass);
+                }
+            } else if ($cont.hasClass(workingClass)) {
+                $(".summarylist-working-image").remove();
+
+                $cont.removeClass(workingClass);
+
+                $cont.children().show();
+            }
+        }
+
         function addItem(data, schema, onItemAdded) {
 
             function onEditOkClick(id) {
-                collectEditItem(schema, true, function (newData) {
-                    var
-                        dataItem = $("#" + id),
-                        itemData = dataItem.data("data");
+                var showListAfterCollect = conf.onEdit === undefined;
 
-                    // attach the new data
-                    // extend an empty object with the old data and then the
-                    // new to preserve fields that are in the original object
-                    // but not in the form
-                    dataItem.data("data", $.extend(true, {}, itemData, newData));
+                collectEditItem(schema, true, showListAfterCollect, function (newData) {
 
-                    // rerender the list item summary text and replace it
-                    Dust.render(templateName, newData, function (err, text) {
-                        dataItem.find(".summary-text").html(text);
-                    });
+                    function defaultHandler(add) {
+                        if (add) {
+                            var
+                                dataItem = $("#" + id),
+                                itemData = dataItem.data("data");
 
-                    util.events.array.item.edited.fire(name, newData, itemData, schema, {listItem: dataItem});
+                            // attach the new data
+                            // extend an empty object with the old data and then the
+                            // new to preserve fields that are in the original object
+                            // but not in the form
+                            dataItem.data("data", $.extend(true, {}, itemData, newData));
+
+                            // rerender the list item summary text and replace it
+                            Dust.render(templateName, newData, function (err, text) {
+                                dataItem.find(".summary-text").html(text);
+                            });
+
+                            util.events.array.item.edited.fire(name, newData, itemData, schema, {listItem: dataItem});
+                        }
+
+                        setWorking(false);
+                    }
+
+                    if (conf.onEdit) {
+                        conf.onEdit(name, newData, defaultHandler, setWorking, schema);
+                    } else {
+                        defaultHandler(true);
+                    }
                 });
             }
 
@@ -177,9 +216,22 @@
                     dataItem = $("#" + id),
                     itemData = dataItem.data("data");
 
-                dataItem.remove();
+                function defaultHandler(remove) {
+                    if (remove) {
+                        dataItem.remove();
 
-                util.events.array.item.removed.fire(name, itemData, schema, {listItem: dataItem});
+                        util.events.array.item.removed.fire(name, itemData, schema, {listItem: dataItem});
+                    }
+
+                    setWorking(false);
+                }
+
+                if (conf.onRemove) {
+                    conf.onRemove(name, itemData, defaultHandler, setWorking, schema);
+                } else {
+                    defaultHandler(true);
+                }
+
                 event.preventDefault();
             }
 
@@ -195,7 +247,7 @@
                     },
                     editButton = linkButton(editImgPath, "edit", function (event) {
                         onEditClick(event, id);
-                        util.events.rendered.fire();
+                        //util.events.rendered.fire();
                     }),
                     removeButton = linkButton(removeImgPath, "remove", function (event) {
                         onRemoveClick(event, id);
@@ -242,10 +294,24 @@
 
         function onAddClick(schema) {
             function onEditOkClick() {
-                collectEditItem(schema, false, function (newData) {
-                    addItem(newData, schema, function (listItem) {
-                        util.events.array.item.created.fire(name, newData, schema, {listItem: listItem});
-                    });
+                var showListAfterCollect = conf.onAdd === undefined;
+
+                collectEditItem(schema, false, showListAfterCollect, function (newData) {
+                    function defaultHandler(add) {
+                        if (add) {
+                            addItem(newData, schema, function (listItem) {
+                                util.events.array.item.created.fire(name, newData, schema, {listItem: listItem});
+                            });
+                        }
+
+                        setWorking(false);
+                    }
+
+                    if (conf.onAdd) {
+                        conf.onAdd(name, newData, defaultHandler, setWorking, schema);
+                    } else {
+                        defaultHandler(true);
+                    }
                 });
             }
 
