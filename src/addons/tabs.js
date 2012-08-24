@@ -70,7 +70,7 @@
             classes.push("required");
         }
 
-        util.events.rendered.add(function () {
+        util.events.rendered.handleOnce(function () {
             var container = (typeof id === "string") ? $("#" + id) : id;
 
             container.tabs();

@@ -17,6 +17,23 @@
     "use strict";
     return [
         [
+            "additional properties",
+            "",
+            {
+                "order": ["name"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    }
+                },
+                "additionalProperties": {
+                    "type": "string",
+                    "je:hint": "color"
+                }
+            }
+        ],
+        [
             "code hint (addon)",
             "",
             {

@@ -25,7 +25,7 @@
     formatHints.string.date = function (name, type, id, opts, required, priv, util) {
         var format = opts["je:format"] || "mm/dd/yy";
 
-        util.events.rendered.add(function () {
+        util.events.rendered.handleOnce(function () {
             $("#" + id).datepicker({dateFormat: format});
         });
 

@@ -74,7 +74,7 @@
             }
         };
 
-        util.events.rendered.add(function () {
+        util.events.rendered.handleOnce(function () {
             $tabs = $("#" + id);
 
             $tabs.tabs({

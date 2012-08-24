@@ -54,7 +54,7 @@
             maxTags = 0;
         }
 
-        util.events.rendered.add(function () {
+        util.events.rendered.handleOnce(function () {
             $("#" + tagsId).tagHandler({
                 className: "je-tagHandler tagHandler",
                 assignedTags: defaultValues,

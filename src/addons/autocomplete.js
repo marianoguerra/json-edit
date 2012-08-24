@@ -34,7 +34,7 @@
             availableValues = [];
         }
 
-        util.events.rendered.add(function () {
+        util.events.rendered.handleOnce(function () {
             $("#" + id).autocomplete({
                 source: availableValues
             });

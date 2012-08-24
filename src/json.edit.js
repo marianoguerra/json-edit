@@ -157,6 +157,14 @@
 
         util.events = {};
         util.events.rendered = $.Callbacks();
+        util.events.rendered.handleOnce = function (callback) {
+            function handler() {
+                callback.apply(null, arguments);
+                util.events.rendered.remove(handler);
+            }
+
+            util.events.rendered.add(handler);
+        };
         util.events.activated = $.Callbacks();
         util.events.array = {};
         util.events.array.item = {};
@@ -245,7 +253,9 @@
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
             order = priv.getKeys(opts.properties, opts.order),
-            result = priv.collectResult(true), data = {};
+            result = priv.collectResult(true), data = {},
+
+            apropsSel, aprops;
 
         $.each(order, function (i, key) {
             var
@@ -278,6 +288,25 @@
 
             data[key] = value.data;
         });
+
+        if (opts.additionalProperties) {
+            apropsSel = ns.$cls("object-additional-fields") + ">" +
+                ns.$cls("additional-properties") + ">" +
+                ns.$cls("additional-property");
+
+            aprops = cont.find(apropsSel);
+
+            aprops.each(function (i, prop) {
+                var
+                    $prop = $(prop),
+                    name = $.trim($prop.children(ns.$cls("additional-propname")).val()),
+                    $value = $prop.children(ns.$cls("additional-propvalue")),
+                    value = priv.collectField(name, $value, opts.additionalProperties);
+
+                // TODO: check for duplicated names and for invalid inputs
+                data[name] = value.data;
+            });
+        }
 
         return {result: result, data: data};
     };
@@ -415,20 +444,101 @@
         $(selectorItems).children(selectorChildsToRemove).remove();
     }
 
+    // return the value of the first prop (used to get the body of a legojs
+    // tag)
+    function firstProp(obj) {
+        for (var key in obj) {
+            return obj[key];
+        }
+    }
+
+    priv.genAdditionalProperties = function (objId, schema, util) {
+        var
+            id = objId + "-additional",
+            contCls = ns.cls("additional-properties"),
+            type = schema.type || getType(schema),
+            propCls = ns.classes(["field", type, "additional-property"]),
+            childs = [];
+
+
+        function onAddClick() {
+            var
+                selector = "#" + id + ">." + contCls,
+                props = $(selector),
+                input = priv.input("additionalproperty", type, ns.id(id, true), schema, true, util),
+                inputBody = firstProp(input);
+
+            inputBody["class"] = (inputBody["class"] || "") + " " + ns.cls("additional-propvalue");
+
+            props.append($.lego({
+                "div": {
+                    "class": propCls,
+                    "$childs": [
+                        {
+                            "input": {
+                                "type": "text",
+                                "class": ns.cls("additional-propname")
+                            }
+                        },
+                        input
+                    ]
+                }
+            }));
+
+            util.events.rendered.fire();
+        }
+
+        childs.push({
+            "div": {
+                "class": ns.cls("add-additional-property"),
+                "$childs": {
+                    "button": {
+                        "$click": onAddClick,
+                        "$childs": "Add Property"
+                    }
+                }
+            }
+        });
+
+        childs.push({
+            "div": {
+                "class": contCls,
+                "$childs": ""
+            }
+        });
+
+        return {
+            "div": {
+                "id": id,
+                "class": ns.classes(["field", "object-additional-fields"]),
+                "$childs": childs
+            }
+        };
+    };
+
     defaults.formatters.object = function (name, type, id, opts, required, util) {
         var
             defaults = opts["default"] || {},
-            classes = ["field", "object-fields"];
+            classes = ["field", "object-fields"],
+            childs;
 
         if (required) {
             classes.push("required");
+        }
+
+        childs = priv.genFields(opts.order, opts.properties, opts.required,
+                                defaults, util);
+
+        if (opts.additionalProperties) {
+            childs.push(priv.genAdditionalProperties(id, opts.additionalProperties,
+                                                     util));
         }
 
         return {
             "div": {
                 "id": id,
                 "class": ns.classes(classes),
-                "$childs": priv.genFields(opts.order, opts.properties, opts.required, defaults, util)
+                "$childs": childs
             }
         };
     };
@@ -446,7 +556,7 @@
             select.select.multiple = "multiple";
 
             if (opts["default"]) {
-                util.events.rendered.add(function () {
+                util.events.rendered.handleOnce(function () {
                     var defs = opts["default"];
 
                     $("#" + id + " option").filter(function (i, option) {
@@ -694,9 +804,17 @@
         return {result: priv.collectResult(ok, msg, errors, isRoot), data: data};
     };
 
+    function getChildrenOrSelf(field, tag) {
+        if (field.is(tag)) {
+            return field;
+        } else {
+            return field.children(tag);
+        }
+    }
+
     defaults.collectors.enum_ = function (name, field, schema) {
         var
-            select = field.children("select"),
+            select = getChildrenOrSelf(field, "select"),
             option,
             value = select.val(),
             result = {};
@@ -716,7 +834,7 @@
     };
 
     defaults.collectors.number = function (name, field, schema) {
-        var value, strValue = field.children("input").val();
+        var value, strValue = getChildrenOrSelf(field, "input").val();
 
         try {
             value = JSON.parse(strValue);
@@ -734,7 +852,7 @@
     defaults.collectors.integer = defaults.collectors.number;
 
     defaults.collectors.boolean = function (name, field, schema) {
-        var value = (field.children("input").attr("checked") === "checked");
+        var value = (getChildrenOrSelf(field, "input").attr("checked") === "checked");
 
         return {result: priv.validateJson(name, value, schema), data: value};
     };
@@ -744,7 +862,7 @@
             return defaults.collectors.enum_(name, field, schema);
         }
 
-        var value = field.children(selector).val();
+        var value = getChildrenOrSelf(field, selector).val();
 
         return {result: priv.validateJson(name, value, schema), data: value};
     };

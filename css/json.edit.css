@@ -55,3 +55,14 @@ a.je-action{
  border: 1px solid #eee;
  display: table;
 }
+
+.je-additional-propname{
+ width: 45% !important;
+ float: left !important;
+}
+
+.je-add-additional-property{
+ width: 100%;
+ text-align: right;
+ display: table;
+}

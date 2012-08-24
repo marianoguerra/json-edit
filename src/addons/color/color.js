@@ -23,7 +23,7 @@
     formatHints.string = formatHints.string || {};
 
     formatHints.string.color = function (name, type, id, opts, required, priv, util) {
-        util.events.rendered.add(function () {
+        util.events.rendered.handleOnce(function () {
 
             $("#" + id).click(function (event) {
                 mColorPicker.size = 3;
