@@ -132,7 +132,7 @@
             }
 
             if (defaults[item]) {
-                newItemSchema = $.extend(true, {}, itemSchema, {"default": defaults[item]});
+                newItemSchema = $.extend({}, itemSchema, {"default": defaults[item]});
             } else {
                 newItemSchema = itemSchema;
             }
@@ -588,7 +588,7 @@
             for (i = 0; i < minItems; i += 1) {
                 // default will be undefined if not set
                 if (defaultValues[i]) {
-                    itemOpts = $.extend(true, {}, opts.items, {"default": defaultValues[i]});
+                    itemOpts = $.extend({}, opts.items, {"default": defaultValues[i]});
                 } else {
                     itemOpts = opts.items;
                 }
