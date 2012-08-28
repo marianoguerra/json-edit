@@ -131,7 +131,7 @@
                 });
             }
 
-            if (defaults[item]) {
+            if (defaults[item] === undefined) {
                 newItemSchema = $.extend({}, itemSchema, {"default": defaults[item]});
             } else {
                 newItemSchema = itemSchema;
@@ -697,7 +697,7 @@
                 }
             };
 
-        if (opts["default"]) {
+        if (opts["default"] !== undefined) {
             if (inputType === "checkbox") {
                 if (opts["default"] === true) {
                     obj.input.checked = "checked";
