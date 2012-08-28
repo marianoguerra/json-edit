@@ -174,6 +174,21 @@
             }
         ],
         [
+            "color hint with default (addon)",
+            "",
+            {
+                "order": ["color"],
+                "properties": {
+                    "color": {
+                        "type": "string",
+                        "title": "Color",
+                        "je:hint": "color",
+                        "default": "cc0000"
+                    }
+                }
+            }
+        ],
+        [
             "date hint (addon)",
             "",
             {
