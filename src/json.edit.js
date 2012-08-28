@@ -131,7 +131,7 @@
                 });
             }
 
-            if (defaults[item] === undefined) {
+            if (defaults[item] !== undefined) {
                 newItemSchema = $.extend({}, itemSchema, {"default": defaults[item]});
             } else {
                 newItemSchema = itemSchema;
