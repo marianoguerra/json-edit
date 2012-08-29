@@ -16,7 +16,8 @@
     }
 }(this, function (JsonEdit) {
     "use strict";
-    var formatHints = JsonEdit.defaults.hintedFormatters;
+    var formatHints = JsonEdit.defaults.hintedFormatters,
+        collectHints = JsonEdit.defaults.hintedCollectors;
 
     formatHints.string = formatHints.string || {};
 
@@ -28,6 +29,17 @@
         return obj;
     };
 
+    collectHints.string = collectHints.string || {};
+
+    collectHints.string.password = function (key, field, schema, priv) {
+        var
+            inputField = priv.getChildrenOrSelf(field, "input"),
+            result = priv.collectChildTag("input", key, field, schema);
+
+        inputField.val("");
+
+        return result;
+    };
     // no need for collectHints since it's a common input field
     return JsonEdit;
 }));

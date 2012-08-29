@@ -804,17 +804,17 @@
         return {result: priv.collectResult(ok, msg, errors, isRoot), data: data};
     };
 
-    function getChildrenOrSelf(field, tag) {
+    priv.getChildrenOrSelf = function (field, tag) {
         if (field.is(tag)) {
             return field;
         } else {
             return field.children(tag);
         }
-    }
+    };
 
     defaults.collectors.enum_ = function (name, field, schema) {
         var
-            select = getChildrenOrSelf(field, "select"),
+            select = priv.getChildrenOrSelf(field, "select"),
             option,
             value = select.val(),
             result = {};
@@ -834,7 +834,7 @@
     };
 
     defaults.collectors.number = function (name, field, schema) {
-        var value, strValue = getChildrenOrSelf(field, "input").val();
+        var value, strValue = priv.getChildrenOrSelf(field, "input").val();
 
         try {
             value = JSON.parse(strValue);
@@ -852,7 +852,7 @@
     defaults.collectors.integer = defaults.collectors.number;
 
     defaults.collectors.boolean = function (name, field, schema) {
-        var value = (getChildrenOrSelf(field, "input").attr("checked") === "checked");
+        var value = (priv.getChildrenOrSelf(field, "input").attr("checked") === "checked");
 
         return {result: priv.validateJson(name, value, schema), data: value};
     };
@@ -862,7 +862,7 @@
             return defaults.collectors.enum_(name, field, schema);
         }
 
-        var value = getChildrenOrSelf(field, selector).val();
+        var value = priv.getChildrenOrSelf(field, selector).val();
 
         return {result: priv.validateJson(name, value, schema), data: value};
     };
