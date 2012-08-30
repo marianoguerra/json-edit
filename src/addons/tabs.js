@@ -43,9 +43,7 @@
             // if the item is an object and has no properties and the option
             // hideIfNoSelection is set then hide this tab
             if (priv.hasOption(opts, "hideIfNoSelection") &&
-                val.type === "object" &&
-                (val.properties === undefined ||
-                 priv.getKeys(val.properties).length === 0)) {
+                priv.isEmptyConfig(val)) {
                 style = "display: none";
             } else if (firstVisible === null) {
                 firstVisible = id;

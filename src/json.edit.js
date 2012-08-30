@@ -112,6 +112,23 @@
         }
     };
 
+    // return true if there is nothing to config on val (that means
+    // it's an empty object, or an array of empty objects etc.)
+    priv.isEmptyConfig = function (val) {
+        if (val.type === "object" &&
+            (val.properties === undefined ||
+             priv.getKeys(val.properties).length === 0)) {
+
+            return true;
+        } else if (val.type === "array" &&
+                   val.items &&
+                   priv.isEmptyConfig(val.items)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     priv.genFields = function (order, schema, requiredFields, defaults, util) {
         order = priv.getKeys(schema, order);
 
