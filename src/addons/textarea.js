@@ -22,7 +22,12 @@
         collectHints = JsonEdit.defaults.hintedCollectors;
 
     function escape(text) {
-        escaper.innerHTML = text;
+        if (escaper.innerText !== undefined) {
+            escaper.innerText = text;
+        } else {
+            escaper.innerHTML = text;
+        }
+
         return escaper.innerHTML;
     }
 
