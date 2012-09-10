@@ -202,7 +202,7 @@
                     }
 
                     if (conf.onEdit) {
-                        conf.onEdit(name, newData, defaultHandler, setWorking, schema);
+                        conf.onEdit(name, mergedData, defaultHandler, setWorking, schema);
                     } else {
                         defaultHandler(true);
                     }
