@@ -167,18 +167,28 @@
                 var showListAfterCollect = conf.onEdit === undefined;
 
                 collectEditItem(schema, true, showListAfterCollect, function (newData) {
+                    var
+                        storedData = $("#" + id).data("data"),
+                        mergedData = $.extend({}, storedData, newData);
 
-                    function defaultHandler(add) {
+                    function defaultHandler(add, userNewData) {
                         if (add) {
                             var
+                                dataToSet,
                                 dataItem = $("#" + id),
                                 itemData = dataItem.data("data");
+
+                            if (userNewData !== undefined) {
+                                dataToSet = userNewData;
+                            } else {
+                                dataToSet = newData;
+                            }
 
                             // attach the new data
                             // extend an empty object with the old data and then the
                             // new to preserve fields that are in the original object
                             // but not in the form
-                            dataItem.data("data", $.extend(true, {}, itemData, newData));
+                            dataItem.data("data", $.extend({}, itemData, dataToSet));
 
                             // rerender the list item summary text and replace it
                             Dust.render(templateName, newData, function (err, text) {
@@ -202,7 +212,7 @@
             function onEditClick(event, id) {
                 var
                     itemData = $("#" + id).data("data"),
-                    itemOpts = $.extend(true, {}, opts.items, {"default": itemData});
+                    itemOpts = $.extend({}, opts.items, {"default": itemData});
 
                 editItem(itemOpts, true, function () {
                     onEditOkClick(id);
@@ -297,10 +307,21 @@
                 var showListAfterCollect = conf.onAdd === undefined;
 
                 collectEditItem(schema, false, showListAfterCollect, function (newData) {
-                    function defaultHandler(add) {
+                    function defaultHandler(add, userNewData) {
+                        var
+                            dataToSet;
+
+                        if (userNewData !== undefined) {
+                            dataToSet = userNewData;
+                        } else {
+                            dataToSet = newData;
+                        }
+
                         if (add) {
-                            addItem(newData, schema, function (listItem) {
-                                util.events.array.item.created.fire(name, newData, schema, {listItem: listItem});
+                            addItem(dataToSet, schema, function (listItem) {
+                                util.events.array.item.created.fire(name,
+                                                        dataToSet, schema,
+                                                        {listItem: listItem});
                             });
                         }
 
