@@ -267,6 +267,24 @@
             }
         ],
         [
+            "textarea hint with json type (addon)",
+            "",
+            {
+                "order": ["data"],
+                "properties": {
+                    "data": {
+                        "type": "string",
+                        "title": "Data",
+                        "je:hint": "textarea",
+                        "je:textarea": {
+                            "type": "json"
+                        },
+                        "default": {"name": "mariano", "age": 27}
+                    }
+                }
+            }
+        ],
+        [
             "tags hint (addon)",
             "",
             {

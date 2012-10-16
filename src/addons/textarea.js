@@ -38,7 +38,12 @@
             options = opts["je:textarea"] || {},
             rows = options.rows || 4,
             width = options.width || "99%",
+            dataType  = options.type || "text",
             content = opts["default"] || "";
+
+        if (dataType === "json" && typeof content !== "string") {
+            content = JSON.stringify(content);
+        }
 
         return {
             "textarea": {
@@ -52,7 +57,19 @@
     collectHints.string = collectHints.string || {};
 
     collectHints.string.textarea = function (key, field, schema, priv) {
-        return priv.collectChildTag("textarea", key, field, schema);
+        var result = priv.collectChildTag("textarea", key, field, schema);
+
+        if ((schema["je:textarea"] || {}).type === "json" && result.result.ok) {
+            try {
+                result.data = JSON.parse(result.data);
+            } catch (error) {
+                result.result.ok = false;
+                result.result.msg = error.toString();
+                result.result.data = error;
+            }
+        }
+
+        return result;
     };
 
     return JsonEdit;
