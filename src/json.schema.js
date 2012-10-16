@@ -615,5 +615,7 @@
         return priv.makeResult(false, cons.msgs.err.UNKNOWN_TYPE, value);
     };
 
+    cons._makeResult = priv.makeResult;
+
     return cons;
 }));

@@ -844,7 +844,13 @@
             }
         }
 
-        result.result = priv.validateJson(name, value, schema);
+        // if there is no selection don't validate
+        if (value !== null) {
+            result.result = priv.validateJson(name, value, schema);
+        } else {
+            result.result = JsonSchema._makeResult(true);
+        }
+
         result.data = value;
 
         return result;
