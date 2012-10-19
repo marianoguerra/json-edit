@@ -31,7 +31,7 @@
         c = (c.charAt(0) === "#") ? c.slice(1) : c;
 
         if (c.length === 3) {
-            c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2];
+            c = c.charAt(0) + c.charAt(0) + c.charAt(1) + c.charAt(1) + c.charAt(2) + c.charAt(2);
         } else if (c.length !== 6) {
             return {
                 str: c,
@@ -41,9 +41,9 @@
             };
         }
 
-        red   = c[0] + c[1];
-        green = c[2] + c[3];
-        blue  = c[4] + c[5];
+        red   = c.charAt(0) + c.charAt(1);
+        green = c.charAt(2) + c.charAt(3);
+        blue  = c.charAt(4) + c.charAt(5);
 
         rnum = parseInt(red, 16);
         gnum = parseInt(green, 16);
