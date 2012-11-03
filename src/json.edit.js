@@ -1004,12 +1004,13 @@
             input = priv.input(fid, type, inputId, opts, required, util),
             result;
 
+        var label_text = opts.title || fid;
         result = {
             "div": {
                 "id": id,
                 "class": priv.genFieldClasses(fid, opts, " ", required),
                 "$childs": [
-                    priv.label(opts.title, inputId),
+                    priv.label(label_text, inputId),
                     input
                 ]
             }
