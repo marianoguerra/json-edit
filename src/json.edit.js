@@ -546,6 +546,13 @@
         childs = priv.genFields(opts.order, opts.properties, opts.required,
                                 defaults, util);
 
+        if (opts.description) {
+            childs.unshift({
+                "legend" : {
+                    "$childs":  [opts.description]
+                }
+            })
+        }
         if (opts.additionalProperties) {
             childs.push(priv.genAdditionalProperties(id, opts.additionalProperties,
                                                      util));
