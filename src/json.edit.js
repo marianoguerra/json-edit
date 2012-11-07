@@ -1,19 +1,19 @@
-/*global window define alert*/
+/*global window define alert JSON*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'jquery.lego', 'json.schema', 'nsgen', 'json'], function ($, legojs, JsonSchema, NsGen, JSON) {
+        define(['jquery', 'jquery.lego', 'json.schema', 'nsgen'], function ($, legojs, JsonSchema, NsGen) {
             // Also create a global in case some scripts
             // that are loaded still are looking for
             // a global even when an AMD loader is in use.
-            return (root.JsonEdit = factory($, legojs, JsonSchema, NsGen, JSON));
+            return (root.JsonEdit = factory($, legojs, JsonSchema, NsGen));
         });
     } else {
         // Browser globals
-        root.JsonEdit = factory(root.jQuery, root.legojs, root.JsonSchema, root.NsGen, root.JSON);
+        root.JsonEdit = factory(root.jQuery, root.legojs, root.JsonSchema, root.NsGen);
     }
-}(this, function ($, legojs, JsonSchema, NsGen, JSON) {
+}(this, function ($, legojs, JsonSchema, NsGen) {
     "use strict";
     var cons, jopts, priv = {}, ns, prefix,
         defaults;
