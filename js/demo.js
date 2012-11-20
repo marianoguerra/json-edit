@@ -29,10 +29,13 @@ require.config({
         "hint.squim": "../src/addons/squim",
         "hint.tabarray": "../src/addons/tabarray",
         "hint.summarylist": "../src/addons/summarylist/addon",
+        "hint.adsafe": "../src/addons/adsafe/adsafe",
 
         // needed by hints
         // by color hint
         "colorPicker": "../src/addons/color/picker/colorPicker",
+        // by adsafe hint
+        "jslint": "../src/addons/adsafe/lib/jslint",
 
         // by squide hint
         "squim": "http://marianoguerra.github.com/squim/src/squim",
@@ -74,7 +77,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
         "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim", "hint.tabarray",
-        "hint.summarylist", "hint.textarea"],
+        "hint.summarylist", "hint.textarea", "hint.adsafe"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
@@ -88,7 +91,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
             var content,
                 data;
 
-            if (hideEditor) {
+            if (hideEditor || !ace) {
                 content = $("#" + id).text();
             } else {
                 content = editor.getSession().getDocument().getValue();
@@ -192,7 +195,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
             }
         }));
 
-        if (!hideEditor) {
+        if (!hideEditor && ace) {
             editor = ace.edit(id);
             editor.setTheme("ace/theme/merbivore_soft");
             //editor.getSession().setMode("ace/mode/json");

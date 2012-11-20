@@ -17,6 +17,87 @@
     "use strict";
     return [
         [
+            "adsafe hint (addon)",
+            "",
+            {
+                "order": ["code"],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "je:hint": "adsafe",
+                        "default": 'ADSAFE.lib("name", function (lib) {\n' +
+                        '    "use strict";\n' +
+                        '\n' +
+                        '    var items = [1, 2, 3];\n' +
+                        '\n' +
+                        '    return {\n' +
+                        '        handle: function () {\n' +
+                        '            return items.map(function (item) {\n' +
+                        '                return item + 1;\n' +
+                        '            });\n' +
+                        '        }\n' +
+                        '    };\n' +
+                        '});\n'
+                    }
+                }
+            }
+        ],
+        [
+            "adsafe hint wrap boilerplate option (addon)",
+            "",
+            {
+                "order": ["code"],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "je:hint": "adsafe",
+                        "je:adsafe": {
+                            "wrapBoilerplate": true
+                        },
+                        "default": 'var items = [1, 2, 3];\n' +
+                        'return items.map(function (item) {\n' +
+                        '    return item + 1;\n' +
+                        '});\n'
+                    }
+                }
+            }
+        ],
+        [
+            "adsafe hint with jslint options (addon)",
+            "",
+            {
+                "order": ["code"],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "je:hint": "adsafe",
+                        "je:adsafe": {
+                            "jslintOptions": {
+                                "vars": true
+                            }
+                        },
+                        "default": 'ADSAFE.lib("name", function (lib) {\n' +
+                        '    "use strict";\n' +
+                        '\n' +
+                        '    var items = [1, 2, 3];\n' +
+                        '    var items1 = [1, 2, 3];\n' +
+                        '\n' +
+                        '    return {\n' +
+                        '        handle: function () {\n' +
+                        '            return items.map(function (item) {\n' +
+                        '                return item + 1;\n' +
+                        '            });\n' +
+                        '        }\n' +
+                        '    };\n' +
+                        '});\n'
+                    }
+                }
+            }
+        ],
+        [
             "additional properties",
             "",
             {
