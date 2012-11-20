@@ -49,8 +49,8 @@
         };
     };
 
-    function wrapBoilerPlate(code) {
-        return 'ADSAFE.lib("name", function (lib) {\n' +
+    function wrapBoilerPlate(code, args) {
+        return 'ADSAFE.lib("name", function (' + args.join(", ") + ') {\n' +
         '    "use strict";\n' +
         '    return {\n' +
         '        handle: function () {\n' +
@@ -88,7 +88,7 @@
             code = result.data;
 
             if (adsafeOptions.wrapBoilerplate) {
-                code = wrapBoilerPlate(code);
+                code = wrapBoilerPlate(code, adsafeOptions.args || []);
             }
 
             jslintOk = jsLint(code, $.extend(true, {}, jslintOptions,
@@ -104,7 +104,6 @@
                             jsLint.data(),
                             adsafeOptions.wrapBoilerplate));
 
-                console.log(result);
             }
         }
 

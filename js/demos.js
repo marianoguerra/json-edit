@@ -54,11 +54,12 @@
                         "title": "Code",
                         "je:hint": "adsafe",
                         "je:adsafe": {
-                            "wrapBoilerplate": true
+                            "wrapBoilerplate": true,
+                            "args": ["foo", "bar"]
                         },
                         "default": 'var items = [1, 2, 3];\n' +
                         'return items.map(function (item) {\n' +
-                        '    return item + 1;\n' +
+                        '    return item + foo - bar;\n' +
                         '});\n'
                     }
                 }
