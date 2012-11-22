@@ -1,4 +1,4 @@
-/*global window define alert JSON*/
+/*global window define alert JSON document*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -15,8 +15,8 @@
     }
 }(this, function ($, legojs, JsonSchema, NsGen) {
     "use strict";
-    var cons, jopts, priv = {}, ns, prefix,
-        defaults;
+    var cons, jopts, ns, prefix, defaults,
+        priv = {}, escaper = document.createElement("textarea");
 
     defaults = {
         displayError: function (msg) {
@@ -264,6 +264,16 @@
         };
     };
 
+    cons.escape = function (text) {
+        if (escaper.innerText !== undefined) {
+            escaper.innerText = text;
+        } else {
+            escaper.innerHTML = text;
+        }
+
+        return escaper.innerHTML;
+    };
+
     cons.defaults = defaults;
     priv.collectObject = function (id, opts) {
         var
@@ -345,6 +355,8 @@
         this.reason = reason;
         this.args = args;
     };
+
+    cons.makeResult = JsonSchema._makeResult;
 
     priv.label = function (label, idFor) {
         return {

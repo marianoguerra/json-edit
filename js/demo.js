@@ -1,4 +1,4 @@
-/*global require */
+/*global require window*/
 require.config({
     baseUrl: "js/",
     paths: {
@@ -30,6 +30,7 @@ require.config({
         "hint.tabarray": "../src/addons/tabarray",
         "hint.summarylist": "../src/addons/summarylist/addon",
         "hint.adsafe": "../src/addons/adsafe/adsafe",
+        "hint.blockly": "../src/addons/blockly/blockly",
 
         // needed by hints
         // by color hint
@@ -77,7 +78,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
         "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim", "hint.tabarray",
-        "hint.summarylist", "hint.textarea", "hint.adsafe"],
+        "hint.summarylist", "hint.textarea", "hint.adsafe", "hint.blockly"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
@@ -120,8 +121,8 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
                 errors = jsonEditData.getErrors(result.result);
             }
 
-            $("#" + id + "-data").html(JSON.stringify(result.data, null, 2));
-            $("#" + id + "-validation").html(JSON.stringify(result.result, null, 2));
+            $("#" + id + "-data").text(JSON.stringify(result.data, null, 2));
+            $("#" + id + "-validation").text(JSON.stringify(result.result, null, 2));
             prettyPrint();
             console.log(errors);
         }
@@ -143,7 +144,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
                             "pre": {
                                 "id": id,
                                 "class": "editor",
-                                "$childs": JSON.stringify(content, null, 2)
+                                "$childs": mJsonEdit.escape(JSON.stringify(content, null, 2))
                             }
                         }, {
                             "div": {
