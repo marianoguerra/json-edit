@@ -1,0 +1,39 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>eflang</title>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script>
+   $(function () {
+    var id = "foo";
+
+    window["init" + id] = function (Blockly) {
+     window.Blockly = Blockly;
+
+      function onToXmlClick() {
+       var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace),
+           xmlText = Blockly.Xml.domToPrettyText(xmlDom);
+
+       console.log(xmlText);
+      }
+
+      function onToJsClick() {
+       var text = Blockly.Generator.workspaceToCode('JavaScript');
+
+       console.log(text);
+      }
+
+      $("#blockly-to-xml").click(onToXmlClick);
+      $("#blockly-to-js").click(onToJsClick);
+    }
+
+    $("#blocky-ide").attr({src: "frame.html?id=" + id});
+   });
+  </script>
+</head>
+<body>
+ <button id="blockly-to-xml">Get XML</button>
+ <button id="blockly-to-js">Get JS</button>
+ <iframe id="blocky-ide" style="width: 100%; height: 100%; border: 0;"></iframe>
+</body>
+</html>
