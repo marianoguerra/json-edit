@@ -3,3 +3,6 @@ eflang/jsgenerator.js
 eflang/jsgenerator.min.js
 eflang/langcommon.min.js
 eflang/language.min.js
+eflang/blockly_uncompressed.js
+eflang/closure-library-read-only/
+eflang/core/
