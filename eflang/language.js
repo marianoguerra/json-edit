@@ -19,13 +19,14 @@ var eflang = (function () {
     Blockly.LANG_CATEGORY_OBJS = "Objects";
     Blockly.LANG_CATEGORY_PROCS = "Procedures";
 
+    Blockly.LANG_PROCS_CALL_NAME = 'procedureName';
     Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH = 'with';
     Blockly.LANG_PROCS_CALL_WITH_TOOLTIP_1 = 'Call a procedure with any number of arguments.';
 
     Blockly.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD = 'procedure';
     Blockly.LANG_PROCS_CALL_WITH_CONTAINER_TOOLTIP_1 = 'Add, remove, or reorder sections to reconfigure this procedure call.';
 
-    Blockly.LANG_PROCS_CALL_WITH_NAME = 'Call procedure';
+    Blockly.LANG_PROCS_CALL_WITH_NAME = 'Call';
     Blockly.LANG_PROCS_CALL_WITH_ITEM_TITLE = 'argument';
     Blockly.LANG_PROCS_CALL_WITH_ITEM_TOOLTIP_1 = 'Add an argument to the argument list.';
 
@@ -126,9 +127,10 @@ var eflang = (function () {
       helpUrl: '',
       init: function() {
         this.setColour(290);
-        this.appendValueInput('NAME')
-            .setCheck(String)
-            .appendTitle(Blockly.LANG_PROCS_CALL_WITH_NAME);
+        this.appendDummyInput()
+            .appendTitle(Blockly.LANG_PROCS_CALL_WITH_NAME)
+            .appendTitle(new Blockly.FieldVariable(
+            Blockly.LANG_PROCS_CALL_NAME), 'NAME');
         this.appendValueInput('ADD0')
             .appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
         this.appendValueInput('ADD1');
@@ -240,7 +242,6 @@ var eflang = (function () {
       }
     };
 
-
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
             key, value;
@@ -297,6 +298,7 @@ var eflang = (function () {
 
               'variables_outget',
               'variables_outset',
+
               'variables_getField',
 
               'text',
