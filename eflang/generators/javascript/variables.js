@@ -40,19 +40,3 @@ Blockly.JavaScript.variables_set = function() {
       this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
   return varName + ' = ' + argument0 + ';\n';
 };
-
-Blockly.JavaScript.variables_outget = function() {
-  // Variable getter.
-  var code = Blockly.JavaScript.variableDB_.getName(this.getTitleValue('VAR'),
-      Blockly.Variables.NAME_TYPE);
-  return ["env." + code, Blockly.JavaScript.ORDER_ATOMIC];
-};
-
-Blockly.JavaScript.variables_outset = function() {
-  // Variable setter.
-  var argument0 = Blockly.JavaScript.valueToCode(this, 'VALUE',
-      Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
-  var varName = Blockly.JavaScript.variableDB_.getName(
-      this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
-  return "env." + varName + ' = ' + argument0 + ';\n';
-};
