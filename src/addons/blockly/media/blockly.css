@@ -43,7 +43,7 @@
   stroke: #888;
 }
 .blocklyHighlightedConnectionPath {
-  stroke-width: 4px;
+  stroke-width: 2px;
   stroke: #fc3;
   fill: none;
 }
@@ -53,7 +53,7 @@
   stroke-linecap: round;
 }
 .blocklySelected>.blocklyPath {
-  stroke-width: 3px;
+  stroke-width: 1px;
   stroke: #fc3;
 }
 .blocklySelected>.blocklyPathLight {
@@ -78,7 +78,7 @@
 .blocklyText {
   cursor: default;
   font-family: sans-serif;
-  font-size: 11pt;
+  font-size: 9pt;
   fill: #fff;
 }
 .blocklyNonEditableText>text {
@@ -164,7 +164,7 @@
 }
 .blocklyHtmlInput {
   font-family: sans-serif;
-  font-size: 11pt;
+  font-size: 9pt;
   border: none;
   outline: none;
 }
@@ -195,7 +195,7 @@
 .blocklyMenuText {
   cursor: default !important;
   font-family: sans-serif;
-  font-size: 15px; /* All context menu sizes are based on pixels. */
+  font-size: 12px; /* All context menu sizes are based on pixels. */
   fill: #000;
 }
 .blocklyContextMenuOptions>.blocklyMenuDiv:hover>.blocklyMenuText,
