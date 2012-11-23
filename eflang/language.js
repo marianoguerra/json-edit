@@ -74,13 +74,13 @@ var eflang = (function () {
         this.setColour(330);
         this.appendDummyInput()
             .appendTitle(Blockly.LANG_VARIABLES_OUTGET_TITLE_1)
-            .appendTitle(new Blockly.FieldVariable(
+            .appendTitle(new Blockly.FieldTextInput(
             Blockly.LANG_VARIABLES_GET_ITEM), 'VAR');
         this.setOutput(true, null);
         this.setTooltip(Blockly.LANG_VARIABLES_OUTGET_TOOLTIP_1);
       },
       getVars: function() {
-        return [this.getTitleValue('VAR')];
+        return [];
       },
       renameVar: function(oldName, newName) {
         if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
@@ -97,14 +97,14 @@ var eflang = (function () {
         this.setColour(330);
         this.appendValueInput('VALUE')
             .appendTitle(Blockly.LANG_VARIABLES_OUTSET_TITLE_1)
-            .appendTitle(new Blockly.FieldVariable(
+            .appendTitle(new Blockly.FieldTextInput(
             Blockly.LANG_VARIABLES_OUTSET_ITEM), 'VAR');
         this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip(Blockly.LANG_VARIABLES_OUTSET_TOOLTIP_1);
       },
       getVars: function() {
-        return [this.getTitleValue('VAR')];
+        return [];
       },
       renameVar: function(oldName, newName) {
         if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
@@ -116,17 +116,16 @@ var eflang = (function () {
 
     Blockly.JavaScript.variables_outget = function() {
       // Variable getter.
-      var code = Blockly.JavaScript.variableDB_.getName(this.getTitleValue('VAR'),
-          Blockly.Variables.NAME_TYPE);
+      var code = this.getTitleValue('VAR');
       return ["env." + code, Blockly.JavaScript.ORDER_ATOMIC];
     };
 
     Blockly.JavaScript.variables_outset = function() {
       // Variable setter.
       var argument0 = Blockly.JavaScript.valueToCode(this, 'VALUE',
-          Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
-      var varName = Blockly.JavaScript.variableDB_.getName(
-          this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
+                          Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
+      var varName = this.getTitleValue('VAR');
+
       return "env." + varName + ' = ' + argument0 + ';\n';
     };
 
@@ -275,12 +274,12 @@ var eflang = (function () {
     Blockly.JavaScript.procs_call_with = function() {
       // Create a list with any number of elements of any type.
       var
-        strname = Blockly.JavaScript.valueToCode(this, 'NAME',
-                                      Blockly.JavaScript.ORDER_COMMA) || "proc",
-        name = strname.slice(1, -1),
-        code = new Array(this.itemCount_);
+          n,
 
-      for (var n = 0; n < this.itemCount_; n++) {
+          name = this.getTitleValue('NAME'),
+          code = new Array(this.itemCount_);
+
+      for (n = 0; n < this.itemCount_; n++) {
         code[n] = Blockly.JavaScript.valueToCode(this, 'ADD' + n,
             Blockly.JavaScript.ORDER_COMMA) || 'null';
       }
@@ -296,7 +295,7 @@ var eflang = (function () {
         this.setColour(290);
         this.appendDummyInput()
             .appendTitle(Blockly.LANG_PROCS_CALL_WITH_NAME)
-            .appendTitle(new Blockly.FieldVariable(
+            .appendTitle(new Blockly.FieldTextInput(
             Blockly.LANG_PROCS_CALL_NAME), 'NAME');
         this.appendValueInput('ADD0')
             .appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
