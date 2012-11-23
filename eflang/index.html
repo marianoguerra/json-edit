@@ -10,21 +10,61 @@
     window["init" + id] = function (Blockly) {
      window.Blockly = Blockly;
 
-      function onToXmlClick() {
-       var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace),
-           xmlText = Blockly.Xml.domToPrettyText(xmlDom);
+      function getXml() {
+        var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace),
+            xmlText = Blockly.Xml.domToPrettyText(xmlDom);
 
-       console.log(xmlText);
+        return xmlText;
       }
 
+      function onToXmlClick() {
+       var xml = getXml();
+       console.log(xml);
+       document.getElementById("xml").value = xml;
+      }
+
+      function loadXmlToWorkspace(xmlText) {
+       var xmlDom = null;
+
+       try {
+         xmlDom = Blockly.Xml.textToDom(xmlText);
+       } catch (e) {
+        alert("error loading xml");
+        console.error(e);
+        return;
+       }
+
+       if (xmlDom) {
+         Blockly.mainWorkspace.clear();
+         Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
+       }
+      }
+
+      function onFromXmlClick() {
+       var xmlTextarea = document.getElementById('textarea_xml');
+       var xmlText = xmlTextarea.value;
+
+       loadXmlToWorkspace(xmlText);
+      }
       function onToJsClick() {
        var text = Blockly.Generator.workspaceToCode('JavaScript');
 
        console.log(text);
       }
 
+      function onToJsFromXmlClick() {
+       var text, xml = getXml();
+
+       loadXmlToWorkspace(xml);
+       text = Blockly.Generator.workspaceToCode('JavaScript');
+
+       console.log(text);
+      }
+
+      $("#blockly-from-xml").click(onFromXmlClick);
       $("#blockly-to-xml").click(onToXmlClick);
       $("#blockly-to-js").click(onToJsClick);
+      $("#blockly-to-js-from-xml").click(onToJsFromXmlClick);
     }
 
     $("#blocky-ide").attr({src: "frame.html?id=" + id});
@@ -33,7 +73,10 @@
 </head>
 <body>
  <button id="blockly-to-xml">Get XML</button>
+ <button id="blockly-from-xml">Load from XML</button>
  <button id="blockly-to-js">Get JS</button>
+ <button id="blockly-to-js-from-xml">Get JS from XML</button>
  <iframe id="blocky-ide" style="width: 100%; height: 100%; border: 0;"></iframe>
+ <textarea id="textarea_xml" rows=15 cols=80></textarea>
 </body>
 </html>
