@@ -475,7 +475,7 @@ var eflang = (function () {
       Blockly.inject(document.body, {path: './'});
 
 
-      window.parent["init" + query.id](Blockly);
+      window.parent["init" + query.id](Blockly, query.id);
     }
 
     return {

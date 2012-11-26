@@ -10,8 +10,8 @@
    $(function () {
     var id = "foo";
 
-    window["init" + id] = function (Blockly) {
-     window.Blockly = Blockly;
+    window["init" + id] = function (Blockly, id) {
+     $("#blocky-" + id).data({blockly: Blockly});
 
       function getXml() {
         var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace),
@@ -70,9 +70,12 @@
       $("#blockly-to-js-from-xml").click(onToJsFromXmlClick);
     }
 
-    $("#blocky-ide1").attr({src: "frame.html?id=" + id});
-    $("#blocky-ide2").attr({src: "frame.html?id=" + id});
-    $("#blocky-ide3").attr({src: "frame.html?id=" + id});
+    window.initbar = window.initfoo;
+    window.initbaz = window.initfoo;
+
+    $("#blocky-foo").attr({src: "frame.html?id=foo"});
+    $("#blocky-bar").attr({src: "frame.html?id=bar"});
+    $("#blocky-baz").attr({src: "frame.html?id=baz"});
    });
   </script>
 </head>
@@ -85,13 +88,13 @@
         <li><a href="#fragment-3"><span>Three</span></a></li>
     </ul>
     <div id="fragment-1">
-     <iframe id="blocky-ide1" style="width: 100%; height: 100%; border: 0;"></iframe>
+     <iframe id="blocky-foo" style="width: 100%; height: 100%; border: 0;"></iframe>
     </div>
     <div id="fragment-2">
-     <iframe id="blocky-ide2" style="width: 100%; height: 100%; border: 0;"></iframe>
+     <iframe id="blocky-bar" style="width: 100%; height: 100%; border: 0;"></iframe>
     </div>
     <div id="fragment-3">
-     <iframe id="blocky-ide3" style="width: 100%; height: 100%; border: 0;"></iframe>
+     <iframe id="blocky-baz" style="width: 100%; height: 100%; border: 0;"></iframe>
     </div>
 </div>
  
