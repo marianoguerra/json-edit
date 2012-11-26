@@ -256,7 +256,7 @@ var eflang = (function () {
         code[n] = Blockly.JavaScript.valueToCode(this, 'ADD' + n,
             Blockly.JavaScript.ORDER_COMMA) || 'null';
       }
-      code = name + '(' + code.join(', ') + ')';
+      code = "libs." + name + '(' + code.join(', ') + ')';
       return [code, Blockly.JavaScript.ORDER_ATOMIC];
     };
 
