@@ -39,33 +39,6 @@ var eflang = (function () {
     Blockly.LANG_OBJS_CREATE_WITH_ITEM_TITLE = 'field';
     Blockly.LANG_OBJS_CREATE_WITH_ITEM_TOOLTIP_1 = 'Add a field to the object.';
 
-    Blockly.Language.variables_getField = {
-      // Get field from object
-      category: Blockly.LANG_CATEGORY_OBJS,
-      helpUrl: "",
-      init: function() {
-        this.setColour(330);
-        this.setOutput(true, null);
-        this.appendValueInput('VALUE')
-            .appendTitle(Blockly.LANG_VARIABLES_GET_FIELD_INPUT_FIELD)
-            .appendTitle(new Blockly.FieldTextInput("fieldName"), 'AT')
-            .appendTitle(Blockly.LANG_VARIABLES_GET_FIELD_INPUT_IN);
-
-        this.setInputsInline(true);
-        this.setTooltip(Blockly.LANG_VARIABLES_GET_FIELD_INPUT_FROM_TOOLTIP_1);
-      }
-    };
-
-    Blockly.JavaScript.variables_getField = function() {
-      // Get letter at index.
-      var argument0 = this.getTitleValue('AT');
-      var argument1 = Blockly.JavaScript.valueToCode(this, 'VALUE',
-          Blockly.JavaScript.ORDER_MEMBER) || '\'\'';
-
-      var code = argument1 + '.' + argument0;
-      return [code, Blockly.JavaScript.ORDER_MEMBER];
-    };
-
     Blockly.Language.variables_outget = {
       // Variable getter.
       category: "Output",
@@ -465,7 +438,6 @@ var eflang = (function () {
               'variables_outget',
               'variables_outset',
 
-              'variables_getField',
               'objs_create_with',
               'objs_create_with_item',
               'objs_create_with_container',
