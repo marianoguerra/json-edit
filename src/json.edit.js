@@ -574,7 +574,7 @@
                 "legend" : {
                     "$childs":  [opts.description]
                 }
-            })
+            });
         }
         if (opts.additionalProperties) {
             childs.push(priv.genAdditionalProperties(id, opts.additionalProperties,
