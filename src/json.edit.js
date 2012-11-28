@@ -280,13 +280,15 @@
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
             order = priv.getKeys(opts.properties, opts.order),
+            defaults = opts["default"] || {},
             result = priv.collectResult(true), data = {},
 
             apropsSel, aprops;
 
         $.each(order, function (i, key) {
             var
-                value,
+                value, newSchema,
+
                 schema = opts.properties[key],
                 required = $.inArray(key, schema.required) !== -1,
                 selector = "." + priv.genFieldClasses(key, schema, ".", required),
@@ -303,8 +305,17 @@
                     });
 
             } else {
-                value = priv.collectField(key, field, schema);
+                // if the object above has a default then override the item
+                // default with it
+                if (defaults[key] !== undefined) {
+                    newSchema = $.extend({}, schema, {"default": defaults[key]});
+                } else {
+                    newSchema = schema;
+                }
+
+                value = priv.collectField(key, field, newSchema);
             }
+
 
             if (!value.result.ok) {
                 result.ok = false;
@@ -790,8 +801,16 @@
     };
 
     defaults.collectors.array = function (name, field, schema) {
-        var itemSchema = schema.items || {}, errors = [], isRoot = true,
-            ok = true, msg = "ok", data = [], result, arrayResult, castResult;
+        var
+            result, arrayResult, castResult,
+
+            defaults = schema["default"] || [],
+            itemSchema = schema.items || {},
+            errors = [],
+            isRoot = true,
+            ok = true,
+            msg = "ok",
+            data = [];
 
         if (schema.items && schema.items["enum"]) {
             data = field
@@ -816,7 +835,17 @@
 
         } else {
             field.find(ns.$cls("array-item")).each(function (i, node) {
-                var itemResult = priv.collectField(name, $(node), itemSchema);
+                var newSchema, itemResult;
+
+                // if the array above has a default then override the item
+                // default with it
+                if (defaults[i] !== undefined) {
+                    newSchema = $.extend({}, itemSchema, {"default": defaults[i]});
+                } else {
+                    newSchema = itemSchema;
+                }
+
+                itemResult = priv.collectField(name, $(node), newSchema);
 
                 if (!itemResult.result.ok) {
                     msg = "one or more errors in array items";
