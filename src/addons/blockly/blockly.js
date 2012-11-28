@@ -136,12 +136,19 @@
 
     collectHints.string.blockly = function (key, field, schema, priv) {
         var
+            xmlDom, xmlText,
+
             options = schema["je:blockly"] || {},
             inOverlay = options.overlay === true,
             editor = (inOverlay) ? $(field).children("button:first") : $(field).children("iframe:first"),
-            blockly = editor.data("blockly"),
-            xmlDom = blockly.Xml.workspaceToDom(blockly.mainWorkspace),
+            blockly = editor.data("blockly");
+
+        if (blockly) {
+            xmlDom = blockly.Xml.workspaceToDom(blockly.mainWorkspace);
             xmlText = blockly.Xml.domToPrettyText(xmlDom);
+        } else {
+            xmlText = schema["default"] || "<xml></xml>";
+        }
 
         $("#" + editor.attr("id") + "-overlay").remove();
 
