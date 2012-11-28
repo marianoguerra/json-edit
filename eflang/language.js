@@ -256,105 +256,126 @@ var eflang = (function () {
         code[n] = Blockly.JavaScript.valueToCode(this, 'ADD' + n,
             Blockly.JavaScript.ORDER_COMMA) || 'null';
       }
-      code = "libs." + name + '(' + code.join(', ') + ')';
-      return [code, Blockly.JavaScript.ORDER_ATOMIC];
-    };
 
-    Blockly.Language.procs_call_with = {
-      // Create a list with any number of elements of any type.
-      category: Blockly.LANG_CATEGORY_PROCS,
-      helpUrl: '',
-      init: function() {
-        this.setColour(290);
-        this.appendDummyInput()
-            .appendTitle(Blockly.LANG_PROCS_CALL_WITH_NAME)
-            .appendTitle(new Blockly.FieldTextInput(
-            Blockly.LANG_PROCS_CALL_NAME), 'NAME');
-        this.appendValueInput('ADD0')
-            .appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
-        this.appendValueInput('ADD1');
-        this.setOutput(true, null);
-        this.setMutator(new Blockly.Mutator(['procs_call_with_item']));
-        this.setTooltip(Blockly.LANG_PROCS_CALL_WITH_TOOLTIP_1);
-        this.itemCount_ = 2;
-      },
-      mutationToDom: function(workspace) {
-        var container = document.createElement('mutation');
-        container.setAttribute('items', this.itemCount_);
-        return container;
-      },
-      domToMutation: function(container) {
-        for (var x = 0; x < this.itemCount_; x++) {
-          this.removeInput('ADD' + x);
-        }
-        this.itemCount_ = window.parseInt(container.getAttribute('items'), 10);
-        for (var x = 0; x < this.itemCount_; x++) {
-          var input = this.appendValueInput('ADD' + x);
-          if (x == 0) {
-            input.appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
-          }
-        }
-        if (this.itemCount_ == 0) {
-          this.appendDummyInput('EMPTY')
-              .appendTitle(Blockly.LANG_PROCS_CALL_EMPTY_TITLE_1);
-        }
-      },
-      decompose: function(workspace) {
-        var containerBlock = new Blockly.Block(workspace,
-                                               'procs_call_with_container');
-        containerBlock.initSvg();
-        var connection = containerBlock.getInput('STACK').connection;
-        for (var x = 0; x < this.itemCount_; x++) {
-          var itemBlock = new Blockly.Block(workspace, 'procs_call_with_item');
-          itemBlock.initSvg();
-          connection.connect(itemBlock.previousConnection);
-          connection = itemBlock.nextConnection;
-        }
-        return containerBlock;
-      },
-      compose: function(containerBlock) {
-        // Disconnect all input blocks and remove all inputs.
-        if (this.itemCount_ == 0) {
-          this.removeInput('EMPTY');
-        } else {
-          for (var x = this.itemCount_ - 1; x >= 0; x--) {
-            this.removeInput('ADD' + x);
-          }
-        }
-        this.itemCount_ = 0;
-        // Rebuild the block's inputs.
-        var itemBlock = containerBlock.getInputTargetBlock('STACK');
-        while (itemBlock) {
-          var input = this.appendValueInput('ADD' + this.itemCount_);
-          if (this.itemCount_ == 0) {
-            input.appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
-          }
-          // Reconnect any child blocks.
-          if (itemBlock.valueConnection_) {
-            input.connection.connect(itemBlock.valueConnection_);
-          }
-          this.itemCount_++;
-          itemBlock = itemBlock.nextConnection &&
-              itemBlock.nextConnection.targetBlock();
-        }
-        if (this.itemCount_ == 0) {
-          this.appendDummyInput('EMPTY')
-              .appendTitle(Blockly.LANG_PROCS_CALL_EMPTY_TITLE_1);
-        }
-      },
-      saveConnections: function(containerBlock) {
-        // Store a pointer to any connected child blocks.
-        var itemBlock = containerBlock.getInputTargetBlock('STACK');
-        var x = 0;
-        while (itemBlock) {
-          var input = this.getInput('ADD' + x);
-          itemBlock.valueConnection_ = input && input.connection.targetConnection;
-          x++;
-          itemBlock = itemBlock.nextConnection &&
-              itemBlock.nextConnection.targetBlock();
-        }
+      code = "libs." + name + '(' + code.join(', ') + ')';
+
+      if (this.returns) {
+          return [code, Blockly.JavaScript.ORDER_ATOMIC];
+      } else {
+          return code + ";\n";
       }
     };
+
+    Blockly.JavaScript.procs_call_with_no_return = Blockly.JavaScript.procs_call_with;
+
+    function makeProcCall(returns) {
+        return {
+          // Create a list with any number of elements of any type.
+          category: Blockly.LANG_CATEGORY_PROCS,
+          returns: returns,
+          helpUrl: '',
+          init: function() {
+            this.setColour(290);
+            this.appendDummyInput()
+                .appendTitle(Blockly.LANG_PROCS_CALL_WITH_NAME)
+                .appendTitle(new Blockly.FieldTextInput(
+                Blockly.LANG_PROCS_CALL_NAME), 'NAME');
+            this.appendValueInput('ADD0')
+                .appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
+            this.appendValueInput('ADD1');
+
+            if (returns) {
+                this.setOutput(true, null);
+            } else {
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+            }
+
+            this.setMutator(new Blockly.Mutator(['procs_call_with_item']));
+            this.setTooltip(Blockly.LANG_PROCS_CALL_WITH_TOOLTIP_1);
+            this.itemCount_ = 2;
+          },
+          mutationToDom: function(workspace) {
+            var container = document.createElement('mutation');
+            container.setAttribute('items', this.itemCount_);
+            return container;
+          },
+          domToMutation: function(container) {
+            for (var x = 0; x < this.itemCount_; x++) {
+              this.removeInput('ADD' + x);
+            }
+            this.itemCount_ = window.parseInt(container.getAttribute('items'), 10);
+            for (var x = 0; x < this.itemCount_; x++) {
+              var input = this.appendValueInput('ADD' + x);
+              if (x == 0) {
+                input.appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
+              }
+            }
+            if (this.itemCount_ == 0) {
+              this.appendDummyInput('EMPTY')
+                  .appendTitle(Blockly.LANG_PROCS_CALL_EMPTY_TITLE_1);
+            }
+          },
+          decompose: function(workspace) {
+            var containerBlock = new Blockly.Block(workspace,
+                                                   'procs_call_with_container');
+            containerBlock.initSvg();
+            var connection = containerBlock.getInput('STACK').connection;
+            for (var x = 0; x < this.itemCount_; x++) {
+              var itemBlock = new Blockly.Block(workspace, 'procs_call_with_item');
+              itemBlock.initSvg();
+              connection.connect(itemBlock.previousConnection);
+              connection = itemBlock.nextConnection;
+            }
+            return containerBlock;
+          },
+          compose: function(containerBlock) {
+            // Disconnect all input blocks and remove all inputs.
+            if (this.itemCount_ == 0) {
+              this.removeInput('EMPTY');
+            } else {
+              for (var x = this.itemCount_ - 1; x >= 0; x--) {
+                this.removeInput('ADD' + x);
+              }
+            }
+            this.itemCount_ = 0;
+            // Rebuild the block's inputs.
+            var itemBlock = containerBlock.getInputTargetBlock('STACK');
+            while (itemBlock) {
+              var input = this.appendValueInput('ADD' + this.itemCount_);
+              if (this.itemCount_ == 0) {
+                input.appendTitle(Blockly.LANG_PROCS_CALL_WITH_INPUT_WITH);
+              }
+              // Reconnect any child blocks.
+              if (itemBlock.valueConnection_) {
+                input.connection.connect(itemBlock.valueConnection_);
+              }
+              this.itemCount_++;
+              itemBlock = itemBlock.nextConnection &&
+                  itemBlock.nextConnection.targetBlock();
+            }
+            if (this.itemCount_ == 0) {
+              this.appendDummyInput('EMPTY')
+                  .appendTitle(Blockly.LANG_PROCS_CALL_EMPTY_TITLE_1);
+            }
+          },
+          saveConnections: function(containerBlock) {
+            // Store a pointer to any connected child blocks.
+            var itemBlock = containerBlock.getInputTargetBlock('STACK');
+            var x = 0;
+            while (itemBlock) {
+              var input = this.getInput('ADD' + x);
+              itemBlock.valueConnection_ = input && input.connection.targetConnection;
+              x++;
+              itemBlock = itemBlock.nextConnection &&
+                  itemBlock.nextConnection.targetBlock();
+            }
+          }
+        };
+    }
+
+    Blockly.Language.procs_call_with = makeProcCall(true);
+    Blockly.Language.procs_call_with_no_return = makeProcCall(false);
 
     Blockly.Language.procs_call_with_container = {
       // Container.
@@ -457,6 +478,7 @@ var eflang = (function () {
               'text_print',
 
               'procs_call_with',
+              'procs_call_with_no_return',
               'procs_call_with_item',
               'procs_call_with_container'
           ];
