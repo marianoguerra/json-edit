@@ -17,6 +17,25 @@
     "use strict";
     return [
         [
+            "blockly hint in overlay (addon)",
+            "",
+            {
+                "order": ["code"],
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "title": "Code",
+                        "je:hint": "blockly",
+                        "je:blockly": {
+                            "basePath": "src/addons/blockly/",
+                            "overlay": true
+                        },
+                        "default": "<xml xmlns=\"http://www.w3.org/1999/xhtml\">\n  <block type=\"variables_set\" inline=\"false\" x=\"31\" y=\"42\">\n    <title name=\"VAR\">item</title>\n    <value name=\"VALUE\">\n      <block type=\"math_number\">\n        <title name=\"NUM\">0</title>\n      </block>\n    </value>\n  </block>\n</xml>"
+                    }
+                }
+            }
+        ],
+        [
             "blockly hint (addon)",
             "",
             {

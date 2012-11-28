@@ -13,14 +13,36 @@
     "use strict";
     var
         formatHints = JsonEdit.defaults.hintedFormatters,
-        collectHints = JsonEdit.defaults.hintedCollectors;
+        collectHints = JsonEdit.defaults.hintedCollectors,
+        baseCloseOverlayStyle = {
+            float: "right",
+            "font-size": "small",
+            color: "#333",
+            "text-decoration": "none"
+        },
+        baseOverlayStyle = {
+            position: "fixed",
+            width: "96%",
+            left: 0,
+            top: 0,
+            height: "90%",
+            border: "1px solid #333",
+            "background-color": "#fff",
+            margin: "1%",
+            padding: "1%",
+            "z-index": 10000
+        };
 
     formatHints.string = formatHints.string || {};
 
     formatHints.string.blockly = function (name, type, id, opts, required, priv, util) {
         var
             frameId = NsGen.id("blockly"),
+            overlayId = frameId + "-overlay",
             options = opts["je:blockly"] || {},
+            inOverlay = options.overlay === true,
+            userOverlayStyle = options.overlayStyle || {},
+            userCloseOverlayStyle = options.closeOverlayStyle || {},
             rows = options.rows || 4,
             width = options.width || "99%",
             height = options.height || "20em",
@@ -52,23 +74,76 @@
             }
         };
 
-        return {
-            "iframe": {
-                "id": frameId,
-                "src": basePath + "frame.html?id=" + frameId,
-                "style": "border: 0; width: " + width + "; height: " + height
-            }
-        };
+        if (inOverlay) {
+
+            return {
+                "button": {
+                    "id": frameId,
+                    "$childs": "Edit",
+                    "$click": function (event) {
+                        var
+                            style, closeStyle, closeOverlay, iframe,
+
+                            overlay = $("#" + overlayId);
+
+                        if (overlay.size() !== 0) {
+                            overlay.show();
+                        } else {
+                            style = $.extend(true, {}, baseOverlayStyle, userOverlayStyle);
+                            closeStyle = $.extend(true, {}, baseCloseOverlayStyle, userCloseOverlayStyle);
+                            closeOverlay = $("<a>")
+                                .css(closeStyle)
+                                .attr({"href": "#", "class": "je-blockly-close-overlay"})
+                                .append("close");
+
+                            iframe = {
+                                "iframe": {
+                                    "class": "je-blockly-overlay-editor",
+                                    "src": basePath + "frame.html?id=" + frameId,
+                                    "style": "border: 0; width: 100%; height: 90%"
+                                }
+                            };
+
+                            closeOverlay.click(function () {
+                                $("#" + overlayId).hide();
+                            });
+
+                            $("<div>")
+                                .attr({"class": "je-blockly-overlay", "id": frameId + "-overlay"})
+                                .append(closeOverlay)
+                                .append($.lego(iframe))
+                                .css(style)
+                                .appendTo($("body"));
+                        }
+
+                        event.preventDefault();
+                    }
+                }
+            };
+        } else {
+            return {
+                "iframe": {
+                    "id": frameId,
+                    "class": "je-blockly-editor",
+                    "src": basePath + "frame.html?id=" + frameId,
+                    "style": "border: 0; width: " + width + "; height: " + height
+                }
+            };
+        }
     };
 
     collectHints.string = collectHints.string || {};
 
     collectHints.string.blockly = function (key, field, schema, priv) {
         var
-            iframe = $(field).children("iframe:first"),
-            blockly = iframe.data("blockly"),
+            options = schema["je:blockly"] || {},
+            inOverlay = options.overlay === true,
+            editor = (inOverlay) ? $(field).children("button:first") : $(field).children("iframe:first"),
+            blockly = editor.data("blockly"),
             xmlDom = blockly.Xml.workspaceToDom(blockly.mainWorkspace),
             xmlText = blockly.Xml.domToPrettyText(xmlDom);
+
+        $("#" + editor.attr("id") + "-overlay").remove();
 
         return {result: JsonEdit.makeResult(true, "ok", xmlText), data: xmlText};
     };
