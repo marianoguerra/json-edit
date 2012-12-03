@@ -26,6 +26,7 @@ cat \
 
 uglifyjs langcommon.js > langcommon.min.js
 uglifyjs language.js > language.min.js
+uglifyjs picker.js > picker.min.js
 
-cat blockly_compressed.js jsgenerator.min.js langcommon.min.js language.min.js > eflang.min.js
+cat blockly_compressed.js jsgenerator.min.js langcommon.min.js picker.min.js language.min.js > eflang.min.js
 

@@ -39,6 +39,63 @@ var eflang = (function () {
     Blockly.LANG_OBJS_CREATE_WITH_ITEM_TITLE = 'field';
     Blockly.LANG_OBJS_CREATE_WITH_ITEM_TOOLTIP_1 = 'Add a field to the object.';
 
+    Blockly.LANG_TEXT_COLOR_TOOLTIP = 'Text representing a color in RGB format';
+
+    Blockly.Language.text_color = {
+      // Variable getter.
+      category: "Output",
+      init: function() {
+        var
+            color = "#cc0000",
+            that = this;
+
+        this.setColour(330);
+        this.appendDummyInput()
+            .appendTitle("Color")
+            .appendTitle(new Blockly.FieldColor(color,
+                        function onColorChanged(color) {
+                            that.updateColor(color);
+                        }), 'VAR')
+
+        this.setOutput(true, null);
+        this.setTooltip(Blockly.LANG_TEXT_COLOR_TOOLTIP);
+      },
+      updateColor: function (color) {
+          var
+              fontColor,
+
+              rgb = goog.color.hexToRgb(color),
+              rgbLight = goog.color.lighten(rgb, 0.3),
+              rgbDark = goog.color.darken(rgb, 0.4),
+              colorBrightness = goog.color.yiqBrightness_(rgb);
+              
+          if (colorBrightness > 128) {
+              fontColor = "#000";
+          } else {
+              fontColor = "#fff";
+          }
+
+          this.svg_.svgPathLight_.setAttribute('stroke',
+                                  goog.color.rgbArrayToHex(rgbLight));
+          this.svg_.svgPathDark_.setAttribute('fill',
+                                  goog.color.rgbArrayToHex(rgbDark));
+          this.svg_.svgPath_.setAttribute('fill', color);
+
+          this.inputList[0].titleRow.forEach(function (item, i) {
+              var style = "fill: " + fontColor + ";";
+
+              if (i === 1) {
+                  style += " cursor: pointer;";
+              }
+
+              item.textElement_.setAttribute("style", style);
+          });
+      },
+      getVars: function() {
+        return [];
+      }
+    };
+
     Blockly.Language.variables_outget = {
       // Variable getter.
       category: "Output",
@@ -86,6 +143,11 @@ var eflang = (function () {
       }
     };
 
+    Blockly.JavaScript.text_color = function() {
+      // Variable getter.
+      var code = this.getTitleValue('VAR');
+      return ['"' + code + '"', Blockly.JavaScript.ORDER_ATOMIC];
+    };
 
     Blockly.JavaScript.variables_outget = function() {
       // Variable getter.
@@ -476,6 +538,7 @@ var eflang = (function () {
               'text_changeCase',
               'text_trim',
               'text_print',
+              'text_color',
 
               'procs_call_with',
               'procs_call_with_no_return',
@@ -499,6 +562,117 @@ var eflang = (function () {
 
       window.parent["init" + query.id](Blockly, query.id);
     }
+
+    /**
+     * Class for a non-editable field.
+     * @param {string} text The initial content of the field.
+     * @extends Blockly.Field
+     * @constructor
+     */
+    Blockly.FieldColor = function(text, onColorChange) {
+      var that = this;
+
+      this.sourceBlock_ = null;
+      // Build the DOM.
+      this.textElement_ = Blockly.createSvgElement('text', {
+              'class': 'blocklyText',
+              'style': 'cursor: pointer;'
+          }, null);
+
+      this.textElement_.addEventListener('click', function (event) {
+          var
+              svgDialog_ = Blockly.createSvgElement('svg', {
+                  'x': event.clientX,
+                  'y': event.clientY
+              }, Blockly.mainWorkspace.svgGroup_),
+
+              svgBackground_ = Blockly.createSvgElement('rect', {
+                'class': 'blocklyMutatorBackground',
+                'height': '120',
+                'width': '380'
+              }, svgDialog_),
+
+              foreignObject = Blockly.createSvgElement('foreignObject', {
+                  y: 80,
+                  height: 40,
+                  width: 380
+              }, svgBackground_),
+
+              // Can't use 'Blockly.createSvgElement' since this is not in the SVG NS.
+              body = goog.dom.createDom('body', 'blocklyMinimalBody'),
+              input = goog.dom.createDom('input');
+
+          input.type = "button";
+          input.value = "OK";
+          body.setAttribute("style", "text-align: right; width: 98%; margin: 0; padding: 1%;");
+
+          body.appendChild(input);
+          foreignObject.appendChild(body);
+
+          that.colorPicker = new ColorPicker(svgDialog_, 10, 10, 50, 100, 50);
+          svgDialog_.appendChild(foreignObject);
+
+          input.addEventListener('click', function () {
+              var color = that.colorPicker.getColorRGB();
+              that.setText(color);
+              Blockly.mainWorkspace.svgGroup_.removeChild(svgDialog_);
+              onColorChange(color);
+          });
+      });
+
+      this.size_ = {height: 25, width: 0};
+      this.setText(text);
+    };
+
+    // FieldColor is a subclass of Field.
+    goog.inherits(Blockly.FieldColor, Blockly.Field);
+
+    /**
+     * Editable fields are saved by the XML renderer, non-editable fields are not.
+     */
+    Blockly.FieldColor.prototype.EDITABLE = true;
+
+    /**
+     * Install this text on a block.
+     * @param {!Blockly.Block} block The block containing this text.
+     */
+    Blockly.FieldColor.prototype.init = function(block) {
+      if (this.sourceBlock_) {
+        throw 'Text has already been initialized once.';
+      }
+      this.sourceBlock_ = block;
+      block.getSvgRoot().appendChild(this.textElement_);
+
+      // Configure the field to be transparent with respect to tooltips.
+      this.textElement_.tooltip = this.sourceBlock_;
+      Blockly.Tooltip && Blockly.Tooltip.bindMouseEvents(this.textElement_);
+    };
+
+    /**
+     * Dispose of all DOM objects belonging to this text.
+     */
+    Blockly.FieldColor.prototype.dispose = function() {
+      goog.dom.removeNode(this.textElement_);
+      this.textElement_ = null;
+    };
+
+    /**
+     * Gets the group element for this field.
+     * Used for measuring the size and for positioning.
+     * @return {!Element} The group element.
+     */
+    Blockly.FieldColor.prototype.getRootElement = function() {
+      return /** @type {!Element} */ (this.textElement_);
+    };
+
+    /**
+     * Change the tooltip text for this field.
+     * @param {string|!Element} newTip Text for tooltip or a parent element to
+     *     link to for its tooltip.
+     */
+    Blockly.FieldColor.prototype.setTooltip = function(newTip) {
+      this.textElement_.tooltip = newTip;
+    };
 
     return {
         init: init,
