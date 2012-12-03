@@ -15,6 +15,8 @@ var eflang = (function () {
     Blockly.LANG_VARIABLES_OUTSET_ITEM = 'item';
     Blockly.LANG_VARIABLES_OUTSET_TOOLTIP_1 = 'Sets this output variable to be equal to the input.';
 
+    Blockly.LANG_CONST_OUTGET_TITLE_1 = "get constant";
+    Blockly.LANG_CONST_OUTGET_TOOLTIP_1 = "Returns the value of a constant";
 
     Blockly.LANG_CATEGORY_OBJS = "Objects";
     Blockly.LANG_CATEGORY_PROCS = "Procedures";
@@ -96,6 +98,33 @@ var eflang = (function () {
       }
     };
 
+    Blockly.eflang = {};
+    Blockly.eflang.constants = [["NAME", "NAME"]];
+    Blockly.eflang.constantsPath = "libs.consts.";
+
+    Blockly.Language.const_get = {
+      // Variable getter.
+      category: "Output",
+      init: function() {
+        this.setColour(330);
+        this.appendDummyInput()
+            .appendTitle(Blockly.LANG_CONST_OUTGET_TITLE_1)
+            .appendTitle(new Blockly.FieldDropdown(Blockly.eflang.constants),
+                         'CONST');
+
+        this.setOutput(true, null);
+        this.setTooltip(Blockly.LANG_CONST_OUTGET_TOOLTIP_1);
+      },
+      getVars: function() {
+        return [];
+      },
+      renameVar: function(oldName, newName) {
+        if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
+          this.setTitleValue(newName, 'VAR');
+        }
+      }
+    };
+
     Blockly.Language.variables_outget = {
       // Variable getter.
       category: "Output",
@@ -144,9 +173,13 @@ var eflang = (function () {
     };
 
     Blockly.JavaScript.text_color = function() {
-      // Variable getter.
       var code = this.getTitleValue('VAR');
       return ['"' + code + '"', Blockly.JavaScript.ORDER_ATOMIC];
+    };
+
+    Blockly.JavaScript.const_get = function() {
+      var code = this.getTitleValue('CONST');
+      return [Blockly.eflang.constantsPath + code, Blockly.JavaScript.ORDER_ATOMIC];
     };
 
     Blockly.JavaScript.variables_outget = function() {
@@ -539,6 +572,8 @@ var eflang = (function () {
               'text_trim',
               'text_print',
               'text_color',
+
+              'const_get',
 
               'procs_call_with',
               'procs_call_with_no_return',
