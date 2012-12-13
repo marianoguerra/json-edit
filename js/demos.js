@@ -926,6 +926,26 @@
             }
         ],
         [
+            "Field with integer enumerated values using enum labels (addon)",
+            "",
+            {
+                "order": ["color"],
+                "properties": {
+                    "color": {
+                        "type": "integer",
+                        "title": "Color",
+                        "je:hint": "enumlabels",
+                        "je:enumlabels": {
+                            "1": "Passion Red",
+                            "2": "Really Green",
+                            "3": "Kind of Blue"
+                        },
+                        "enum": [1,2,3]
+                    }
+                }
+            }
+        ],
+        [
             "Field required with only one enumerated value and option hideIfNoSelection",
             "this widget will be hidde since there is nothing to select",
             {
