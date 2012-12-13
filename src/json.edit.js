@@ -1050,14 +1050,15 @@
             inputId = ns.id(fid + "-input", true),
             type = opts.type || getType(opts),
             input = priv.input(fid, type, inputId, opts, required, util),
-            result;
+            result,
+            labelText = opts.title || fid;
 
         result = {
             "div": {
                 "id": id,
                 "class": priv.genFieldClasses(fid, opts, " ", required),
                 "$childs": [
-                    priv.label(opts.title, inputId),
+                    priv.label(labelText, inputId),
                     input
                 ]
             }
