@@ -16,10 +16,13 @@
     }
 }(this, function (JsonEdit) {
     "use strict";
-    var formatHints = JsonEdit.defaults.hintedFormatters;
+    var formatHints = JsonEdit.defaults.hintedFormatters,
+        collectorHints = JsonEdit.defaults.hintedCollectors;
 
     formatHints.string = formatHints.string || {};
     formatHints.array = formatHints.array || {};
+    formatHints.integer = formatHints.integer || {};
+    collectorHints.integer = collectorHints.integer || {};
 
     formatHints.string.enumlabels = function (name, type, id, opts, required, priv, util) {
         var i, obj = priv.formatForType(name, type, id, opts, required, util),
@@ -41,6 +44,28 @@
 
         return obj;
     };
+
+    // add an entry for integers. Same function as for string
+    formatHints.integer.enumlabels = formatHints.string.enumlabels;
+
+    // add a collector hint for integers
+    collectorHints.integer.enumlabels = function(key, field, schema, priv) {
+
+        // The only real diff here is the 'select' instead of 'input'
+        var value, strValue = priv.getChildrenOrSelf(field, "select").val();
+        try {
+            value = JSON.parse(strValue);
+            return {result: priv.validateJson(name, value, schema), data: value};
+        } catch (error) {
+            return {
+                result: priv.collectResult(false, "invalid format", {
+                    error: error.toString()
+                }),
+                data: strValue
+            };
+        }
+    };
+
 
     // will work when array schema has items.enum set
     formatHints.array.enumlabels = formatHints.string.enumlabels;
