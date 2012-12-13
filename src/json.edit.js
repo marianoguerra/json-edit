@@ -1052,11 +1052,12 @@
             input = priv.input(fid, type, inputId, opts, required, util),
             result,
             $childs,
-            label = priv.label(opts.title, inputId);
+            labelText = opts.title || fid,
+            label = priv.label(labelText, inputId);
 
         if (opts.type === 'boolean') {
             label.label.$childs = [input, label.label.$childs];
-            label.label.class = "checkbox";
+            label.label["class"] = "checkbox";
             $childs = [label];
         } else {
             $childs = [
