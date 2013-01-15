@@ -45,7 +45,7 @@
                 priv.isEmptyConfig(val)) {
                 style = "display: none";
             } else if (firstVisible === null) {
-                firstVisible = id;
+                firstVisible = index;
             }
 
             return {
@@ -73,7 +73,7 @@
             container.tabs();
 
             if (firstVisible !== null) {
-                container.tabs("select", firstVisible);
+                container.tabs("option", "active", firstVisible);
             }
         });
 
