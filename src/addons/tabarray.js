@@ -84,7 +84,7 @@
                 addTab(i, true);
             }
 
-            $("#" + id + " span.ui-icon-close").live("click", function () {
+            $("#" + id + " span.ui-icon-close").on("click", function () {
                 var index = $("li", $tabs).index($(this).parent());
                 $tabs.tabs("remove", index);
             });
