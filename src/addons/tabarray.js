@@ -59,7 +59,12 @@
 
             wrapper.append(content);
             $tabs.append(wrapper);
-            $tabs.tabs("add", "#" + itemId, " ");
+            $("<li><a href='#" + itemId + "'> </a></li>")
+                .appendTo($tabs.find(".ui-tabs-nav"));
+            $tabs.tabs("refresh");
+            if (!$tabs.tabs("option", "active")) {
+                $tabs.tabs("option", "active", 0);
+            }
         }
 
         addButton = {
