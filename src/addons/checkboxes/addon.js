@@ -21,17 +21,20 @@
     formatHints.array = formatHints.array || {};
 
     formatHints.array.checkboxes = function (name, type, id, opts, required, priv, util) {
-        var i, checkboxDiv, checkboxes = [], value, defaultValues = opts["default"] || [];
+        var i, checkboxDiv, checkboxes = [], value, label,
+            defaultValues = opts["default"] || [],
+            enumlabels = opts["je:enumlabels"] || {};
 
         for (i = 0; i < opts.items['enum'].length; i += 1) {
             value = opts.items['enum'][i];
+            label = enumlabels[value] || value;
             checkboxDiv = {
                 "div": {
                     "class": "json-edit-checkbox",
                     "$childs": [{
                         "label": {
                             "for": value,
-                            "$childs": [value]
+                            "$childs": [label]
                         }
                     }, {
                         "input": {
