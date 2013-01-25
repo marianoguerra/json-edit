@@ -27,7 +27,6 @@
             value = opts.items['enum'][i];
             checkboxDiv = {
                 "div": {
-                    "id": id + "-" + "checkboxDiv-" + value,
                     "class": "json-edit-checkbox",
                     "$childs": [{
                         "label": {
@@ -37,7 +36,6 @@
                     }, {
                         "input": {
                             "type": "checkbox",
-                            "id": id + "-" + "checkbox-" + value,
                             "name": value,
                             "value": value
                         }
@@ -52,7 +50,7 @@
         }
 
         return {"div": {
-                "id": "checklist",
+                "id": id + "-checklist",
                 "class": "json-edit-checklist",
                 "$childs": checkboxes
             }
