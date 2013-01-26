@@ -26,7 +26,7 @@
             left: 0,
             top: 0,
             height: "90%",
-            border: "1px solid #333",
+            border: "1px solid #DFDFDF",
             "background-color": "#fff",
             margin: "1%",
             padding: "1%",
@@ -40,6 +40,7 @@
             frameId = NsGen.id("blockly"),
             overlayId = frameId + "-overlay",
             options = opts["je:blockly"] || {},
+            onBlocklyLoaded = options.onBlocklyLoaded,
             inOverlay = options.overlay === true,
             userOverlayStyle = options.overlayStyle || {},
             userCloseOverlayStyle = options.closeOverlayStyle || {},
@@ -71,6 +72,10 @@
                     Blockly.mainWorkspace.clear();
                     Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
                 }
+            }
+
+            if (onBlocklyLoaded) {
+                onBlocklyLoaded(Blockly);
             }
         };
 
@@ -106,6 +111,7 @@
 
                             closeOverlay.click(function () {
                                 $("#" + overlayId).hide();
+                                return false;
                             });
 
                             $("<div>")
