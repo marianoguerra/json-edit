@@ -435,6 +435,83 @@ var eflang = (function () {
       }
     };
 
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_HELPURL = 'http://en.wikipedia.org/wiki/For_loop';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM = 'for each key: ';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_VAR = 'x';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST = 'in object';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO = 'do';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_TOOLTIP = 'For each key, value in an object, set the key to\n' + 
+        'variable "%1", value to variable "%2" and then do some statements.';
+    Blockly.Language.controls_forEach_object = {
+      // For each loop.
+      category: Blockly.LANG_CATEGORY_OBJS,
+      helpUrl: Blockly.LANG_CONTROLS_FOREACH_OBJ_HELPURL,
+      init: function() {
+        this.setColour(120);
+        this.appendValueInput('OBJ')
+            .setCheck(Array)
+            .appendTitle(Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
+            .appendTitle(new Blockly.FieldVariable(null), 'KEY')
+            .appendTitle(", value: ")
+            .appendTitle(new Blockly.FieldVariable(null), 'VAL')
+            .appendTitle(Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
+        this.appendStatementInput('DO')
+            .appendTitle(Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        // Assign 'this' to a variable for use in the tooltip closure below.
+        var thisBlock = this;
+        this.setTooltip(function() {
+          return Blockly.LANG_CONTROLS_FOREACH_OBJ_TOOLTIP
+              .replace('%1', thisBlock.getTitleValue('KEY'))
+              .replace('%2', thisBlock.getTitleValue('VAL'));
+        });
+      },
+      getVars: function() {
+        return [this.getTitleValue('KEY'), this.getTitleValue('VAL')];
+      },
+      renameVar: function(oldName, newName) {
+        if (Blockly.Names.equals(oldName, this.getTitleValue('KEY'))) {
+          this.setTitleValue(newName, 'KEY');
+        } else if (Blockly.Names.equals(oldName, this.getTitleValue('VAL'))) {
+          this.setTitleValue(newName, 'VAL');
+        }
+      }
+    };
+
+    Blockly.JavaScript.controls_forEach_object = function() {
+      // For each loop over an object
+      var key = Blockly.JavaScript.variableDB_.getName(
+          this.getTitleValue('KEY'), Blockly.Variables.NAME_TYPE);
+      var value = Blockly.JavaScript.variableDB_.getName(
+          this.getTitleValue('VAL'), Blockly.Variables.NAME_TYPE);
+      var argument0 = Blockly.JavaScript.valueToCode(this, 'OBJ',
+          Blockly.JavaScript.ORDER_ASSIGNMENT) || '[]';
+      var branch = Blockly.JavaScript.statementToCode(this, 'DO');
+      if (Blockly.JavaScript.INFINITE_LOOP_TRAP) {
+        branch = Blockly.JavaScript.INFINITE_LOOP_TRAP.replace(/%1/g,
+            '\'' + this.id + '\'') + branch;
+      }
+      var code;
+      if (argument0.match(/^\w+$/)) {
+        branch = '  ' + value + ' = ' + argument0 + '[' + key + '];\n' +
+            branch;
+        code = 'for (var ' + key + ' in  ' + argument0 + ') {\n' +
+            branch + '}\n';
+      } else {
+        // The list appears to be more complicated than a simple variable.
+        // Cache it to a variable to prevent repeated look-ups.
+        var listVar = Blockly.JavaScript.variableDB_.getDistinctName(
+            key + '_list', Blockly.Variables.NAME_TYPE);
+        branch = '  ' + value + ' = ' + listVar + '[' + key + '];\n' +
+            branch;
+        code = 'var ' + listVar + ' = ' + argument0 + ';\n' +
+            'for (var ' + key + ' in ' + listVar + ') {\n' +
+            branch + '}\n';
+      }
+      return code;
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
             key, value;
@@ -471,6 +548,8 @@ var eflang = (function () {
               'controls_for',
               'controls_forEach',
               'controls_flow_statements',
+
+              'controls_forEach_object',
 
               'math_number',
               'math_arithmetic',
