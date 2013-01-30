@@ -2,7 +2,7 @@
  * Visual Blocks Language
  *
  * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
+ * http://blockly.googlecode.com/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@
  */
 'use strict';
 
+goog.provide('Blockly.JavaScript');
+
+goog.require('Blockly.CodeGenerator');
+
 Blockly.JavaScript = Blockly.Generator.get('JavaScript');
 
 /**
@@ -32,12 +36,8 @@ Blockly.JavaScript = Blockly.Generator.get('JavaScript');
  * accidentally clobbering a built-in object or function.
  * @private
  */
-if (!Blockly.JavaScript.RESERVED_WORDS_) {
-  Blockly.JavaScript.RESERVED_WORDS_ = '';
-}
-
-Blockly.JavaScript.RESERVED_WORDS_ +=
-    'Blockly', // In case JS is evaled in the current window.
+Blockly.JavaScript.addReservedWords(
+    'Blockly,' +  // In case JS is evaled in the current window.
     // https://developer.mozilla.org/en/JavaScript/Reference/Reserved_Words
     'break,case,catch,continue,debugger,default,delete,do,else,finally,for,function,if,in,instanceof,new,return,switch,this,throw,try,typeof,var,void,while,with,' +
     'class,enum,export,extends,import,super,implements,interface,let,package,private,protected,public,static,yield,' +
@@ -58,7 +58,7 @@ Blockly.JavaScript.RESERVED_WORDS_ +=
     'SVGAngle,SVGColor,SVGICCColor,SVGElementInstance,SVGElementInstanceList,SVGLength,SVGLengthList,SVGMatrix,SVGNumber,SVGNumberList,SVGPaint,SVGPoint,SVGPointList,SVGPreserveAspectRatio,SVGRect,SVGStringList,SVGTransform,SVGTransformList,' +
     'SVGAnimatedAngle,SVGAnimatedBoolean,SVGAnimatedEnumeration,SVGAnimatedInteger,SVGAnimatedLength,SVGAnimatedLengthList,SVGAnimatedNumber,SVGAnimatedNumberList,SVGAnimatedPreserveAspectRatio,SVGAnimatedRect,SVGAnimatedString,SVGAnimatedTransformList,' +
     'SVGPathSegList,SVGPathSeg,SVGPathSegArcAbs,SVGPathSegArcRel,SVGPathSegClosePath,SVGPathSegCurvetoCubicAbs,SVGPathSegCurvetoCubicRel,SVGPathSegCurvetoCubicSmoothAbs,SVGPathSegCurvetoCubicSmoothRel,SVGPathSegCurvetoQuadraticAbs,SVGPathSegCurvetoQuadraticRel,SVGPathSegCurvetoQuadraticSmoothAbs,SVGPathSegCurvetoQuadraticSmoothRel,SVGPathSegLinetoAbs,SVGPathSegLinetoHorizontalAbs,SVGPathSegLinetoHorizontalRel,SVGPathSegLinetoRel,SVGPathSegLinetoVerticalAbs,SVGPathSegLinetoVerticalRel,SVGPathSegMovetoAbs,SVGPathSegMovetoRel,ElementTimeControl,TimeEvent,SVGAnimatedPathData,' +
-    'SVGAnimatedPoints,SVGColorProfileRule,SVGCSSRule,SVGExternalResourcesRequired,SVGFitToViewBox,SVGLangSpace,SVGLocatable,SVGRenderingIntent,SVGStylable,SVGTests,SVGTextContentElement,SVGTextPositioningElement,SVGTransformable,SVGUnitTypes,SVGURIReference,SVGViewSpec,SVGZoomAndPan,';
+    'SVGAnimatedPoints,SVGColorProfileRule,SVGCSSRule,SVGExternalResourcesRequired,SVGFitToViewBox,SVGLangSpace,SVGLocatable,SVGRenderingIntent,SVGStylable,SVGTests,SVGTextContentElement,SVGTextPositioningElement,SVGTransformable,SVGUnitTypes,SVGURIReference,SVGViewSpec,SVGZoomAndPan');
 
 /**
  * Order of operation ENUMs.
@@ -98,6 +98,14 @@ Blockly.JavaScript.ORDER_COMMA = 17;         // ,
 Blockly.JavaScript.ORDER_NONE = 99;          // (...)
 
 /**
+ * Arbitrary code to inject into locations that risk causing infinite loops.
+ * Any instances of '%1' will be replaced by the block ID that failed.
+ * E.g. '  checkTimeout(%1);\n'
+ * @type ?string
+ */
+Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+
+/**
  * Initialise the database of variable names.
  */
 Blockly.JavaScript.init = function() {
@@ -116,7 +124,7 @@ Blockly.JavaScript.init = function() {
     var variables = Blockly.Variables.allVariables();
     for (var x = 0; x < variables.length; x++) {
       defvars[x] = 'var ' +
-          Blockly.JavaScript.variableDB_.getDistinctName(variables[x],
+          Blockly.JavaScript.variableDB_.getName(variables[x],
           Blockly.Variables.NAME_TYPE) + ';';
     }
     Blockly.JavaScript.definitions_['variables'] = defvars.join('\n');

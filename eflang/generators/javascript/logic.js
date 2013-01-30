@@ -2,7 +2,7 @@
  * Visual Blocks Language
  *
  * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
+ * http://blockly.googlecode.com/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@
 
 /**
  * @fileoverview Generating JavaScript for logic blocks.
- * @author fraser@google.com (Neil Fraser)
+ * @author q.neutron@gmail.com (Quynh Neutron)
  */
 'use strict';
 
-Blockly.JavaScript = Blockly.Generator.get('JavaScript');
+goog.provide('Blockly.JavaScript.logic');
+
+goog.require('Blockly.JavaScript');
 
 Blockly.JavaScript.logic_compare = function() {
   // Comparison operator.
@@ -70,4 +72,21 @@ Blockly.JavaScript.logic_boolean = function() {
   // Boolean values true and false.
   var code = (this.getTitleValue('BOOL') == 'TRUE') ? 'true' : 'false';
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.logic_null = function() {
+  // Null data type.
+  return ['null', Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript.logic_ternary = function() {
+  // Ternary operator.
+  var value_if = Blockly.JavaScript.valueToCode(this, 'IF',
+      Blockly.JavaScript.ORDER_CONDITIONAL) || 'false';
+  var value_then = Blockly.JavaScript.valueToCode(this, 'THEN',
+      Blockly.JavaScript.ORDER_CONDITIONAL) || 'null';
+  var value_else = Blockly.JavaScript.valueToCode(this, 'ELSE',
+      Blockly.JavaScript.ORDER_CONDITIONAL) || 'null';
+  var code = value_if + ' ? ' + value_then + ' : ' + value_else
+  return [code, Blockly.JavaScript.ORDER_CONDITIONAL];
 };

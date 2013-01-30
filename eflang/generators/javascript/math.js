@@ -2,7 +2,7 @@
  * Visual Blocks Language
  *
  * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
+ * http://blockly.googlecode.com/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@
 
 /**
  * @fileoverview Generating JavaScript for math blocks.
- * @author fraser@google.com (Neil Fraser)
+ * @author q.neutron@gmail.com (Quynh Neutron)
  */
 'use strict';
 
-Blockly.JavaScript = Blockly.Generator.get('JavaScript');
+goog.provide('Blockly.JavaScript.math');
+
+goog.require('Blockly.JavaScript');
 
 Blockly.JavaScript.math_number = function() {
   // Numeric value.
@@ -55,16 +57,6 @@ Blockly.JavaScript.math_arithmetic.OPERATORS = {
   MULTIPLY: [' * ', Blockly.JavaScript.ORDER_MULTIPLICATION],
   DIVIDE: [' / ', Blockly.JavaScript.ORDER_DIVISION],
   POWER: [null, Blockly.JavaScript.ORDER_COMMA]  // Handle power separately.
-};
-
-Blockly.JavaScript.math_change = function() {
-  // Add to a variable in place.
-  var argument0 = Blockly.JavaScript.valueToCode(this, 'DELTA',
-      Blockly.JavaScript.ORDER_ADDITION) || '0';
-  var varName = Blockly.JavaScript.variableDB_.getName(
-      this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
-  return varName + ' = (typeof ' + varName + ' == \'number\' ? ' + varName +
-      ' : 0) + ' + argument0 + ';\n';
 };
 
 Blockly.JavaScript.math_single = function() {
@@ -149,6 +141,94 @@ Blockly.JavaScript.math_single = function() {
       throw 'Unknown math operator: ' + operator;
   }
   return [code, Blockly.JavaScript.ORDER_DIVISION];
+};
+
+Blockly.JavaScript.math_constant = function() {
+  // Constants: PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2), INFINITY.
+  var constant = this.getTitleValue('CONSTANT');
+  return Blockly.JavaScript.math_constant.CONSTANTS[constant];
+};
+
+Blockly.JavaScript.math_constant.CONSTANTS = {
+  PI: ['Math.PI', Blockly.JavaScript.ORDER_MEMBER],
+  E: ['Math.E', Blockly.JavaScript.ORDER_MEMBER],
+  GOLDEN_RATIO: ['(1 + Math.sqrt(5)) / 2', Blockly.JavaScript.ORDER_DIVISION],
+  SQRT2: ['Math.SQRT2', Blockly.JavaScript.ORDER_MEMBER],
+  SQRT1_2: ['Math.SQRT1_2', Blockly.JavaScript.ORDER_MEMBER],
+  INFINITY: ['Infinity', Blockly.JavaScript.ORDER_ATOMIC]
+};
+
+Blockly.JavaScript.math_number_property = function() {
+  // Check if a number is even, odd, prime, whole, positive, or negative
+  // or if it is divisible by certain number. Returns true or false.
+  var number_to_check = Blockly.JavaScript.valueToCode(this, 'NUMBER_TO_CHECK',
+      Blockly.JavaScript.ORDER_MODULUS) || 'NaN';
+  var dropdown_property = this.getTitleValue('PROPERTY');
+  var code;
+  if (dropdown_property == 'PRIME') {
+    // Prime is a special case as it is not a one-liner test.
+    if (!Blockly.JavaScript.definitions_['isPrime']) {
+      var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
+          'isPrime', Blockly.Generator.NAME_TYPE);
+      Blockly.JavaScript.logic_prime= functionName;
+      var func = [];
+      func.push('function ' + functionName + '(n) {');
+      func.push('  // http://en.wikipedia.org/wiki/Primality_test#Naive_methods');
+      func.push('  if (n == 2 || n == 3) {');
+      func.push('    return true;');
+      func.push('  }');
+      func.push('  // False if n is NaN, negative, is 1, or not whole.');
+      func.push('  // And false if n is divisible by 2 or 3.');
+      func.push('  if (isNaN(n) || n <= 1 || n % 1 != 0 || n % 2 == 0 ||' +
+                ' n % 3 == 0) {');
+      func.push('    return false;');
+      func.push('  }');
+      func.push('  // Check all the numbers of form 6k +/- 1, up to sqrt(n).');
+      func.push('  for (var x = 6; x <= Math.sqrt(n) + 1; x += 6) {');
+      func.push('    if (n % (x - 1) == 0 || n % (x + 1) == 0) {');
+      func.push('      return false;');
+      func.push('    }');
+      func.push('  }');
+      func.push('  return true;');
+      func.push('}');
+      Blockly.JavaScript.definitions_['isPrime'] = func.join('\n');
+    }
+    code = Blockly.JavaScript.logic_prime + '(' + number_to_check + ')';
+    return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  }
+  switch (dropdown_property) {
+    case 'EVEN':
+      code = number_to_check + ' % 2 == 0';
+      break;
+    case 'ODD':
+      code = number_to_check + ' % 2 == 1';
+      break;
+    case 'WHOLE':
+      code = number_to_check + ' % 1 == 0';
+      break;
+    case 'POSITIVE':
+      code = number_to_check + ' > 0';
+      break;
+    case 'NEGATIVE':
+      code = number_to_check + ' < 0';
+      break;
+    case 'DIVISIBLE_BY':
+      var divisor = Blockly.JavaScript.valueToCode(this, 'DIVISOR',
+          Blockly.JavaScript.ORDER_MODULUS) || 'NaN';
+      code = number_to_check + ' % ' + divisor + ' == 0';
+      break;
+  }
+  return [code, Blockly.JavaScript.ORDER_EQUALITY];
+};
+
+Blockly.JavaScript.math_change = function() {
+  // Add to a variable in place.
+  var argument0 = Blockly.JavaScript.valueToCode(this, 'DELTA',
+      Blockly.JavaScript.ORDER_ADDITION) || '0';
+  var varName = Blockly.JavaScript.variableDB_.getName(
+      this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
+  return varName + ' = (typeof ' + varName + ' == \'number\' ? ' + varName +
+      ' : 0) + ' + argument0 + ';\n';
 };
 
 // Rounding functions have a single operand.
@@ -310,19 +390,6 @@ Blockly.JavaScript.math_on_list = function() {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-Blockly.JavaScript.math_constrain = function() {
-  // Constrain a number between two limits.
-  var argument0 = Blockly.JavaScript.valueToCode(this, 'VALUE',
-      Blockly.JavaScript.ORDER_COMMA) || '0';
-  var argument1 = Blockly.JavaScript.valueToCode(this, 'LOW',
-      Blockly.JavaScript.ORDER_COMMA) || '0';
-  var argument2 = Blockly.JavaScript.valueToCode(this, 'HIGH',
-      Blockly.JavaScript.ORDER_COMMA) || '0';
-  var code = 'Math.min(Math.max(' + argument0 + ', ' + argument1 + '), ' +
-      argument2 + ')';
-  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
-};
-
 Blockly.JavaScript.math_modulo = function() {
   // Remainder computation.
   var argument0 = Blockly.JavaScript.valueToCode(this, 'DIVIDEND',
@@ -331,6 +398,19 @@ Blockly.JavaScript.math_modulo = function() {
       Blockly.JavaScript.ORDER_MODULUS) || '0';
   var code = argument0 + ' % ' + argument1;
   return [code, Blockly.JavaScript.ORDER_MODULUS];
+};
+
+Blockly.JavaScript.math_constrain = function() {
+  // Constrain a number between two limits.
+  var argument0 = Blockly.JavaScript.valueToCode(this, 'VALUE',
+      Blockly.JavaScript.ORDER_COMMA) || '0';
+  var argument1 = Blockly.JavaScript.valueToCode(this, 'LOW',
+      Blockly.JavaScript.ORDER_COMMA) || '0';
+  var argument2 = Blockly.JavaScript.valueToCode(this, 'HIGH',
+      Blockly.JavaScript.ORDER_COMMA) || 'Infinity';
+  var code = 'Math.min(Math.max(' + argument0 + ', ' + argument1 + '), ' +
+      argument2 + ')';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
 Blockly.JavaScript.math_random_int = function() {

@@ -2,7 +2,7 @@
  * Visual Blocks Language
  *
  * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
+ * http://blockly.googlecode.com/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,19 @@
  */
 'use strict';
 
-Blockly.JavaScript = Blockly.Generator.get('JavaScript');
+goog.provide('Blockly.JavaScript.procedures');
+
+goog.require('Blockly.JavaScript');
 
 Blockly.JavaScript.procedures_defreturn = function() {
   // Define a procedure with a return value.
   var funcName = Blockly.JavaScript.variableDB_.getName(
       this.getTitleValue('NAME'), Blockly.Procedures.NAME_TYPE);
   var branch = Blockly.JavaScript.statementToCode(this, 'STACK');
+  if (Blockly.JavaScript.INFINITE_LOOP_TRAP) {
+    branch = Blockly.JavaScript.INFINITE_LOOP_TRAP.replace(/%1/g,
+        '\'' + this.id + '\'') + branch;
+  }
   var returnValue = Blockly.JavaScript.valueToCode(this, 'RETURN',
       Blockly.JavaScript.ORDER_NONE) || '';
   if (returnValue) {
@@ -78,15 +84,18 @@ Blockly.JavaScript.procedures_callnoreturn = function() {
   return code;
 };
 
-Blockly.JavaScript.procedures_return = function() {
-  // Return value in a procedure
-  var value = Blockly.JavaScript.valueToCode(this, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC);
-  var code = "return "+value+";\n";
+Blockly.JavaScript.procedures_ifreturn = function() {
+  // Conditionally return value from a procedure.
+  var condition = Blockly.JavaScript.valueToCode(this, 'CONDITION',
+      Blockly.JavaScript.ORDER_NONE) || 'false';
+  var code = 'if (' + condition + ') {\n';
+  if (this.hasReturnValue_) {
+    var value = Blockly.JavaScript.valueToCode(this, 'VALUE',
+        Blockly.JavaScript.ORDER_NONE) || 'null';
+    code += '  return ' + value + ';\n';
+  } else {
+    code += '  return;\n';
+  }
+  code += '}\n';
   return code;
-};
-
-Blockly.JavaScript.procedures_null = function() {
-  // Return nothing
-  var code = 'null';
-  return [code ,Blockly.JavaScript.ORDER_NONE];
 };

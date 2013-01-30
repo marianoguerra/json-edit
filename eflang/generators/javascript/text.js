@@ -2,7 +2,7 @@
  * Visual Blocks Language
  *
  * Copyright 2012 Google Inc.
- * http://code.google.com/p/blockly/
+ * http://blockly.googlecode.com/
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,9 @@
  */
 'use strict';
 
-Blockly.JavaScript = Blockly.Generator.get('JavaScript');
+goog.provide('Blockly.JavaScript.text');
+
+goog.require('Blockly.JavaScript');
 
 Blockly.JavaScript.text = function() {
   // Text value.
@@ -79,7 +81,7 @@ Blockly.JavaScript.text_isEmpty = function() {
   // Is the string null?
   var argument0 = Blockly.JavaScript.valueToCode(this, 'VALUE',
       Blockly.JavaScript.ORDER_MEMBER) || '\'\'';
-  return ['!' + argument0 + '.length', Blockly.JavaScript.ORDER_LOGICAL_NOT];
+  return ['!' + argument0, Blockly.JavaScript.ORDER_LOGICAL_NOT];
 };
 
 Blockly.JavaScript.text_endString = function() {
@@ -121,20 +123,50 @@ Blockly.JavaScript.text_indexOf = function() {
 
 Blockly.JavaScript.text_charAt = function() {
   // Get letter at index.
-  var argument0 = Blockly.JavaScript.valueToCode(this, 'AT',
-      Blockly.JavaScript.ORDER_NONE) || '1';
-  var argument1 = Blockly.JavaScript.valueToCode(this, 'VALUE',
+  // Note: Until January 2013 this block did not have the WHERE input.
+  var where = this.getTitleValue('WHERE') || 'FROM_START';
+  var at = Blockly.JavaScript.valueToCode(this, 'AT',
+      Blockly.JavaScript.ORDER_UNARY_NEGATION) || '1';
+  var text = Blockly.JavaScript.valueToCode(this, 'VALUE',
       Blockly.JavaScript.ORDER_MEMBER) || '\'\'';
-  // Blockly uses one-based indicies.
-  if (argument0.match(/^-?\d+$/)) {
-    // If the index is a naked number, decrement it right now.
-    argument0 = parseInt(argument0, 10) - 1;
-  } else {
-    // If the index is dynamic, decrement it in code.
-    argument0 += ' - 1';
+  switch (where) {
+    case 'FIRST':
+      var code = text + '.charAt(0)';
+      return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+    case 'LAST':
+      var code = text + '.slice(-1)';
+      return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+    case 'FROM_START':
+      // Blockly uses one-based indicies.
+      if (at.match(/^-?\d+$/)) {
+        // If the index is a naked number, decrement it right now.
+        at = parseInt(at, 10) - 1;
+      } else {
+        // If the index is dynamic, decrement it in code.
+        at += ' - 1';
+      }
+      var code = text + '.charAt(' + at + ')';
+      return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+    case 'FROM_END':
+      var code = text + '.slice(-' + at + ').charAt(0)';
+      return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+    case 'RANDOM':
+      if (!Blockly.JavaScript.definitions_['text_random_letter']) {
+        var functionName = Blockly.JavaScript.variableDB_.getDistinctName(
+            'text_random_letter', Blockly.Generator.NAME_TYPE);
+        Blockly.JavaScript.text_charAt.text_random_letter = functionName;
+        var func = [];
+        func.push('function ' + functionName + '(text) {');
+        func.push('  var x = Math.floor(Math.random() * text.length);');
+        func.push('  return text[x];');
+        func.push('}');
+        Blockly.JavaScript.definitions_['text_random_letter'] = func.join('\n');
+      }
+      code = Blockly.JavaScript.text_charAt.text_random_letter +
+          '(' + text + ')';
+      return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
   }
-  var code = argument1 + '[' + argument0 + ']';
-  return [code, Blockly.JavaScript.ORDER_MEMBER];
+  throw 'Unhandled option (text_charAt).';
 };
 
 Blockly.JavaScript.text_changeCase = function() {
@@ -185,9 +217,9 @@ Blockly.JavaScript.text_trim = function() {
 };
 
 Blockly.JavaScript.text_trim.OPERATORS = {
-  LEFT: '.replace(/^\\s+/, \'\')',
-  RIGHT: '.replace(/\\s+$/, \'\')',
-  BOTH: '.replace(/^\\s+|\\s+$/g, \'\')'
+  LEFT: '.trimLeft()',
+  RIGHT: '.trimRight()',
+  BOTH: '.trim()'
 };
 
 Blockly.JavaScript.text_print = function() {
