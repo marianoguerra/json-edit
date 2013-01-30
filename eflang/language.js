@@ -512,6 +512,86 @@ var eflang = (function () {
       return code;
     };
 
+    Blockly.LANG_LISTS_OPS_INPUT_IN_LIST = 'in list';
+    Blockly.LANG_LISTS_OPS_TOOLTIP_APPEND = "Append an item to a list.";
+    Blockly.LANG_LISTS_OPS_APPEND = "append";
+
+    Blockly.Language.lists_ops = {
+      // apply operations to lists
+      category: Blockly.LANG_CATEGORY_LISTS,
+      //helpUrl: Blockly.LANG_LISTS_GET_INDEX_HELPURL,
+      init: function() {
+        this.setColour(210);
+        var modeMenu = new Blockly.FieldDropdown(this.MODE, function(value) {
+          var isStatement = (value == 'APPEND');
+          this.sourceBlock_.updateStatement(isStatement);
+        });
+        this.appendDummyInput()
+            .appendTitle(modeMenu, 'MODE');
+        this.appendValueInput('ITEM')
+            .appendTitle("item");
+        this.appendValueInput('VALUE')
+            .setCheck(Array)
+            .appendTitle(Blockly.LANG_LISTS_OPS_INPUT_IN_LIST);
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.updateStatement(true);
+        // Assign 'this' to a variable for use in the tooltip closure below.
+        var thisBlock = this;
+        this.setTooltip(function() {
+          var combo = thisBlock.getTitleValue('MODE');
+          return Blockly['LANG_LISTS_OPS_TOOLTIP_' + combo];
+        });
+      },
+      mutationToDom: function() {
+        // Save whether the block is a statement or a value.
+        // Save whether there is an 'AT' input.
+        var container = document.createElement('mutation');
+        var isStatement = !this.outputConnection;
+        container.setAttribute('statement', isStatement);
+        return container;
+      },
+      domToMutation: function(xmlElement) {
+        // Restore the block shape.
+        // Note: Until January 2013 this block did not have mutations,
+        // so 'statement' defaults to false and 'at' defaults to true.
+        var isStatement = (xmlElement.getAttribute('statement') == 'true');
+        this.updateStatement(isStatement);
+      },
+      updateStatement: function(newStatement) {
+        // Switch between a value block and a statement block.
+        var oldStatement = !this.outputConnection;
+        if (newStatement != oldStatement) {
+          this.unplug(true, true);
+          if (newStatement) {
+            this.setOutput(false);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+          } else {
+            this.setPreviousStatement(false);
+            this.setNextStatement(false);
+            this.setOutput(true);
+          }
+        }
+      }
+    };
+
+    Blockly.JavaScript.lists_ops = function() {
+      var mode = this.getTitleValue('MODE');
+      var item = Blockly.JavaScript.valueToCode(this, 'ITEM',
+          Blockly.JavaScript.ORDER_UNARY_NEGATION) || "null";
+      var list = Blockly.JavaScript.valueToCode(this, 'VALUE',
+          Blockly.JavaScript.ORDER_MEMBER) || '[]';
+
+      if (mode === "APPEND") {
+          return list + ".push(" + item + ");\n";
+      }
+
+      throw 'Unhandled combination (lists_ops).';
+    };
+
+    Blockly.Language.lists_ops.MODE = [[Blockly.LANG_LISTS_OPS_APPEND, 'APPEND']];
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
             key, value;
@@ -572,6 +652,7 @@ var eflang = (function () {
               'lists_indexOf',
               'lists_getIndex',
               'lists_setIndex',
+              'lists_ops',
               
               'logic_operation',
               'logic_compare',
