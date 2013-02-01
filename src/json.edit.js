@@ -923,7 +923,7 @@
     defaults.collectors.integer = defaults.collectors.number;
 
     defaults.collectors.boolean = function (name, field, schema) {
-        var value = (priv.getChildrenOrSelf(field, "input").attr("checked") === "checked");
+        var value = priv.getChildrenOrSelf(field, "input").prop("checked");
 
         return {result: priv.validateJson(name, value, schema), data: value};
     };
