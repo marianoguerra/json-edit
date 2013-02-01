@@ -1074,9 +1074,9 @@
             }
         };
 
-        if (priv.hasOption(opts, "hideIfNoSelection") &&
-            input.select &&
-            input.select.$childs.length === 1) {
+        if (priv.hasOption(opts, "hide") ||
+            (priv.hasOption(opts, "hideIfNoSelection") &&
+             input.select && input.select.$childs.length === 1)) {
 
             result.div.style = "display: none";
         }
