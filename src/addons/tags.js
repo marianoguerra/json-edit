@@ -60,7 +60,7 @@
                 assignedTags: defaultValues,
                 availableTags: availableValues,
                 allowAdd: allowAdd,
-                autocomplete: true,
+                //autocomplete: true,
                 maxTags: maxTags
             });
         });
