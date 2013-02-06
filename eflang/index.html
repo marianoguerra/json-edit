@@ -69,7 +69,8 @@
       $("#blockly-to-js-from-xml").click(onToJsFromXmlClick);
     }
 
-    $("#blocky-ide").attr({src: "frame.html?id=" + id});
+    $("body").append($("<iframe style='width: 100%; height: 100%; border: 0;' src='frame.html?id=" + id + "'></iframe>"));
+    //$("#blocky-ide").attr({src: "frame.html?id=" + id});
    });
   </script>
 </head>
@@ -81,6 +82,8 @@
 
 
 
+ <!-- <iframe id="blocky-ide" style="width: 100%; height: 100%; border: 0;"></iframe> -->
+ <textarea id="textarea_xml" rows=15 cols=80></textarea>
  <xml id="toolbox" style="display: none">
    <category name="Control">
      <block type="controls_if"></block>
@@ -207,8 +210,5 @@
    <category name="Variables" custom="VARIABLE"></category>
    <category name="Procedures" custom="PROCEDURE"></category>
  </xml>
-
- <iframe id="blocky-ide" style="width: 100%; height: 100%; border: 0;"></iframe>
- <textarea id="textarea_xml" rows=15 cols=80></textarea>
 </body>
 </html>
