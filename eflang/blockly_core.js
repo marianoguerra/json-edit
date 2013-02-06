@@ -8,6 +8,7 @@ goog.require('Blockly.BlockSvg');
 goog.require('Blockly.Bubble');
 goog.require('Blockly.CodeGenerator');
 goog.require('Blockly.Comment');
+goog.require('Blockly.Component');
 goog.require('Blockly.Connection');
 goog.require('Blockly.ConnectionDB');
 goog.require('Blockly.ContextMenu');
@@ -23,6 +24,7 @@ goog.require('Blockly.Flyout');
 goog.require('Blockly.Generator');
 goog.require('Blockly.Input');
 goog.require('Blockly.Language');
+goog.require('Blockly.Metrics');
 goog.require('Blockly.Mutator');
 goog.require('Blockly.Names');
 goog.require('Blockly.Procedures');
@@ -39,5 +41,6 @@ goog.require('Blockly.Xml');
 goog.require('Blockly.inject');
 goog.require('Blockly.renaming_map');
 goog.require('Blockly.utils');
+goog.require('goog.debug.ErrorHandler');
 
 

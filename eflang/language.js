@@ -188,7 +188,7 @@ var eflang = (function () {
       // Create a list with any number of elements of any type.
       category: Blockly.LANG_CATEGORY_OBJS,
       helpUrl: '',
-      addField: function (num) {
+      addField: function (num, title) {
         var input = this.appendValueInput('FIELD' + num)
 
         //if (num === 0) {
@@ -198,7 +198,7 @@ var eflang = (function () {
         input
             .appendTitle("key")
             .appendTitle(new Blockly.FieldTextInput(
-            Blockly.LANG_VARIABLES_OUTSET_ITEM), 'FIELD' + num)
+                title || Blockly.LANG_VARIABLES_OUTSET_ITEM), 'FIELD' + num)
             .appendTitle(":");
 
         return input;
@@ -245,19 +245,25 @@ var eflang = (function () {
         return containerBlock;
       },
       compose: function(containerBlock) {
+        var oldInputs = [];
         // Disconnect all input blocks and remove all inputs.
         if (this.itemCount_ == 0) {
           this.removeInput('EMPTY');
         } else {
           for (var x = this.itemCount_ - 1; x >= 0; x--) {
+            oldInputs.push(this.getInput('FIELD' + x));
             this.removeInput('FIELD' + x);
           }
         }
+
+        oldInputs.reverse();
         this.itemCount_ = 0;
         // Rebuild the block's inputs.
         var itemBlock = containerBlock.getInputTargetBlock('STACK');
         while (itemBlock) {
-          var input = this.addField(this.itemCount_);
+          var oldInput = oldInputs[this.itemCount_],
+              oldTitle = (oldInput) ? oldInput.titleRow[1].getText() : null,
+              input = this.addField(this.itemCount_, oldTitle);
 
           // Reconnect any child blocks.
           if (itemBlock.valueConnection_) {
@@ -627,7 +633,7 @@ var eflang = (function () {
     Blockly.Language.lists_ops.MODE = [[Blockly.LANG_LISTS_OPS_APPEND, 'APPEND']];
 
     Blockly.LANG_CONTROLS_ENUMERATE_HELPURL = 'http://en.wikipedia.org/wiki/For_loop';
-    Blockly.LANG_CONTROLS_ENUMERATE_INPUT_ITEM = 'for each item';
+    Blockly.LANG_CONTROLS_ENUMERATE_INPUT_ITEM = 'for each';
     Blockly.LANG_CONTROLS_ENUMERATE_INPUT_VAR = 'x';
     Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INDEX = '#';
     Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INLIST = 'in list';
@@ -643,7 +649,7 @@ var eflang = (function () {
         this.appendValueInput('LIST')
             .setCheck(Array)
             .appendTitle(Blockly.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
-            .appendTitle(new Blockly.FieldVariable("list"), 'VAR')
+            .appendTitle(new Blockly.FieldVariable("item"), 'VAR')
             .appendTitle(Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
             .appendTitle(new Blockly.FieldVariable("i"), 'INDEX')
             .appendTitle(Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
@@ -730,6 +736,7 @@ var eflang = (function () {
     function init() {
       // Whitelist of blocks to keep.
       var
+          toolbox,
           query = parseQuery(),
           newLanguage = {},
           keepers = [
@@ -815,8 +822,8 @@ var eflang = (function () {
         newLanguage[keepers[x]] = Blockly.Language[keepers[x]];
       }
 
-      Blockly.Language = newLanguage;
-      Blockly.inject(document.body, {path: './'});
+      toolbox = window.parent.document.getElementById('toolbox');
+      Blockly.inject(document.body, {path: './', toolbox: toolbox});
 
       window.parent["init" + query.id](Blockly, query.id);
     }
