@@ -51,12 +51,12 @@ Blockly.MSG_NEW_VARIABLE_TITLE = 'New variable name:';
 Blockly.MSG_RENAME_VARIABLE = 'Rename variable...';
 Blockly.MSG_RENAME_VARIABLE_TITLE = 'Rename all "%1" variables to:';
 
+// TODO(neil): Did you want to remove these?  There was still code referring to them.
 // Toolbox.
 Blockly.MSG_VARIABLE_CATEGORY = 'Variables';
 Blockly.MSG_PROCEDURE_CATEGORY = 'Procedures';
 
 // Colour Blocks.
-Blockly.LANG_CATEGORY_COLOUR = 'Colour';
 Blockly.LANG_COLOUR_PICKER_HELPURL = 'http://en.wikipedia.org/wiki/Color';
 Blockly.LANG_COLOUR_PICKER_TOOLTIP = 'Choose a colour form the palette.';
 
@@ -76,7 +76,6 @@ Blockly.LANG_COLOUR_BLEND_RATIO = 'ratio';
 Blockly.LANG_COLOUR_BLEND_TOOLTIP = 'Blends two colours together with a given ratio (0.0 - 1.0).';
 
 // Control Blocks.
-Blockly.LANG_CATEGORY_CONTROLS = 'Control';
 Blockly.LANG_CONTROLS_IF_HELPURL = 'http://code.google.com/p/blockly/wiki/If_Then';
 Blockly.LANG_CONTROLS_IF_TOOLTIP_1 = 'If a value is true, then do some statements.';
 Blockly.LANG_CONTROLS_IF_TOOLTIP_2 = 'If a value is true, then do the first block of statements.\n' +
@@ -145,7 +144,6 @@ Blockly.LANG_CONTROLS_FLOW_STATEMENTS_WARNING = 'Warning:\n' +
     'be used within a loop.';
 
 // Logic Blocks.
-Blockly.LANG_CATEGORY_LOGIC = 'Logic';
 Blockly.LANG_LOGIC_COMPARE_HELPURL = 'http://en.wikipedia.org/wiki/Inequality_(mathematics)';
 Blockly.LANG_LOGIC_COMPARE_TOOLTIP_EQ = 'Return true if both inputs equal each other.';
 Blockly.LANG_LOGIC_COMPARE_TOOLTIP_NEQ = 'Return true if both inputs are not equal to each other.';
@@ -186,7 +184,6 @@ Blockly.LANG_LOGIC_TERNARY_TOOLTIP = 'Check the condition in "test". If the cond
     'returns the "if true" value, otherwise returns the "if false" value.';
 
 // Math Blocks.
-Blockly.LANG_CATEGORY_MATH = 'Math';
 Blockly.LANG_MATH_NUMBER_HELPURL = 'http://en.wikipedia.org/wiki/Number';
 Blockly.LANG_MATH_NUMBER_TOOLTIP = 'A number.';
 
@@ -284,7 +281,6 @@ Blockly.LANG_MATH_RANDOM_FLOAT_TOOLTIP = 'Return a random fraction between\n' +
     '0.0 (inclusive) and 1.0 (exclusive).';
 
 // Text Blocks.
-Blockly.LANG_CATEGORY_TEXT = 'Text';
 Blockly.LANG_TEXT_TEXT_HELPURL = 'http://en.wikipedia.org/wiki/String_(computer_science)';
 Blockly.LANG_TEXT_TEXT_TOOLTIP = 'A letter, word, or line of text.';
 
@@ -370,7 +366,6 @@ Blockly.LANG_TEXT_PROMPT_TYPE_TEXT = 'text';
 Blockly.LANG_TEXT_PROMPT_TYPE_NUMBER = 'number';
 
 // Lists Blocks.
-Blockly.LANG_CATEGORY_LISTS = 'Lists';
 Blockly.LANG_LISTS_CREATE_EMPTY_HELPURL = 'http://en.wikipedia.org/wiki/Linked_list#Empty_lists';
 Blockly.LANG_LISTS_CREATE_EMPTY_TITLE = 'create empty list';
 Blockly.LANG_LISTS_CREATE_EMPTY_TOOLTIP = 'Returns a list, of length 0, containing no data records';
@@ -452,11 +447,13 @@ Blockly.LANG_VARIABLES_GET_HELPURL = 'http://en.wikipedia.org/wiki/Variable_(com
 Blockly.LANG_VARIABLES_GET_TITLE = 'get';
 Blockly.LANG_VARIABLES_GET_ITEM = 'item';
 Blockly.LANG_VARIABLES_GET_TOOLTIP = 'Returns the value of this variable.';
+Blockly.LANG_VARIABLES_GET_CREATE_SET = 'Create "set %1"';
 
 Blockly.LANG_VARIABLES_SET_HELPURL = 'http://en.wikipedia.org/wiki/Variable_(computer_science)';
 Blockly.LANG_VARIABLES_SET_TITLE = 'set';
 Blockly.LANG_VARIABLES_SET_ITEM = 'item';
 Blockly.LANG_VARIABLES_SET_TOOLTIP = 'Sets this variable to be equal to the input.';
+Blockly.LANG_VARIABLES_SET_CREATE_GET = 'Create "get %1"';
 
 // Procedures Blocks.
 Blockly.LANG_PROCEDURES_DEFNORETURN_HELPURL = 'http://en.wikipedia.org/wiki/Procedure_%28computer_science%29';
@@ -488,6 +485,7 @@ Blockly.LANG_PROCEDURES_MUTATORCONTAINER_TITLE = 'parameters';
 Blockly.LANG_PROCEDURES_MUTATORARG_TITLE = 'variable:';
 
 Blockly.LANG_PROCEDURES_HIGHLIGHT_DEF = 'Highlight Procedure';
+Blockly.LANG_PROCEDURES_CREATE_DO = 'Create "do %1"';
 
 Blockly.LANG_PROCEDURES_IFRETURN_TOOLTIP = 'If a value is true, then return a value.';
 Blockly.LANG_PROCEDURES_IFRETURN_WARNING = 'Warning:\n' +
@@ -524,7 +522,6 @@ goog.require('Blockly.Language');
 
 Blockly.Language.controls_if = {
   // If/elseif/else condition.
-  category: Blockly.LANG_CATEGORY_CONTROLS,
   helpUrl: Blockly.LANG_CONTROLS_IF_HELPURL,
   init: function() {
     this.setColour(120);
@@ -714,7 +711,6 @@ Blockly.Language.controls_if_else = {
 
 Blockly.Language.controls_repeat = {
   // Repeat n times.
-  category: Blockly.LANG_CATEGORY_CONTROLS,
   helpUrl: Blockly.LANG_CONTROLS_REPEAT_HELPURL,
   init: function() {
     this.setColour(120);
@@ -733,7 +729,6 @@ Blockly.Language.controls_repeat = {
 
 Blockly.Language.controls_whileUntil = {
   // Do while/until loop.
-  category: Blockly.LANG_CATEGORY_CONTROLS,
   helpUrl: Blockly.LANG_CONTROLS_WHILEUNTIL_HELPURL,
   init: function() {
     this.setColour(120);
@@ -765,7 +760,6 @@ Blockly.Language.controls_whileUntil.TOOLTIPS = {
 
 Blockly.Language.controls_for = {
   // For loop.
-  category: Blockly.LANG_CATEGORY_CONTROLS,
   helpUrl: Blockly.LANG_CONTROLS_FOR_HELPURL,
   init: function() {
     this.setColour(120);
@@ -799,12 +793,19 @@ Blockly.Language.controls_for = {
     if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
       this.setTitleValue(newName, 'VAR');
     }
+  },
+  customContextMenu: function(options) {
+    var option = {enabled: true};
+    var name = this.getTitleValue('VAR');
+    option.text = Blockly.LANG_VARIABLES_SET_CREATE_GET.replace('%1', name);
+    option.callback = Blockly.ContextMenu.callbackFactory(this,
+        'variables_get', 'VAR', name);
+    options.push(option);
   }
 };
 
 Blockly.Language.controls_forEach = {
   // For each loop.
-  category: Blockly.LANG_CATEGORY_CONTROLS,
   helpUrl: Blockly.LANG_CONTROLS_FOREACH_HELPURL,
   init: function() {
     this.setColour(120);
@@ -831,12 +832,19 @@ Blockly.Language.controls_forEach = {
     if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
       this.setTitleValue(newName, 'VAR');
     }
+  },
+  customContextMenu: function(options) {
+    var option = {enabled: true};
+    var name = this.getTitleValue('VAR');
+    option.text = Blockly.LANG_VARIABLES_SET_CREATE_GET.replace('%1', name);
+    option.callback = Blockly.ContextMenu.callbackFactory(this,
+        'variables_get', 'VAR', name);
+    options.push(option);
   }
 };
 
 Blockly.Language.controls_flow_statements = {
   // Flow statements: continue, break.
-  category: Blockly.LANG_CATEGORY_CONTROLS,
   helpUrl: Blockly.LANG_CONTROLS_FLOW_STATEMENTS_HELPURL,
   init: function() {
     this.setColour(120);
@@ -917,7 +925,6 @@ goog.require('Blockly.Language');
 
 Blockly.Language.logic_compare = {
   // Comparison operator.
-  category: Blockly.LANG_CATEGORY_LOGIC,
   helpUrl: Blockly.LANG_LOGIC_COMPARE_HELPURL,
   init: function() {
     this.setColour(120);
@@ -954,7 +961,6 @@ Blockly.Language.logic_compare.TOOLTIPS = {
 
 Blockly.Language.logic_operation = {
   // Logical operations: 'and', 'or'.
-  category: Blockly.LANG_CATEGORY_LOGIC,
   helpUrl: Blockly.LANG_LOGIC_OPERATION_HELPURL,
   init: function() {
     this.setColour(120);
@@ -985,7 +991,6 @@ Blockly.Language.logic_operation.TOOLTIPS = {
 
 Blockly.Language.logic_negate = {
   // Negation.
-  category: Blockly.LANG_CATEGORY_LOGIC,
   helpUrl: Blockly.LANG_LOGIC_NEGATE_HELPURL,
   init: function() {
     this.setColour(120);
@@ -999,7 +1004,6 @@ Blockly.Language.logic_negate = {
 
 Blockly.Language.logic_boolean = {
   // Boolean data type: true and false.
-  category: Blockly.LANG_CATEGORY_LOGIC,
   helpUrl: Blockly.LANG_LOGIC_BOOLEAN_HELPURL,
   init: function() {
     this.setColour(120);
@@ -1016,7 +1020,6 @@ Blockly.Language.logic_boolean.BOOLEANS =
 
 Blockly.Language.logic_null = {
   // Null data type.
-  category: Blockly.LANG_CATEGORY_LOGIC,
   helpUrl: Blockly.LANG_LOGIC_NULL_HELPURL,
   init: function() {
     this.setColour(120);
@@ -1029,7 +1032,6 @@ Blockly.Language.logic_null = {
 
 Blockly.Language.logic_ternary = {
   // Ternary operator.
-  category: Blockly.LANG_CATEGORY_LOGIC,
   helpUrl: Blockly.LANG_LOGIC_TERNARY_HELPURL,
   init: function() {
     this.setColour(120);
@@ -1078,7 +1080,6 @@ goog.require('Blockly.Language');
 
 Blockly.Language.math_number = {
   // Numeric value.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_NUMBER_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1092,7 +1093,6 @@ Blockly.Language.math_number = {
 
 Blockly.Language.math_arithmetic = {
   // Basic arithmetic operator.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_ARITHMETIC_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1129,7 +1129,6 @@ Blockly.Language.math_arithmetic.TOOLTIPS = {
 
 Blockly.Language.math_single = {
   // Advanced math operators with single operand.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_SINGLE_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1167,7 +1166,6 @@ Blockly.Language.math_single.TOOLTIPS = {
 
 Blockly.Language.math_trig = {
   // Trigonometry operators.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_TRIG_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1203,7 +1201,6 @@ Blockly.Language.math_trig.TOOLTIPS = {
 
 Blockly.Language.math_constant = {
   // Constants: PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2), INFINITY.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_CONSTANT_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1225,7 +1222,6 @@ Blockly.Language.math_constant.CONSTANTS =
 Blockly.Language.math_number_property = {
   // Check if a number is even, odd, prime, whole, positive, or negative
   // or if it is divisible by certain number. Returns true or false.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: '',
   init: function() {
     this.setColour(230);
@@ -1278,7 +1274,6 @@ Blockly.Language.math_number_property.PROPERTIES =
 
 Blockly.Language.math_change = {
   // Add to a variable in place.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_CHANGE_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1309,7 +1304,6 @@ Blockly.Language.math_change = {
 
 Blockly.Language.math_round = {
   // Rounding functions.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_ROUND_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1329,7 +1323,6 @@ Blockly.Language.math_round.OPERATORS =
 Blockly.Language.math_on_list = {
   // Evaluate a list of numbers to return sum, average, min, max, etc.
   // Some functions also work on text (min, max, mode, median).
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_ONLIST_HELPURL,
   init: function() {
     // Assign 'this' to a variable for use in the closures below.
@@ -1377,7 +1370,6 @@ Blockly.Language.math_on_list.TOOLTIPS = {
 
 Blockly.Language.math_modulo = {
   // Remainder of a division.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_MODULO_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1396,7 +1388,6 @@ Blockly.Language.math_modulo = {
 
 Blockly.Language.math_constrain = {
   // Constrain a number between two limits.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_CONSTRAIN_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1417,7 +1408,6 @@ Blockly.Language.math_constrain = {
 
 Blockly.Language.math_random_int = {
   // Random integer between [X] and [Y].
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_RANDOM_INT_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1436,7 +1426,6 @@ Blockly.Language.math_random_int = {
 
 Blockly.Language.math_random_float = {
   // Random fraction between 0 and 1.
-  category: Blockly.LANG_CATEGORY_MATH,
   helpUrl: Blockly.LANG_MATH_RANDOM_FLOAT_HELPURL,
   init: function() {
     this.setColour(230);
@@ -1477,7 +1466,6 @@ goog.require('Blockly.Language');
 
 Blockly.Language.text = {
   // Text value.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_TEXT_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1494,7 +1482,6 @@ Blockly.Language.text = {
 
 Blockly.Language.text_join = {
   // Create a string made up of any number of elements of any type.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_JOIN_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1617,7 +1604,6 @@ Blockly.Language.text_create_join_item = {
 
 Blockly.Language.text_append = {
   // Append to a variable in place.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_APPEND_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1647,7 +1633,6 @@ Blockly.Language.text_append = {
 
 Blockly.Language.text_length = {
   // String length.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_LENGTH_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1661,7 +1646,6 @@ Blockly.Language.text_length = {
 
 Blockly.Language.text_isEmpty = {
   // Is the string null?
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_ISEMPTY_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1675,7 +1659,6 @@ Blockly.Language.text_isEmpty = {
 
 Blockly.Language.text_endString = {
   // Return a leading or trailing substring.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_ENDSTRING_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1698,7 +1681,6 @@ Blockly.Language.text_endString.OPERATORS =
 
 Blockly.Language.text_indexOf = {
   // Find a substring in the text.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_INDEXOF_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1722,7 +1704,6 @@ Blockly.Language.text_indexOf.OPERATORS =
 
 Blockly.Language.text_charAt = {
   // Get a character from the string.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_CHARAT_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1786,7 +1767,6 @@ Blockly.Language.text_charAt.WHERE =
 
 Blockly.Language.text_changeCase = {
   // Change capitalization.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_CHANGECASE_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1806,7 +1786,6 @@ Blockly.Language.text_changeCase.OPERATORS =
 
 Blockly.Language.text_trim = {
   // Trim spaces.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_TRIM_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1848,7 +1827,6 @@ Blockly.Language.text_trim.OPERATORS =
 
 Blockly.Language.text_print = {
   // Print statement.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_PRINT_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1862,7 +1840,6 @@ Blockly.Language.text_print = {
 
 Blockly.Language.text_prompt = {
   // Prompt function.
-  category: Blockly.LANG_CATEGORY_TEXT,
   helpUrl: Blockly.LANG_TEXT_PROMPT_HELPURL,
   init: function() {
     this.setColour(160);
@@ -1914,7 +1891,6 @@ goog.require('Blockly.Language');
 
 Blockly.Language.lists_create_empty = {
   // Create an empty list.
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: Blockly.LANG_LISTS_CREATE_EMPTY_HELPURL,
   init: function() {
     this.setColour(210);
@@ -1927,7 +1903,6 @@ Blockly.Language.lists_create_empty = {
 
 Blockly.Language.lists_create_with = {
   // Create a list with any number of elements of any type.
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: '',
   init: function() {
     this.setColour(210);
@@ -2045,7 +2020,6 @@ Blockly.Language.lists_create_with_item = {
 
 Blockly.Language.lists_repeat = {
   // Create a list with one element repeated.
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: Blockly.LANG_LISTS_REPEAT_HELPURL,
   init: function() {
     this.setColour(210);
@@ -2064,7 +2038,6 @@ Blockly.Language.lists_repeat = {
 
 Blockly.Language.lists_length = {
   // List length.
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: Blockly.LANG_LISTS_LENGTH_HELPURL,
   init: function() {
     this.setColour(210);
@@ -2078,7 +2051,6 @@ Blockly.Language.lists_length = {
 
 Blockly.Language.lists_isEmpty = {
   // Is the list empty?
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: Blockly.LANG_LISTS_IS_EMPTY_HELPURL,
   init: function() {
     this.setColour(210);
@@ -2092,7 +2064,6 @@ Blockly.Language.lists_isEmpty = {
 
 Blockly.Language.lists_indexOf = {
   // Find an item in the list.
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: Blockly.LANG_LISTS_INDEX_OF_HELPURL,
   init: function() {
     this.setColour(210);
@@ -2115,7 +2086,6 @@ Blockly.Language.lists_indexOf.OPERATORS =
 
 Blockly.Language.lists_getIndex = {
   // Get element at index.
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: Blockly.LANG_LISTS_GET_INDEX_HELPURL,
   init: function() {
     this.setColour(210);
@@ -2217,7 +2187,6 @@ Blockly.Language.lists_getIndex.WHERE =
 
 Blockly.Language.lists_setIndex = {
   // Set element at index.
-  category: Blockly.LANG_CATEGORY_LISTS,
   helpUrl: Blockly.LANG_LISTS_SET_INDEX_HELPURL,
   init: function() {
     this.setColour(210);
@@ -2266,7 +2235,6 @@ goog.require('Blockly.Language');
 
 Blockly.Language.colour_picker = {
   // Colour picker.
-  category: Blockly.LANG_CATEGORY_COLOUR,
   helpUrl: Blockly.LANG_COLOUR_PICKER_HELPURL,
   init: function() {
     this.setColour(20);
@@ -2279,7 +2247,6 @@ Blockly.Language.colour_picker = {
 
 Blockly.Language.colour_rgb = {
   // Compose a colour from RGB components.
-  category: Blockly.LANG_CATEGORY_COLOUR,
   helpUrl: Blockly.LANG_COLOUR_RGB_HELPURL,
   init: function() {
     this.setColour(20);
@@ -2303,7 +2270,6 @@ Blockly.Language.colour_rgb = {
 
 Blockly.Language.colour_blend = {
   // Blend two colours together.
-  category: Blockly.LANG_CATEGORY_COLOUR,
   helpUrl: Blockly.LANG_COLOUR_BLEND_HELPURL,
   init: function() {
     this.setColour(20);
@@ -2373,6 +2339,14 @@ Blockly.Language.variables_get = {
     if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
       this.setTitleValue(newName, 'VAR');
     }
+  },
+  customContextMenu: function(options) {
+    var option = {enabled: true};
+    var name = this.getTitleValue('VAR');
+    option.text = Blockly.LANG_VARIABLES_GET_CREATE_SET.replace('%1', name);
+    option.callback = Blockly.ContextMenu.callbackFactory(this,
+        'variables_set', 'VAR', name);
+    options.push(option);
   }
 };
 
@@ -2397,6 +2371,14 @@ Blockly.Language.variables_set = {
     if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
       this.setTitleValue(newName, 'VAR');
     }
+  },
+  customContextMenu: function(options) {
+    var option = {enabled: true};
+    var name = this.getTitleValue('VAR');
+    option.text = Blockly.LANG_VARIABLES_SET_CREATE_GET.replace('%1', name);
+    option.callback = Blockly.ContextMenu.callbackFactory(this,
+        'variables_get', 'VAR', name);
+    options.push(option);
   }
 };
 /**
@@ -2558,7 +2540,26 @@ Blockly.Language.procedures_defnoreturn = {
         }
       }
     }
-  }
+  },
+  customContextMenu: function(options) {
+    // Add option to create caller.
+    var option = {enabled: true};
+    var name = this.getTitleValue('NAME');
+    option.text = Blockly.LANG_PROCEDURES_CREATE_DO.replace('%1', name);
+    option.callback = Blockly.ContextMenu.callbackFactory(this,
+        this.callType_, 'NAME', name);
+    options.push(option);
+    // Add options to create getters for each parameter.
+    for (var x = 0; x < this.arguments_.length; x++) {
+      var option = {enabled: true};
+      var name = this.arguments_[x];
+      option.text = Blockly.LANG_VARIABLES_SET_CREATE_GET.replace('%1', name);
+      option.callback = Blockly.ContextMenu.callbackFactory(this,
+          'variables_get', 'VAR', name);
+      options.push(option);
+    }
+  },
+  callType_: 'procedures_callnoreturn'
 };
 
 Blockly.Language.procedures_defreturn = {
@@ -2595,7 +2596,9 @@ Blockly.Language.procedures_defreturn = {
     return [this.getTitleValue('NAME'), this.arguments_, true];
   },
   getVars: Blockly.Language.procedures_defnoreturn.getVars,
-  renameVar: Blockly.Language.procedures_defnoreturn.renameVar
+  renameVar: Blockly.Language.procedures_defnoreturn.renameVar,
+  customContextMenu: Blockly.Language.procedures_defnoreturn.customContextMenu,
+  callType_: 'procedures_callreturn'
 };
 
 Blockly.Language.procedures_mutatorcontainer = {
@@ -2812,7 +2815,6 @@ Blockly.Language.procedures_callreturn = {
 
 Blockly.Language.procedures_ifreturn = {
   // Conditionally return value from a procedure.
-  category: null,
   helpUrl: 'http://c2.com/cgi/wiki?GuardClause',
   init: function() {
     this.setColour(290);

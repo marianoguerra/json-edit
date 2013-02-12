@@ -37,7 +37,7 @@
         var
             options = opts["je:textarea"] || {},
             rows = options.rows || 4,
-            width = options.width || "99%",
+            width = options.width || "100%",
             dataType  = options.type || "text",
             content = opts["default"] || "";
 

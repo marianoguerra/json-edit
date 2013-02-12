@@ -359,7 +359,7 @@
         }];
 
         if (conf.allowAdd !== false) {
-            addButton = button("add", function () {
+            addButton = button("Add", function () {
                 onAddClick(opts.items);
             });
 

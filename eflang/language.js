@@ -135,6 +135,40 @@ var eflang = (function () {
       return "env." + varName + ' = ' + argument0 + ';\n';
     };
 
+    Blockly.LANG_VARIABLES_GETPATH_TITLE = "get var path";
+    Blockly.LANG_VARIABLES_GETPATH_ITEM = "item.child";
+    Blockly.LANG_VARIABLES_GETPATH_TOOLTIP = 'Returns the value of this path.';
+
+    Blockly.Language.variables_getpath = {
+      // Variable getter.
+      category: "Output",
+      //category: Blockly.MSG_VARIABLE_CATEGORY,
+      helpUrl: Blockly.LANG_VARIABLES_GET_HELPURL,
+      init: function() {
+        this.setColour(330);
+        this.appendDummyInput()
+            .appendTitle(Blockly.LANG_VARIABLES_GETPATH_TITLE)
+            .appendTitle(new Blockly.FieldTextInput(
+            Blockly.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
+        this.setOutput(true, null);
+        this.setTooltip(Blockly.LANG_VARIABLES_GETPATH_TOOLTIP);
+      },
+      getVars: function() {
+        return [];
+      },
+      renameVar: function(oldName, newName) {
+        if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
+          this.setTitleValue(newName, 'VAR');
+        }
+      }
+    };
+
+    Blockly.JavaScript.variables_getpath = function() {
+      // Variable getter.
+      var code = this.getTitleValue('VAR');
+      return [code, Blockly.JavaScript.ORDER_ATOMIC];
+    };
+
     Blockly.JavaScript.objs_create_with = function() {
       // Create a list with any number of elements of any type.
       var
@@ -154,7 +188,7 @@ var eflang = (function () {
       // Create a list with any number of elements of any type.
       category: Blockly.LANG_CATEGORY_OBJS,
       helpUrl: '',
-      addField: function (num) {
+      addField: function (num, title) {
         var input = this.appendValueInput('FIELD' + num)
 
         //if (num === 0) {
@@ -164,7 +198,7 @@ var eflang = (function () {
         input
             .appendTitle("key")
             .appendTitle(new Blockly.FieldTextInput(
-            Blockly.LANG_VARIABLES_OUTSET_ITEM), 'FIELD' + num)
+                title || Blockly.LANG_VARIABLES_OUTSET_ITEM), 'FIELD' + num)
             .appendTitle(":");
 
         return input;
@@ -211,19 +245,25 @@ var eflang = (function () {
         return containerBlock;
       },
       compose: function(containerBlock) {
+        var oldInputs = [];
         // Disconnect all input blocks and remove all inputs.
         if (this.itemCount_ == 0) {
           this.removeInput('EMPTY');
         } else {
           for (var x = this.itemCount_ - 1; x >= 0; x--) {
+            oldInputs.push(this.getInput('FIELD' + x));
             this.removeInput('FIELD' + x);
           }
         }
+
+        oldInputs.reverse();
         this.itemCount_ = 0;
         // Rebuild the block's inputs.
         var itemBlock = containerBlock.getInputTargetBlock('STACK');
         while (itemBlock) {
-          var input = this.addField(this.itemCount_);
+          var oldInput = oldInputs[this.itemCount_],
+              oldTitle = (oldInput) ? oldInput.titleRow[1].getText() : null,
+              input = this.addField(this.itemCount_, oldTitle);
 
           // Reconnect any child blocks.
           if (itemBlock.valueConnection_) {
@@ -435,6 +475,243 @@ var eflang = (function () {
       }
     };
 
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_HELPURL = 'http://en.wikipedia.org/wiki/For_loop';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM = 'for each ';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_VAR = 'x';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST = 'in object';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO = 'do';
+    Blockly.LANG_CONTROLS_FOREACH_OBJ_TOOLTIP = 'For each key, value in an object, set the key to\n' + 
+        'variable "%1", value to variable "%2" and then do some statements.';
+    Blockly.Language.controls_forEach_object = {
+      // For each loop.
+      category: Blockly.LANG_CATEGORY_OBJS,
+      helpUrl: Blockly.LANG_CONTROLS_FOREACH_OBJ_HELPURL,
+      init: function() {
+        this.setColour(120);
+        this.appendValueInput('OBJ')
+            .setCheck(Array)
+            .appendTitle(Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
+            .appendTitle(new Blockly.FieldVariable("key"), 'KEY')
+            .appendTitle(", ")
+            .appendTitle(new Blockly.FieldVariable("value"), 'VAL')
+            .appendTitle(Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
+        this.appendStatementInput('DO')
+            .appendTitle(Blockly.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        // Assign 'this' to a variable for use in the tooltip closure below.
+        var thisBlock = this;
+        this.setTooltip(function() {
+          return Blockly.LANG_CONTROLS_FOREACH_OBJ_TOOLTIP
+              .replace('%1', thisBlock.getTitleValue('KEY'))
+              .replace('%2', thisBlock.getTitleValue('VAL'));
+        });
+      },
+      getVars: function() {
+        return [this.getTitleValue('KEY'), this.getTitleValue('VAL')];
+      },
+      renameVar: function(oldName, newName) {
+        if (Blockly.Names.equals(oldName, this.getTitleValue('KEY'))) {
+          this.setTitleValue(newName, 'KEY');
+        } else if (Blockly.Names.equals(oldName, this.getTitleValue('VAL'))) {
+          this.setTitleValue(newName, 'VAL');
+        }
+      }
+    };
+
+    Blockly.JavaScript.controls_forEach_object = function() {
+      // For each loop over an object
+      var key = Blockly.JavaScript.variableDB_.getName(
+          this.getTitleValue('KEY'), Blockly.Variables.NAME_TYPE);
+      var value = Blockly.JavaScript.variableDB_.getName(
+          this.getTitleValue('VAL'), Blockly.Variables.NAME_TYPE);
+      var argument0 = Blockly.JavaScript.valueToCode(this, 'OBJ',
+          Blockly.JavaScript.ORDER_ASSIGNMENT) || '[]';
+      var branch = Blockly.JavaScript.statementToCode(this, 'DO');
+      if (Blockly.JavaScript.INFINITE_LOOP_TRAP) {
+        branch = Blockly.JavaScript.INFINITE_LOOP_TRAP.replace(/%1/g,
+            '\'' + this.id + '\'') + branch;
+      }
+      var code;
+      if (argument0.match(/^\w+$/)) {
+        branch = '  ' + value + ' = ' + argument0 + '[' + key + '];\n' +
+            branch;
+        code = 'for (var ' + key + ' in  ' + argument0 + ') {\n' +
+            branch + '}\n';
+      } else {
+        // The list appears to be more complicated than a simple variable.
+        // Cache it to a variable to prevent repeated look-ups.
+        var listVar = Blockly.JavaScript.variableDB_.getDistinctName(
+            key + '_list', Blockly.Variables.NAME_TYPE);
+        branch = '  ' + value + ' = ' + listVar + '[' + key + '];\n' +
+            branch;
+        code = 'var ' + listVar + ' = ' + argument0 + ';\n' +
+            'for (var ' + key + ' in ' + listVar + ') {\n' +
+            branch + '}\n';
+      }
+      return code;
+    };
+
+    Blockly.LANG_LISTS_OPS_INPUT_IN_LIST = 'in list';
+    Blockly.LANG_LISTS_OPS_TOOLTIP_APPEND = "Append an item to a list.";
+    Blockly.LANG_LISTS_OPS_APPEND = "append";
+
+    Blockly.Language.lists_ops = {
+      // apply operations to lists
+      category: Blockly.LANG_CATEGORY_LISTS,
+      //helpUrl: Blockly.LANG_LISTS_GET_INDEX_HELPURL,
+      init: function() {
+        this.setColour(210);
+        var modeMenu = new Blockly.FieldDropdown(this.MODE, function(value) {
+          var isStatement = (value == 'APPEND');
+          this.sourceBlock_.updateStatement(isStatement);
+        });
+        this.appendDummyInput()
+            .appendTitle(modeMenu, 'MODE');
+        this.appendValueInput('ITEM')
+            .appendTitle("item");
+        this.appendValueInput('VALUE')
+            .setCheck(Array)
+            .appendTitle(Blockly.LANG_LISTS_OPS_INPUT_IN_LIST);
+        this.setInputsInline(true);
+        this.setOutput(true, null);
+        this.updateStatement(true);
+        // Assign 'this' to a variable for use in the tooltip closure below.
+        var thisBlock = this;
+        this.setTooltip(function() {
+          var combo = thisBlock.getTitleValue('MODE');
+          return Blockly['LANG_LISTS_OPS_TOOLTIP_' + combo];
+        });
+      },
+      mutationToDom: function() {
+        // Save whether the block is a statement or a value.
+        // Save whether there is an 'AT' input.
+        var container = document.createElement('mutation');
+        var isStatement = !this.outputConnection;
+        container.setAttribute('statement', isStatement);
+        return container;
+      },
+      domToMutation: function(xmlElement) {
+        // Restore the block shape.
+        // Note: Until January 2013 this block did not have mutations,
+        // so 'statement' defaults to false and 'at' defaults to true.
+        var isStatement = (xmlElement.getAttribute('statement') == 'true');
+        this.updateStatement(isStatement);
+      },
+      updateStatement: function(newStatement) {
+        // Switch between a value block and a statement block.
+        var oldStatement = !this.outputConnection;
+        if (newStatement != oldStatement) {
+          this.unplug(true, true);
+          if (newStatement) {
+            this.setOutput(false);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+          } else {
+            this.setPreviousStatement(false);
+            this.setNextStatement(false);
+            this.setOutput(true);
+          }
+        }
+      }
+    };
+
+    Blockly.JavaScript.lists_ops = function() {
+      var mode = this.getTitleValue('MODE');
+      var item = Blockly.JavaScript.valueToCode(this, 'ITEM',
+          Blockly.JavaScript.ORDER_UNARY_NEGATION) || "null";
+      var list = Blockly.JavaScript.valueToCode(this, 'VALUE',
+          Blockly.JavaScript.ORDER_MEMBER) || '[]';
+
+      if (mode === "APPEND") {
+          return list + ".push(" + item + ");\n";
+      }
+
+      throw 'Unhandled combination (lists_ops).';
+    };
+
+    Blockly.Language.lists_ops.MODE = [[Blockly.LANG_LISTS_OPS_APPEND, 'APPEND']];
+
+    Blockly.LANG_CONTROLS_ENUMERATE_HELPURL = 'http://en.wikipedia.org/wiki/For_loop';
+    Blockly.LANG_CONTROLS_ENUMERATE_INPUT_ITEM = 'for each';
+    Blockly.LANG_CONTROLS_ENUMERATE_INPUT_VAR = 'x';
+    Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INDEX = '#';
+    Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INLIST = 'in list';
+    Blockly.LANG_CONTROLS_ENUMERATE_INPUT_DO = 'do';
+    Blockly.LANG_CONTROLS_ENUMERATE_TOOLTIP = 'For each item in a list, set the item to\n' +
+        'variable "%1", the index of it to "%2" and then do some statements.';
+    Blockly.Language.controls_enumerate = {
+      // For each loop.
+      category: Blockly.LANG_CATEGORY_CONTROLS,
+      helpUrl: Blockly.LANG_CONTROLS_ENUMERATE_HELPURL,
+      init: function() {
+        this.setColour(120);
+        this.appendValueInput('LIST')
+            .setCheck(Array)
+            .appendTitle(Blockly.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
+            .appendTitle(new Blockly.FieldVariable("item"), 'VAR')
+            .appendTitle(Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
+            .appendTitle(new Blockly.FieldVariable("i"), 'INDEX')
+            .appendTitle(Blockly.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
+        this.appendStatementInput('DO')
+            .appendTitle(Blockly.LANG_CONTROLS_ENUMERATE_INPUT_DO);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        // Assign 'this' to a variable for use in the tooltip closure below.
+        var thisBlock = this;
+        this.setTooltip(function() {
+          return Blockly.LANG_CONTROLS_ENUMERATE_TOOLTIP
+              .replace('%1', thisBlock.getTitleValue('VAR'))
+              .replace('%2', thisBlock.getTitleValue('INDEX'));
+        });
+      },
+      getVars: function() {
+        return [this.getTitleValue('VAR'), this.getTitleValue('INDEX')];
+      },
+      renameVar: function(oldName, newName) {
+        if (Blockly.Names.equals(oldName, this.getTitleValue('VAR'))) {
+          this.setTitleValue(newName, 'VAR');
+        } else if (Blockly.Names.equals(oldName, this.getTitleValue('INDEX'))) {
+          this.setTitleValue(newName, 'INDEX');
+        }
+      }
+    };
+
+    Blockly.JavaScript.controls_enumerate = function() {
+      // For each loop.
+      var variable0 = Blockly.JavaScript.variableDB_.getName(
+          this.getTitleValue('VAR'), Blockly.Variables.NAME_TYPE);
+      var indexVar = Blockly.JavaScript.variableDB_.getName(
+          this.getTitleValue('INDEX'), Blockly.Variables.NAME_TYPE);
+      var argument0 = Blockly.JavaScript.valueToCode(this, 'LIST',
+          Blockly.JavaScript.ORDER_ASSIGNMENT) || '[]';
+
+      var branch = Blockly.JavaScript.statementToCode(this, 'DO');
+      if (Blockly.JavaScript.INFINITE_LOOP_TRAP) {
+        branch = Blockly.JavaScript.INFINITE_LOOP_TRAP.replace(/%1/g,
+            '\'' + this.id + '\'') + branch;
+      }
+
+      var code;
+      if (argument0.match(/^\w+$/)) {
+        branch = '  ' + variable0 + ' = ' + argument0 + '[' + indexVar + ' - 1];\n' +
+            branch;
+        code = 'for (var ' + indexVar + ' = 1; ' + indexVar + ' <= ' + argument0 + 
+            '.length; ' + indexVar + ' += 1) {\n' + branch + '}\n';
+      } else {
+        // The list appears to be more complicated than a simple variable.
+        // Cache it to a variable to prevent repeated look-ups.
+        var listVar = Blockly.JavaScript.variableDB_.getDistinctName(
+            variable0 + '_list', Blockly.Variables.NAME_TYPE);
+        branch = '  ' + variable0 + ' = ' + listVar + '[' + indexVar + ' - 1];\n' +
+            branch;
+        code = 'var ' + listVar + ' = ' + argument0 + ';\n' +
+            'for (var ' + indexVar + ' = 1; ' + indexVar + ' <= ' + listVar + 
+            '.length; ' + indexVar + ' += 1) {\n' + branch + '}\n';
+      }
+      return code;
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
             key, value;
@@ -459,6 +736,7 @@ var eflang = (function () {
     function init() {
       // Whitelist of blocks to keep.
       var
+          toolbox,
           query = parseQuery(),
           newLanguage = {},
           keepers = [
@@ -471,6 +749,9 @@ var eflang = (function () {
               'controls_for',
               'controls_forEach',
               'controls_flow_statements',
+
+              'controls_forEach_object',
+              'controls_enumerate',
 
               'math_number',
               'math_arithmetic',
@@ -493,6 +774,7 @@ var eflang = (function () {
               'lists_indexOf',
               'lists_getIndex',
               'lists_setIndex',
+              'lists_ops',
               
               'logic_operation',
               'logic_compare',
@@ -504,6 +786,7 @@ var eflang = (function () {
 
               'variables_outget',
               'variables_outset',
+              'variables_getpath',
 
               'objs_create_with',
               'objs_create_with_item',
@@ -538,16 +821,9 @@ var eflang = (function () {
       for (var x = 0; x < keepers.length; x++) {
         newLanguage[keepers[x]] = Blockly.Language[keepers[x]];
       }
-      // Fold control category into logic category.
-      for (var name in newLanguage) {
-        if (newLanguage[name].category == 'Control') {
-          newLanguage[name].category = 'Logic';
-        }
-      }
 
-      Blockly.Language = newLanguage;
-      Blockly.inject(document.body, {path: './'});
-
+      toolbox = window.parent.document.getElementById('toolbox');
+      Blockly.inject(document.body, {path: './', toolbox: toolbox});
 
       window.parent["init" + query.id](Blockly, query.id);
     }

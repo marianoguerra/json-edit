@@ -1,4 +1,4 @@
-/*global require window*/
+/*global require window console*/
 require.config({
     baseUrl: "js/",
     paths: {
@@ -127,7 +127,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
             console.log(errors);
         }
 
-        $("body").append($.lego({
+        $("#demo-cont").html($.lego({
             "div": {
                 "class": "demo-wrapper",
                 "$childs": [{
@@ -209,9 +209,27 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "j
     }
 
     $(function () {
-        var i;
+        var i, id, title, option,
+            select = $("#demo-selector");
+
         for (i = 0; i < demos.length; i += 1) {
-            startEditor("editor" + i, demos[i][0], demos[i][1], demos[i][2]);
+            id = "editor" + i;
+            title = demos[i][0];
+            option = $("<option>" + title + "</option>");
+            option.data("demo-index", i);
+            option.data("demo-id", id);
+            select.append(option);
         }
+
+        select.change(function () {
+            var selected = $(this).children(":selected"),
+                id = selected.data("demo-id"),
+                index = selected.data("demo-index");
+
+            console.log(index);
+            startEditor(id, demos[index][0], demos[index][1], demos[index][2]);
+        });
+
+        startEditor("editor0", demos[0][0], demos[0][1], demos[0][2]);
     });
 });
