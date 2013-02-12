@@ -349,11 +349,11 @@
         return {result: result, data: data};
     };
 
-    priv.collectField = function (key, field, schema) {
+    priv.collectField = function (key, field, schema, ignoreHint) {
         var hint = schema['je:hint'], hints = defaults.hintedCollectors,
             type = schema.type || getType(schema);
 
-        if (hint && hints[type] && hints[type][hint]) {
+        if (!ignoreHint && hint && hints[type] && hints[type][hint]) {
             return hints[type][hint](key, field, schema, priv);
         } else if (defaults.collectors[type]) {
             return defaults.collectors[type](key, field, schema);
@@ -1088,6 +1088,54 @@
         var result = JsonSchema.validate(name, value, schema, required);
 
         return result;
+    };
+
+    cons.setHintForAllTypes = function (name, formatter, collector) {
+        ["string", "number", "integer", "boolean", "array", "object"]
+            .forEach(function (type) {
+                if (!cons.defaults.hintedFormatters[type]) {
+                    cons.defaults.hintedFormatters[type] = {};
+                }
+
+                if (!cons.defaults.hintedCollectors[type]) {
+                    cons.defaults.hintedCollectors[type] = {};
+                }
+
+                cons.defaults.hintedCollectors[type][name] = collector;
+                cons.defaults.hintedFormatters[type][name] = formatter;
+            });
+    };
+
+    priv.loadCss = function (path, id) {
+        var
+            head = document.getElementsByTagName('head')[0],
+            attrs = {
+                type: 'text/css',
+                href: path,
+                rel: 'stylesheet',
+                media: 'screen'
+            };
+
+        if (id) {
+            attrs.id = id;
+        }
+
+        $(document.createElement('link'))
+            .attr(attrs)
+            .appendTo(head);
+    };
+
+    priv.loadJs = function (path, id) {
+        var script = document.createElement("script");
+
+        script.type = "text/javascript";
+        script.src = path;
+
+        if (id) {
+            script.id = id;
+        }
+
+        $("head").append(script);
     };
 
     if (jopts.exportPrivates) {

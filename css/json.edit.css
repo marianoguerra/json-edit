@@ -14,11 +14,16 @@
  font-weight: bold;
 }
 
-.je-field>button{
+.je-field>button, .je-optional-value>button{
  float: right;
 }
 
-.je-field>input, .je-field>select{
+.je-optional-value{
+ width: 100%;
+ clear: both;
+}
+
+.je-field>input, .je-field>select, .je-optional-value>input, .je-optional-value>select, .je-optional-cont>input, .je-optional-cont>select {
  float: right;
  width: 50%;
 }
@@ -69,4 +74,9 @@ a.je-action{
  width: 100%;
  text-align: right;
  display: table;
+}
+
+.CodeMirror{
+ border: 1px solid black;
+ width: 100%;
 }

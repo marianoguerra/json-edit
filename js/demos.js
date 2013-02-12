@@ -17,6 +17,57 @@
     "use strict";
     return [
         [
+            "code mirror (addon)",
+            "",
+            {
+                "order": ["filename", "code"],
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string",
+                        "je:hint": "codemirror",
+                        "default": "function onEvent() {\n    return true;\n}\n",
+                        "je:codemirror": {
+                            "mode": "javascript/javascript.js",
+                            "path": "libs/codemirror/",
+                            "addons": ["edit/matchbrackets.js",
+                                "edit/continuecomment.js"],
+                            "init": {
+                                "lineNumbers": true,
+                                "matchBrackets": true,
+                                "extraKeys": {
+                                    "Enter": "newlineAndIndentContinueComment"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        [
+            "optional values (addon)",
+            "",
+            {
+                "order": ["name", "sex"],
+                "required": ["name", "sex"],
+                "properties": {
+                    "name": {"type": "string"},
+                    "sex": {
+                        "type": "string",
+                        "enum": ["male", "female"],
+                        "je:hint": "optional",
+                        "je:optional": {
+                            "enabled": true,
+                            "default": 42
+                        }
+                    }
+                }
+            }
+        ],
+
+        [
             "blockly hint in overlay (addon)",
             "",
             {
