@@ -1106,6 +1106,38 @@
             });
     };
 
+    priv.loadCss = function (path, id) {
+        var
+            head = document.getElementsByTagName('head')[0],
+            attrs = {
+                type: 'text/css',
+                href: path,
+                rel: 'stylesheet',
+                media: 'screen'
+            };
+
+        if (id) {
+            attrs.id = id;
+        }
+
+        $(document.createElement('link'))
+            .attr(attrs)
+            .appendTo(head);
+    };
+
+    priv.loadJs = function (path, id) {
+        var script = document.createElement("script");
+
+        script.type = "text/javascript";
+        script.src = path;
+
+        if (id) {
+            script.id = id;
+        }
+
+        $("head").append(script);
+    };
+
     if (jopts.exportPrivates) {
         cons.priv = priv;
     }

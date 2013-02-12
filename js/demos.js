@@ -17,6 +17,36 @@
     "use strict";
     return [
         [
+            "code mirror (addon)",
+            "",
+            {
+                "order": ["filename", "code"],
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string",
+                        "je:hint": "codemirror",
+                        "default": "function onEvent() {\n    return true;\n}\n",
+                        "je:codemirror": {
+                            "mode": "javascript/javascript.js",
+                            "path": "libs/codemirror/",
+                            "addons": ["edit/matchbrackets.js",
+                                "edit/continuecomment.js"],
+                            "init": {
+                                "lineNumbers": true,
+                                "matchBrackets": true,
+                                "extraKeys": {
+                                    "Enter": "newlineAndIndentContinueComment"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "optional values (addon)",
             "",
             {

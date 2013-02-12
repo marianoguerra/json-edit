@@ -75,3 +75,8 @@ a.je-action{
  text-align: right;
  display: table;
 }
+
+.CodeMirror{
+ border: 1px solid black;
+ width: 100%;
+}

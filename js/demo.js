@@ -32,6 +32,7 @@ require.config({
         "hint.adsafe": "../src/addons/adsafe/adsafe",
         "hint.blockly": "../src/addons/blockly/blockly",
         "hint.optional": "../src/addons/optional",
+        "hint.codemirror": "../src/addons/codemirror",
 
         // needed by hints
         // by color hint
@@ -81,7 +82,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint",
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color",
         "hint.tabs", "hint.password", "hint.readonly", "hint.enumlabels",
         "hint.squim", "hint.tabarray", "hint.summarylist", "hint.textarea",
-        "hint.adsafe", "hint.blockly", "hint.optional"],
+        "hint.adsafe", "hint.blockly", "hint.optional", "hint.codemirror"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";
