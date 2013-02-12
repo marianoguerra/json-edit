@@ -17,7 +17,7 @@
 }(this, function (JsonEdit, $) {
     "use strict";
     var
-        loaded = false,
+        cache = {},
         escaper = document.createElement("textarea"),
         formatHints = JsonEdit.defaults.hintedFormatters,
         collectHints = JsonEdit.defaults.hintedCollectors;
@@ -30,6 +30,13 @@
         }
 
         return escaper.innerHTML;
+    }
+
+    function load(loadFun, path) {
+        if (!cache[path]) {
+            cache[path] = true;
+            loadFun(path);
+        }
     }
 
     formatHints.string = formatHints.string || {};
@@ -47,18 +54,15 @@
             path += "/";
         }
 
-        if (!loaded) {
-            loaded = true;
-            priv.loadJs(path + "lib/codemirror.js");
-            priv.loadCss(path + "lib/codemirror.css");
-        }
+        load(priv.loadJs, path + "lib/codemirror.js");
+        load(priv.loadCss, path + "lib/codemirror.css");
 
         if (options.mode) {
-            priv.loadJs(path + "mode/" + options.mode);
+            load(priv.loadJs, path + "mode/" + options.mode);
         }
 
         addons.forEach(function (addon) {
-            priv.loadJs(path + "addon/" + addon);
+            load(priv.loadJs, path + "addon/" + addon);
         });
 
         util.events.rendered.handleOnce(function () {
