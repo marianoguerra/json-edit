@@ -17,6 +17,27 @@
     "use strict";
     return [
         [
+            "optional values (addon)",
+            "",
+            {
+                "order": ["name", "sex"],
+                "required": ["name", "sex"],
+                "properties": {
+                    "name": {"type": "string"},
+                    "sex": {
+                        "type": "string",
+                        "enum": ["male", "female"],
+                        "je:hint": "optional",
+                        "je:optional": {
+                            "enabled": true,
+                            "default": 42
+                        }
+                    }
+                }
+            }
+        ],
+
+        [
             "blockly hint in overlay (addon)",
             "",
             {
