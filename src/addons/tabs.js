@@ -68,7 +68,7 @@
         }
 
         util.events.rendered.handleOnce(function () {
-            var container = (typeof id === "string") ? $("#" + id) : id;
+            var container = (typeof id === "string") ? $("#" + id + "-inner") : id;
 
             container.tabs();
 
