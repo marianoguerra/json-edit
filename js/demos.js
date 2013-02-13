@@ -17,6 +17,57 @@
     "use strict";
     return [
         [
+            "complex nested form",
+            "",
+            {
+                "type": "array",
+                "je:hint": "summarylist",
+                "je:summarylist": {
+                    "template": "{title}",
+                    "noItemsMsg": "No Group yet, click 'Add' to create one."
+                },
+                "items": {
+                    "title": "Group",
+                    "type": "object",
+                    "order": ["title", "tags", "feeds"],
+                    "properties": {
+                        "title": {"type": "string", "title": "Title"},
+                        "tags": {
+                            "type": "array",
+                            "je:hint": "tags",
+                            "title": "Tags",
+                            "je:allowAdd": true,
+                            "je:availableValues": ["Programming", "Science", "Sports"],
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "feeds": {
+                            "title": "Feeds",
+                            "type": "array",
+                            "je:hint": "summarylist",
+                            "je:summarylist": {
+                                "template": "{title}: {url}",
+                                "noItemsMsg": "No Feeds yet, click 'Add' to create one."
+                            },
+                            "items": {
+                                "type": "object",
+                                "order": ["title", "url", "description"],
+                                "properties": {
+                                    "title": {"type": "string", "title": "Title"},
+                                    "url": {"type": "string", "title": "Feed URL"},
+                                    "description": {
+                                        "type": "string",
+                                        "je:hint": "optional"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "code mirror (addon)",
             "",
             {

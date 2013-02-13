@@ -158,6 +158,14 @@
         });
     };
 
+    // return the value of the first prop (used to get the body of a legojs
+    // tag)
+    function firstProp(obj) {
+        for (var key in obj) {
+            return obj[key];
+        }
+    }
+
     cons = function (id, opts, fireRendered) {
         // if id is not a string assume it's a jquery object
         var container = (typeof id === "string") ? $("#" + id) : id,
@@ -192,8 +200,8 @@
         // array_name, new_item_data, old_item_data, item_schema, other_data
         util.events.array.item.removed = $.Callbacks();
 
-
-        lego = priv.input(name, "object", id, opts, true, util);
+        lego = priv.input(name, opts.type || "object", id, opts, true, util);
+        firstProp(lego)["class"] = priv.genFieldClasses("root", opts, " ", true);
         container.append($.lego(lego));
 
         function doFireRendered() {
@@ -280,7 +288,7 @@
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
             order = priv.getKeys(opts.properties, opts.order),
-            defaults = opts["default"] || {},
+            defaultVals = opts["default"] || {},
             result = priv.collectResult(true), data = {},
 
             apropsSel, aprops;
@@ -307,8 +315,8 @@
             } else {
                 // if the object above has a default then override the item
                 // default with it
-                if (defaults[key] !== undefined) {
-                    newSchema = $.extend({}, schema, {"default": defaults[key]});
+                if (defaultVals[key] !== undefined) {
+                    newSchema = $.extend({}, schema, {"default": defaultVals[key]});
                 } else {
                     newSchema = schema;
                 }
@@ -482,14 +490,6 @@
             selectorChildsToRemove = ":not(:lt(" + realMinItems + "))";
 
         $(selectorItems).children(selectorChildsToRemove).remove();
-    }
-
-    // return the value of the first prop (used to get the body of a legojs
-    // tag)
-    function firstProp(obj) {
-        for (var key in obj) {
-            return obj[key];
-        }
     }
 
     priv.genAdditionalProperties = function (objId, schema, util) {
@@ -797,7 +797,12 @@
     defaults.collectors.object = function (name, field, schema) {
         // get the inner child of the object container since collectors look
         // only in the first level childrens
-        return priv.collectObject(field.children(ns.$cls("object-fields")), schema);
+        var children = field.children(ns.$cls("object-fields"));
+        if (children.size() > 0) {
+            return priv.collectObject(children, schema);
+        } else {
+            return priv.collectObject(field.children(".je-root"), schema);
+        }
     };
 
     defaults.collectors.array = function (name, field, schema) {
@@ -1029,6 +1034,10 @@
             classes.push("required");
         }
 
+        if (opts["je:hint"]) {
+            classes.push("hint-" + opts["je:hint"]);
+        }
+
         return ns.classesList(classes).join(sep || " ");
     };
 
@@ -1055,7 +1064,7 @@
             labelText = opts.title || fid,
             label = priv.label(labelText, inputId);
 
-        if (opts.type === 'boolean') {
+        if (false && opts.type === 'boolean') {
             label.label.$childs = [input, label.label.$childs];
             label.label["class"] = "checkbox";
             $childs = [label];
