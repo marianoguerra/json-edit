@@ -25,7 +25,8 @@
 
     formatHints.array = formatHints.array || {};
 
-    formatHints.array.summarylist = function (name, type, id, opts, required, priv, util) {
+    formatHints.array.summarylist = function (name, type, id, opts, required,
+                                              priv, util) {
         var
             modulePath = module.uri,
             moduleBasePath = modulePath.slice(0, modulePath.lastIndexOf("/") + 1),
@@ -37,6 +38,7 @@
             $cont,
             $list,
             $buttons,
+            $emptyMsg,
             editImgPath   = moduleBasePath + "img/edit.png",
             removeImgPath = moduleBasePath + "img/remove.png",
             workingImgPath = moduleBasePath + "img/loading.gif",
@@ -44,6 +46,7 @@
             addButton,
             widgetChilds;
 
+        id = id + "-sl";
         Dust.loadSource(template);
 
         if (typeof opts.minItems !== "number") {
@@ -99,6 +102,7 @@
                 if (showItemsAfterCollect) {
                     $list.show();
                     $buttons.show();
+                    $emptyMsg.show();
                 }
             } else {
                 errors = priv.getErrors(result.result);
@@ -131,6 +135,7 @@
 
             $list.hide();
             $buttons.hide();
+            $emptyMsg.hide();
             $cont.prepend($.lego(cont));
         }
 
@@ -138,6 +143,7 @@
             $cont.children(".summary-item-editor").remove();
             $list.show();
             $buttons.show();
+            $emptyMsg.show();
         }
 
         function setWorking(isWorking) {
@@ -344,6 +350,7 @@
             $cont = $("#" + id);
             $list = $("#" + id + "-list");
             $buttons = $cont.children(".summary-action-buttons");
+            $emptyMsg = $cont.children(".summary-empty-msg");
 
             for (i = 0; i < defaultValues.length; i += 1) {
                 addItem(defaultValues[i], opts.items);
@@ -361,6 +368,7 @@
         if (conf.allowAdd !== false) {
             addButton = button("Add", function () {
                 onAddClick(opts.items);
+                util.events.rendered.fire();
             });
 
             widgetChilds.unshift({
@@ -385,7 +393,7 @@
         return {
             "div": {
                 "id": id,
-                "class": priv.genFieldClasses(name, opts, " ", required),
+                "class": "je-hint-summarrylist-cont je-custom-cont",
                 "$childs": widgetChilds
             }
         };
