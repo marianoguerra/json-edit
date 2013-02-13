@@ -1,5 +1,11 @@
-.je-field, .je-array, .je-object, .je-object-fields, .je-array-actions, .je-array-items{
- width: 99%;
+.je-field{
+ -moz-box-sizing: border-box;                                                  
+ -webkit-box-sizing: border-box;                                               
+ box-sizing: border-box;                                                       
+}
+
+.je-field, .je-array, .je-object, .je-object-fields, .je-array-actions, .je-array-items, .je-custom-cont{
+ width: 99.5%;
  margin: 0.25%;
  padding: 0.25% !important;
  display: table;
@@ -26,6 +32,12 @@
 .je-field>input, .je-field>select, .je-optional-value>input, .je-optional-value>select, .je-optional-cont>input, .je-optional-cont>select {
  float: right;
  width: 50%;
+}
+
+.je-field>input {
+    margin: 0;
+    padding: 0.25%;
+    width: 50%;
 }
 
 .je-array-actions{
@@ -77,6 +89,49 @@ a.je-action{
 }
 
 .CodeMirror{
- border: 1px solid black;
+ border: 1px solid #ddd;
  width: 100%;
+}
+
+.je-tagHandler ul.tagHandlerContainer {
+    float: right;
+    margin: 0;
+    padding: 0 0.25%;
+    width: 50%;
+    background-color: #fff;
+}
+
+.tagInputField, .tagInputField:hover{
+ border: none !important;
+ border-radius: 0 !important;
+ box-shadow: none !important;
+ outline: none !important;
+ padding: 0 !important;
+}
+
+.tagHandler ul.tagHandlerContainer li{
+ border-radius: 3px;
+ margin: 5px 0 5px 5px;
+}
+
+.je-field>select{
+ margin: 0 !important;
+ padding: 0 !important;
+ width: 50%;
+}
+
+.je-object-fields{
+ border: 0;
+}
+
+.je-array-item{
+ margin-top: 0.2em;
+}
+
+.je-array, .je-object{
+ border: 1px solid #ddd;
+}
+
+.je-array.je-hint-tags, .je-root{
+ border: none; 
 }
