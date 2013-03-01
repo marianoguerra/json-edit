@@ -313,7 +313,7 @@
             function onEditOkClick() {
                 var showListAfterCollect = conf.onAdd === undefined;
 
-                collectEditItem(schema, false, showListAfterCollect, function (newData) {
+                collectEditItem(schema, false, showListAfterCollect, function (newData, closeForm) {
                     function defaultHandler(add, userNewData) {
                         var
                             dataToSet;
@@ -333,6 +333,7 @@
                         }
 
                         setWorking(false);
+                        closeForm();
                     }
 
                     if (conf.onAdd) {
