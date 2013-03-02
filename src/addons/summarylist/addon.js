@@ -46,7 +46,7 @@
             addButton,
             widgetChilds;
 
-        id = id + "-sl";
+        id = (typeof id === "string") ? id + "-sl" : id.attr("id") + "-sl";
         Dust.loadSource(template);
 
         if (typeof opts.minItems !== "number") {
@@ -96,14 +96,15 @@
                 newData = result.data;
 
             if (result.result.ok) {
-                onEditSucceeded(newData);
-                editor.remove();
+                onEditSucceeded(newData, function () {
+                    editor.remove();
 
-                if (showItemsAfterCollect) {
-                    $list.show();
-                    $buttons.show();
-                    $emptyMsg.show();
-                }
+                    if (showItemsAfterCollect) {
+                        $list.show();
+                        $buttons.show();
+                        $emptyMsg.show();
+                    }
+                });
             } else {
                 errors = priv.getErrors(result.result);
                 JsonEdit.defaults.displayError(errors.join("\n"));
@@ -171,7 +172,7 @@
             function onEditOkClick(id) {
                 var showListAfterCollect = conf.onEdit === undefined;
 
-                collectEditItem(schema, true, showListAfterCollect, function (newData) {
+                collectEditItem(schema, true, showListAfterCollect, function (newData, closeForm) {
                     var
                         storedData = $("#" + id).data("data"),
                         mergedData = $.extend({}, storedData, newData);
@@ -204,6 +205,7 @@
                         }
 
                         setWorking(false);
+                        closeForm();
                     }
 
                     if (conf.onEdit) {
@@ -311,7 +313,7 @@
             function onEditOkClick() {
                 var showListAfterCollect = conf.onAdd === undefined;
 
-                collectEditItem(schema, false, showListAfterCollect, function (newData) {
+                collectEditItem(schema, false, showListAfterCollect, function (newData, closeForm) {
                     function defaultHandler(add, userNewData) {
                         var
                             dataToSet;
@@ -331,6 +333,7 @@
                         }
 
                         setWorking(false);
+                        closeForm();
                     }
 
                     if (conf.onAdd) {
