@@ -774,6 +774,32 @@ var eflang = (function () {
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
+    B.LANG_DB_FETCH_INPUT = "fetch key";
+    B.LANG_DB_FETCH_INPUT_1 = "value";
+    B.LANG_DB_FETCH_TOOLTIP = "Fetch value from the given key";
+
+    Lang.db_fetch = {
+        // Remainder of a division.
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+            this.appendValueInput('KEY')
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_FETCH_INPUT);
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_DB_FETCH_TOOLTIP);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.db_fetch = function () {
+        // Remainder computation.
+        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            code = B.eflang.db_fetch_fun + '(' + argument0 + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
         key, value;
