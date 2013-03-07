@@ -104,9 +104,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(330);
             this.appendValueInput('VALUE')
-            .appendTitle(B.LANG_VARIABLES_OUTSET_TITLE_1)
-            .appendTitle(new B.FieldTextInput(
-                B.LANG_VARIABLES_OUTSET_ITEM), 'VAR');
+                .appendTitle(B.LANG_VARIABLES_OUTSET_TITLE_1)
+                .appendTitle(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM), 'VAR');
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(B.LANG_VARIABLES_OUTSET_TOOLTIP_1);
@@ -477,7 +476,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(290);
             this.appendDummyInput()
-            .appendTitle(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
+                .appendTitle(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(B.LANG_PROCS_CALL_WITH_ITEM_TOOLTIP_1);
@@ -499,14 +498,14 @@ var eflang = (function () {
         init: function () {
             this.setColour(120);
             this.appendValueInput('OBJ')
-            .setCheck(Array)
-            .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
-            .appendTitle(new B.FieldVariable("key"), 'KEY')
-            .appendTitle(", ")
-            .appendTitle(new B.FieldVariable("value"), 'VAL')
-            .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
+                .setCheck(Array)
+                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
+                .appendTitle(new B.FieldVariable("key"), 'KEY')
+                .appendTitle(", ")
+                .appendTitle(new B.FieldVariable("value"), 'VAL')
+                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
             this.appendStatementInput('DO')
-            .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
+                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
@@ -652,14 +651,14 @@ var eflang = (function () {
         init: function () {
             this.setColour(120);
             this.appendValueInput('LIST')
-            .setCheck(Array)
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
-            .appendTitle(new B.FieldVariable("item"), 'VAR')
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
-            .appendTitle(new B.FieldVariable("i"), 'INDEX')
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
+                .setCheck(Array)
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
+                .appendTitle(new B.FieldVariable("item"), 'VAR')
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
+                .appendTitle(new B.FieldVariable("i"), 'INDEX')
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
             this.appendStatementInput('DO')
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_DO);
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_DO);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
@@ -760,7 +759,7 @@ var eflang = (function () {
 
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_STORE_TOOLTIP);
-            this.setOutput(false, null);
+            this.setOutput(false);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
         }
