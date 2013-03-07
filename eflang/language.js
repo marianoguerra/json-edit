@@ -711,6 +711,35 @@ var eflang = (function () {
         return code;
     };
 
+    B.LANG_MATH_PRECISION_INPUT = 'set precision of';
+    B.LANG_MATH_PRECISION_INPUT_1 = 'to';
+    B.LANG_MATH_PRECISION_TOOLTIP = 'Truncate the decimal parts to a number of places';
+
+    Lang.math_set_precision = {
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, Number);
+            this.appendValueInput('VALUE')
+            .setCheck(Number)
+            .appendTitle(B.LANG_MATH_PRECISION_INPUT);
+            this.appendValueInput('PRECISION')
+            .setCheck(Number)
+            .setAlign(B.ALIGN_RIGHT)
+            .appendTitle(B.LANG_MATH_PRECISION_INPUT_1);
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_MATH_PRECISION_TOOLTIP);
+        }
+    };
+
+    JS.math_set_precision = function () {
+        // Remainder computation.
+        var argument0 = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '0',
+            argument1 = JS.valueToCode(this, 'PRECISION', JS.ORDER_MEMBER) || '1',
+            code = B.eflang.math_set_precision_fun + '(' + argument0 + ', ' + argument1 + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
         key, value;
