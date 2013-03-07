@@ -767,10 +767,10 @@ var eflang = (function () {
 
     JS.db_store = function () {
         // Remainder computation.
-        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || '"key"',
             argument1 = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '1',
-            code = B.eflang.db_store_fun + '(' + argument0 + ', ' + argument1 + ');';
-        return [code, JS.ORDER_FUNCTION_CALL];
+            code = B.eflang.db_store_fun + '(' + argument0 + ', ' + argument1 + ');\n';
+        return code;
     };
 
     B.LANG_DB_FETCH_INPUT = "fetch key";
