@@ -740,6 +740,40 @@ var eflang = (function () {
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
+    B.LANG_DB_STORE_INPUT_1 = "store value";
+    B.LANG_DB_STORE_INPUT = "in key";
+    B.LANG_DB_STORE_TOOLTIP = "Store value in the given key";
+
+    Lang.db_store = {
+        // Remainder of a division.
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+            this.appendValueInput('VALUE')
+                .appendTitle(B.LANG_DB_STORE_INPUT_1);
+
+            this.appendValueInput('KEY')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_STORE_INPUT);
+
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_DB_STORE_TOOLTIP);
+            this.setOutput(false, null);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.db_store = function () {
+        // Remainder computation.
+        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            argument1 = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '1',
+            code = B.eflang.db_store_fun + '(' + argument0 + ', ' + argument1 + ');';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
         key, value;
