@@ -48,9 +48,11 @@ var eflang = (function () {
     B.eflang = {};
     B.eflang.constants = [["NAME", "NAME"]];
     B.eflang.constantsPath = "libs.consts.";
-    B.eflang.math_set_precision_fun = "libs.format.formatPrecision";
+    B.eflang.math_set_precision_fun = "libs.format.floatPrecision";
     B.eflang.db_store_fun = "libs.store.set";
     B.eflang.db_fetch_fun = "libs.store.get";
+    B.eflang.db_incr_fun = "libs.store.incr";
+    B.eflang.db_decr_fun = "libs.store.decr";
 
     Lang.const_get = {
         // Variable getter.
@@ -740,7 +742,8 @@ var eflang = (function () {
     };
 
     B.LANG_DB_STORE_INPUT_1 = "store value";
-    B.LANG_DB_STORE_INPUT = "in key";
+    B.LANG_DB_STORE_INPUT = "with key";
+    B.LANG_DB_STORE_INPUT_2 = "in store";
     B.LANG_DB_STORE_TOOLTIP = "Store value in the given key";
 
     Lang.db_store = {
@@ -757,6 +760,11 @@ var eflang = (function () {
                 .setCheck(String)
                 .appendTitle(B.LANG_DB_STORE_INPUT);
 
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_STORE_INPUT_2);
+
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_STORE_TOOLTIP);
             this.setOutput(false);
@@ -767,14 +775,16 @@ var eflang = (function () {
 
     JS.db_store = function () {
         // Remainder computation.
-        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || '"key"',
-            argument1 = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '1',
-            code = B.eflang.db_store_fun + '(' + argument0 + ', ' + argument1 + ');\n';
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || '"key"',
+            value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '1',
+            storeName = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_store_fun + '(' + storeName + ', ' + key + ', ' + value + ');\n';
         return code;
     };
 
     B.LANG_DB_FETCH_INPUT = "fetch key";
     B.LANG_DB_FETCH_INPUT_1 = "value";
+    B.LANG_DB_FETCH_INPUT_2 = "from store";
     B.LANG_DB_FETCH_TOOLTIP = "Fetch value from the given key";
 
     Lang.db_fetch = {
@@ -783,9 +793,16 @@ var eflang = (function () {
         init: function () {
             this.setColour(230);
             this.setOutput(true, String);
+
             this.appendValueInput('KEY')
                 .setCheck(String)
                 .appendTitle(B.LANG_DB_FETCH_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_FETCH_INPUT_2);
+
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_FETCH_TOOLTIP);
             this.setOutput(true, null);
@@ -794,8 +811,77 @@ var eflang = (function () {
 
     JS.db_fetch = function () {
         // Remainder computation.
-        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
-            code = B.eflang.db_fetch_fun + '(' + argument0 + ')';
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_fetch_fun + '(' + store + ', ' + key + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_INCR_INPUT = "increase key";
+    B.LANG_DB_INCR_INPUT_1 = "from store";
+    B.LANG_DB_INCR_TOOLTIP = "Increase key in store and return it";
+
+    Lang.db_incr = {
+        // Remainder of a division.
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+
+            this.appendValueInput('KEY')
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_INCR_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_INCR_INPUT_1);
+
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_DB_INCR_TOOLTIP);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.db_incr = function () {
+        // Remainder computation.
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_incr_fun + '(' + store + ', ' + key + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_DECR_INPUT = "decrease key";
+    B.LANG_DB_DECR_INPUT_1 = "from store";
+    B.LANG_DB_DECR_TOOLTIP = "decrease key in store and return it";
+
+    Lang.db_decr = {
+        // Remainder of a division.
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+
+            this.appendValueInput('KEY')
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_DECR_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_DECR_INPUT_1);
+
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_DB_DECR_TOOLTIP);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.db_decr = function () {
+        // Remainder computation.
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_decr_fun + '(' + store + ', ' + key + ')';
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 

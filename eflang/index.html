@@ -117,11 +117,63 @@
 
     <block type="const_get"></block>
 
-    <block type="db_fetch"></block>
-    <block type="db_store"></block>
-
     <block type="procs_call_with"></block>
     <block type="procs_call_with_no_return"></block>
+   </category>
+   <category name="Store">
+    <block type="db_fetch">
+     <value name="KEY">
+      <block type="text">
+       <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+       <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
+    <block type="db_store">
+     <value name="VALUE">
+      <block type="text">
+        <title name="TEXT">value</title>
+      </block>
+     </value>
+     <value name="KEY">
+      <block type="text">
+        <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+        <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
+    <block type="db_incr">
+     <value name="KEY">
+      <block type="text">
+       <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+       <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
+    <block type="db_decr">
+     <value name="KEY">
+      <block type="text">
+       <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+       <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
    </category>
    <category name="Logic">
      <block type="logic_compare"></block>
