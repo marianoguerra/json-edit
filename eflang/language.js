@@ -910,6 +910,32 @@ var eflang = (function () {
         return [code, JS.ORDER_ATOMIC];
     };
 
+    Lang.logic_or_else = {
+        // Remainder of a division.
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(120);
+            this.appendValueInput('VALUE')
+                .appendTitle("if");
+
+            this.appendValueInput('DEFAULT')
+                .appendTitle("otherwise")
+                .setAlign(B.ALIGN_RIGHT);
+
+            this.setInputsInline(true);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.logic_or_else = function () {
+        // TODO: put value on a temp variable to avoid side effect being evaluated
+        // twice if value is non null
+        var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
+            defaultVal = JS.valueToCode(this, 'DEFAULT', JS.ORDER_MEMBER) || 'null',
+            code = '(' + value + ' == null? ' + defaultVal + ' : ' + value + ')';
+        return [code, JS.ORDER_ATOMIC];
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
         key, value;
