@@ -734,7 +734,6 @@ var eflang = (function () {
     };
 
     JS.math_set_precision = function () {
-        // Remainder computation.
         var argument0 = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '0',
             argument1 = JS.valueToCode(this, 'PRECISION', JS.ORDER_MEMBER) || '1',
             code = B.eflang.math_set_precision_fun + '(' + argument0 + ', ' + argument1 + ')';
@@ -747,7 +746,6 @@ var eflang = (function () {
     B.LANG_DB_STORE_TOOLTIP = "Store value in the given key";
 
     Lang.db_store = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
@@ -774,7 +772,6 @@ var eflang = (function () {
     };
 
     JS.db_store = function () {
-        // Remainder computation.
         var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || '"key"',
             value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '1',
             storeName = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
@@ -788,7 +785,6 @@ var eflang = (function () {
     B.LANG_DB_FETCH_TOOLTIP = "Fetch value from the given key";
 
     Lang.db_fetch = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
@@ -810,7 +806,6 @@ var eflang = (function () {
     };
 
     JS.db_fetch = function () {
-        // Remainder computation.
         var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
             store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
             code = B.eflang.db_fetch_fun + '(' + store + ', ' + key + ')';
@@ -822,7 +817,6 @@ var eflang = (function () {
     B.LANG_DB_INCR_TOOLTIP = "Increase key in store and return it";
 
     Lang.db_incr = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
@@ -844,7 +838,6 @@ var eflang = (function () {
     };
 
     JS.db_incr = function () {
-        // Remainder computation.
         var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
             store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
             code = B.eflang.db_incr_fun + '(' + store + ', ' + key + ')';
@@ -856,7 +849,6 @@ var eflang = (function () {
     B.LANG_DB_DECR_TOOLTIP = "decrease key in store and return it";
 
     Lang.db_decr = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
@@ -878,7 +870,6 @@ var eflang = (function () {
     };
 
     JS.db_decr = function () {
-        // Remainder computation.
         var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
             store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
             code = B.eflang.db_decr_fun + '(' + store + ', ' + key + ')';
@@ -889,7 +880,6 @@ var eflang = (function () {
     B.LANG_LOGIC_IS_NULL_TOOLTIP = "Return true if value is null";
 
     Lang.logic_is_null = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(120);
@@ -904,14 +894,12 @@ var eflang = (function () {
     };
 
     JS.logic_is_null = function () {
-        // Remainder computation.
         var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
             code = '(' + value + ' == null)';
         return [code, JS.ORDER_ATOMIC];
     };
 
     Lang.logic_or_else = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(120);
@@ -933,6 +921,28 @@ var eflang = (function () {
         var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
             defaultVal = JS.valueToCode(this, 'DEFAULT', JS.ORDER_MEMBER) || 'null',
             code = '(' + value + ' == null? ' + defaultVal + ' : ' + value + ')';
+        return [code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.lists_contains = {
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(210);
+            this.appendValueInput('VALUE');
+
+            this.appendValueInput('TOFIND')
+                .appendTitle("contains?")
+                .setAlign(B.ALIGN_RIGHT);
+
+            this.setInputsInline(true);
+            this.setOutput(true, Boolean);
+        }
+    };
+
+    JS.lists_contains = function () {
+        var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
+            toFind = JS.valueToCode(this, 'TOFIND', JS.ORDER_MEMBER) || 'null',
+            code = '(' + value + '.indexOf(' + toFind + ') !== -1)';
         return [code, JS.ORDER_ATOMIC];
     };
 
