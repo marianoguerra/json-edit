@@ -885,6 +885,31 @@ var eflang = (function () {
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
+    B.LANG_LOGIC_IS_NULL_INPUT = "is null?";
+    B.LANG_LOGIC_IS_NULL_TOOLTIP = "Return true if value is null";
+
+    Lang.logic_is_null = {
+        // Remainder of a division.
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(120);
+            this.setOutput(true, Boolean);
+
+            this.appendValueInput('VALUE')
+                .appendTitle(B.LANG_LOGIC_IS_NULL_INPUT);
+
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_LOGIC_IS_NULL_TOOLTIP);
+        }
+    };
+
+    JS.logic_is_null = function () {
+        // Remainder computation.
+        var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
+            code = '(' + value + ' == null)';
+        return [code, JS.ORDER_ATOMIC];
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
         key, value;
