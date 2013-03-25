@@ -48,9 +48,11 @@ var eflang = (function () {
     B.eflang = {};
     B.eflang.constants = [["NAME", "NAME"]];
     B.eflang.constantsPath = "libs.consts.";
-    B.eflang.math_set_precision_fun = "libs.format.formatPrecision";
+    B.eflang.math_set_precision_fun = "libs.format.floatPrecision";
     B.eflang.db_store_fun = "libs.store.set";
     B.eflang.db_fetch_fun = "libs.store.get";
+    B.eflang.db_incr_fun = "libs.store.incr";
+    B.eflang.db_decr_fun = "libs.store.decr";
 
     Lang.const_get = {
         // Variable getter.
@@ -104,9 +106,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(330);
             this.appendValueInput('VALUE')
-            .appendTitle(B.LANG_VARIABLES_OUTSET_TITLE_1)
-            .appendTitle(new B.FieldTextInput(
-                B.LANG_VARIABLES_OUTSET_ITEM), 'VAR');
+                .appendTitle(B.LANG_VARIABLES_OUTSET_TITLE_1)
+                .appendTitle(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM), 'VAR');
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(B.LANG_VARIABLES_OUTSET_TOOLTIP_1);
@@ -477,7 +478,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(290);
             this.appendDummyInput()
-            .appendTitle(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
+                .appendTitle(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(B.LANG_PROCS_CALL_WITH_ITEM_TOOLTIP_1);
@@ -499,14 +500,14 @@ var eflang = (function () {
         init: function () {
             this.setColour(120);
             this.appendValueInput('OBJ')
-            .setCheck(Array)
-            .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
-            .appendTitle(new B.FieldVariable("key"), 'KEY')
-            .appendTitle(", ")
-            .appendTitle(new B.FieldVariable("value"), 'VAL')
-            .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
+                .setCheck(Array)
+                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
+                .appendTitle(new B.FieldVariable("key"), 'KEY')
+                .appendTitle(", ")
+                .appendTitle(new B.FieldVariable("value"), 'VAL')
+                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
             this.appendStatementInput('DO')
-            .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
+                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
@@ -652,14 +653,14 @@ var eflang = (function () {
         init: function () {
             this.setColour(120);
             this.appendValueInput('LIST')
-            .setCheck(Array)
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
-            .appendTitle(new B.FieldVariable("item"), 'VAR')
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
-            .appendTitle(new B.FieldVariable("i"), 'INDEX')
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
+                .setCheck(Array)
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
+                .appendTitle(new B.FieldVariable("item"), 'VAR')
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
+                .appendTitle(new B.FieldVariable("i"), 'INDEX')
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
             this.appendStatementInput('DO')
-            .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_DO);
+                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_DO);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
@@ -733,7 +734,6 @@ var eflang = (function () {
     };
 
     JS.math_set_precision = function () {
-        // Remainder computation.
         var argument0 = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '0',
             argument1 = JS.valueToCode(this, 'PRECISION', JS.ORDER_MEMBER) || '1',
             code = B.eflang.math_set_precision_fun + '(' + argument0 + ', ' + argument1 + ')';
@@ -741,11 +741,11 @@ var eflang = (function () {
     };
 
     B.LANG_DB_STORE_INPUT_1 = "store value";
-    B.LANG_DB_STORE_INPUT = "in key";
+    B.LANG_DB_STORE_INPUT = "with key";
+    B.LANG_DB_STORE_INPUT_2 = "in store";
     B.LANG_DB_STORE_TOOLTIP = "Store value in the given key";
 
     Lang.db_store = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
@@ -758,35 +758,47 @@ var eflang = (function () {
                 .setCheck(String)
                 .appendTitle(B.LANG_DB_STORE_INPUT);
 
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_STORE_INPUT_2);
+
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_STORE_TOOLTIP);
-            this.setOutput(false, null);
+            this.setOutput(false);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
         }
     };
 
     JS.db_store = function () {
-        // Remainder computation.
-        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
-            argument1 = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '1',
-            code = B.eflang.db_store_fun + '(' + argument0 + ', ' + argument1 + ');';
-        return [code, JS.ORDER_FUNCTION_CALL];
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || '"key"',
+            value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '1',
+            storeName = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_store_fun + '(' + storeName + ', ' + key + ', ' + value + ');\n';
+        return code;
     };
 
     B.LANG_DB_FETCH_INPUT = "fetch key";
     B.LANG_DB_FETCH_INPUT_1 = "value";
+    B.LANG_DB_FETCH_INPUT_2 = "from store";
     B.LANG_DB_FETCH_TOOLTIP = "Fetch value from the given key";
 
     Lang.db_fetch = {
-        // Remainder of a division.
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
             this.setOutput(true, String);
+
             this.appendValueInput('KEY')
                 .setCheck(String)
                 .appendTitle(B.LANG_DB_FETCH_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_FETCH_INPUT_2);
+
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_FETCH_TOOLTIP);
             this.setOutput(true, null);
@@ -794,10 +806,144 @@ var eflang = (function () {
     };
 
     JS.db_fetch = function () {
-        // Remainder computation.
-        var argument0 = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
-            code = B.eflang.db_fetch_fun + '(' + argument0 + ')';
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_fetch_fun + '(' + store + ', ' + key + ')';
         return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_INCR_INPUT = "increase key";
+    B.LANG_DB_INCR_INPUT_1 = "from store";
+    B.LANG_DB_INCR_TOOLTIP = "Increase key in store and return it";
+
+    Lang.db_incr = {
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+
+            this.appendValueInput('KEY')
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_INCR_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_INCR_INPUT_1);
+
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_DB_INCR_TOOLTIP);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.db_incr = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_incr_fun + '(' + store + ', ' + key + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_DECR_INPUT = "decrease key";
+    B.LANG_DB_DECR_INPUT_1 = "from store";
+    B.LANG_DB_DECR_TOOLTIP = "decrease key in store and return it";
+
+    Lang.db_decr = {
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+
+            this.appendValueInput('KEY')
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_DECR_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck(String)
+                .appendTitle(B.LANG_DB_DECR_INPUT_1);
+
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_DB_DECR_TOOLTIP);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.db_decr = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_decr_fun + '(' + store + ', ' + key + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_LOGIC_IS_NULL_INPUT = "is null?";
+    B.LANG_LOGIC_IS_NULL_TOOLTIP = "Return true if value is null";
+
+    Lang.logic_is_null = {
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(120);
+            this.setOutput(true, Boolean);
+
+            this.appendValueInput('VALUE')
+                .appendTitle(B.LANG_LOGIC_IS_NULL_INPUT);
+
+            this.setInputsInline(true);
+            this.setTooltip(B.LANG_LOGIC_IS_NULL_TOOLTIP);
+        }
+    };
+
+    JS.logic_is_null = function () {
+        var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
+            code = '(' + value + ' == null)';
+        return [code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.logic_or_else = {
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(120);
+            this.appendValueInput('VALUE')
+                .appendTitle("if");
+
+            this.appendValueInput('DEFAULT')
+                .appendTitle("otherwise")
+                .setAlign(B.ALIGN_RIGHT);
+
+            this.setInputsInline(true);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.logic_or_else = function () {
+        // TODO: put value on a temp variable to avoid side effect being evaluated
+        // twice if value is non null
+        var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
+            defaultVal = JS.valueToCode(this, 'DEFAULT', JS.ORDER_MEMBER) || 'null',
+            code = '(' + value + ' == null? ' + defaultVal + ' : ' + value + ')';
+        return [code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.lists_contains = {
+        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
+        init: function () {
+            this.setColour(210);
+            this.appendValueInput('VALUE');
+
+            this.appendValueInput('TOFIND')
+                .appendTitle("contains?")
+                .setAlign(B.ALIGN_RIGHT);
+
+            this.setInputsInline(true);
+            this.setOutput(true, Boolean);
+        }
+    };
+
+    JS.lists_contains = function () {
+        var value = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || 'null',
+            toFind = JS.valueToCode(this, 'TOFIND', JS.ORDER_MEMBER) || 'null',
+            code = '(' + value + '.indexOf(' + toFind + ') !== -1)';
+        return [code, JS.ORDER_ATOMIC];
     };
 
     function parseQuery() {

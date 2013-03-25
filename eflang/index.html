@@ -117,11 +117,63 @@
 
     <block type="const_get"></block>
 
-    <block type="db_fetch"></block>
-    <block type="db_store"></block>
-
     <block type="procs_call_with"></block>
     <block type="procs_call_with_no_return"></block>
+   </category>
+   <category name="Store">
+    <block type="db_fetch">
+     <value name="KEY">
+      <block type="text">
+       <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+       <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
+    <block type="db_store">
+     <value name="VALUE">
+      <block type="text">
+        <title name="TEXT">value</title>
+      </block>
+     </value>
+     <value name="KEY">
+      <block type="text">
+        <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+        <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
+    <block type="db_incr">
+     <value name="KEY">
+      <block type="text">
+       <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+       <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
+    <block type="db_decr">
+     <value name="KEY">
+      <block type="text">
+       <title name="TEXT">key</title>
+      </block>
+     </value>
+     <value name="STORE">
+      <block type="text">
+       <title name="TEXT">store</title>
+      </block>
+     </value>
+    </block>
    </category>
    <category name="Logic">
      <block type="logic_compare"></block>
@@ -129,7 +181,9 @@
      <block type="logic_negate"></block>
      <block type="logic_boolean"></block>
      <block type="logic_null"></block>
+     <block type="logic_is_null"></block>
      <block type="logic_ternary"></block>
+     <block type="logic_or_else"></block>
    </category>
    <category name="Math">
      <block type="math_number"></block>
@@ -208,6 +262,7 @@
      <block type="lists_getIndex"></block>
      <block type="lists_setIndex"></block>
      <block type="lists_ops"></block>
+     <block type="lists_contains"></block>
    </category>
    <category name="Colour">
      <block type="colour_picker"></block>

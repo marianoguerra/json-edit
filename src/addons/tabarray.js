@@ -42,7 +42,9 @@
         }
 
         function addTab(index, isInit) {
-            var itemId = id + "-" + index, content, itemOpts, wrapper;
+            var itemId = id + "-" + index, content, itemOpts, wrapper,
+                tabTemplate = "<li><a href='#" + itemId + "'></a><span class='ui-icon ui-icon-close' style='float: left; cursor: pointer'></span></li>";
+            
 
             // default will be undefined if not set
             if (isInit && defaultValues[i]) {
@@ -59,12 +61,13 @@
 
             wrapper.append(content);
             $tabs.append(wrapper);
-            $("<li><a href='#" + itemId + "'> </a></li>")
+            $(tabTemplate)
                 .appendTo($tabs.find(".ui-tabs-nav"));
             $tabs.tabs("refresh");
             if (!$tabs.tabs("option", "active")) {
                 $tabs.tabs("option", "active", 0);
             }
+            util.events.rendered.fire();
         }
 
         addButton = {
@@ -90,9 +93,12 @@
             }
 
             $("#" + id).on("click", "span.ui-icon-close", function () {
-                var index = $("li", $tabs).index($(this).parent());
-                $tabs.tabs("remove", index);
+                $(this).parent().remove();
+                $($(this).parent().find("a:first").attr("href")).remove();
+                $tabs.tabs("refresh");
             });
+
+            $tabs.tabs("refresh");
         });
 
         return {
