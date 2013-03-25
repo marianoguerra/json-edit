@@ -67,6 +67,7 @@
             if (!$tabs.tabs("option", "active")) {
                 $tabs.tabs("option", "active", 0);
             }
+            util.events.rendered.fire();
         }
 
         addButton = {
