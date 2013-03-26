@@ -67,13 +67,21 @@
         }
     };
 
+    function ifNotSet(value, defaultValue) {
+        if (value === null || value === undefined) {
+            return defaultValue;
+        } else {
+            return value;
+        }
+    }
+
     if (window._jsonEditOpts) {
         jopts = window._jsonEditOpts;
     } else {
         jopts = {};
     }
 
-    prefix = jopts.prefix || "je";
+    prefix = ifNotSet(jopts.prefix, "je");
     ns = NsGen.namespace(prefix);
     priv.ns = ns;
 
@@ -200,7 +208,7 @@
         // array_name, new_item_data, old_item_data, item_schema, other_data
         util.events.array.item.removed = $.Callbacks();
 
-        lego = priv.input(name, opts.type || "object", id, opts, true, util);
+        lego = priv.input(name, ifNotSet(opts.type, "object"), id, opts, true, util);
         firstProp(lego)["class"] = priv.genFieldClasses("root", opts, " ", true);
         container.append($.lego(lego));
 
@@ -288,7 +296,7 @@
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
             order = priv.getKeys(opts.properties, opts.order),
-            defaultVals = opts["default"] || {},
+            defaultVals = ifNotSet(opts["default"], {}),
             result = priv.collectResult(true), data = {},
 
             apropsSel, aprops;
@@ -359,7 +367,7 @@
 
     priv.collectField = function (key, field, schema, ignoreHint) {
         var hint = schema['je:hint'], hints = defaults.hintedCollectors,
-            type = schema.type || getType(schema);
+            type = ifNotSet(schema.type, getType(schema));
 
         if (!ignoreHint && hint && hints[type] && hints[type][hint]) {
             return hints[type][hint](key, field, schema, priv);
@@ -426,11 +434,11 @@
 
         // if it's just an input field
         if (input.input) {
-            input.input["class"] = (input.input["class"] || "") + " " + ns.cls("array-item-input");
+            input.input["class"] = ifNotSet(input.input["class"], "") + " " + ns.cls("array-item-input");
         }
 
         function onRemoveClick(event) {
-            var realMinItems = opts.minItems || 0,
+            var realMinItems = ifNotSet(opts.minItems, 0),
                 cont = $("#" + id);
 
             if (cont.parent().children().size() <= realMinItems) {
@@ -485,7 +493,7 @@
     }
 
     function onClearItemsClick(opts, id) {
-        var realMinItems = opts.minItems || 0,
+        var realMinItems = ifNotSet(opts.minItems, 0),
             selectorItems = "#" + id + " " + ns.$cls("array-items"),
             selectorChildsToRemove = ":not(:lt(" + realMinItems + "))";
 
@@ -508,7 +516,7 @@
                 input = priv.input("additionalproperty", type, ns.id(id, true), schema, true, util),
                 inputBody = firstProp(input);
 
-            inputBody["class"] = (inputBody["class"] || "") + " " + ns.cls("additional-propvalue");
+            inputBody["class"] = ifNotSet(inputBody["class"], "") + " " + ns.cls("additional-propvalue");
 
             props.append($.lego({
                 "div": {
@@ -1038,7 +1046,7 @@
             classes.push("hint-" + opts["je:hint"]);
         }
 
-        return ns.classesList(classes).join(sep || " ");
+        return ns.classesList(classes).join(ifNotSet(sep, " "));
     };
 
     priv.hasOption = function (opts, optionName) {
@@ -1061,7 +1069,8 @@
             input = priv.input(fid, type, inputId, opts, required, util),
             result,
             $childs,
-            labelText = opts.title || fid,
+            firstChildClasses,
+            labelText = ifNotSet(opts.title, fid),
             label = priv.label(labelText, inputId);
 
         if (false && opts.type === 'boolean') {
@@ -1082,10 +1091,15 @@
                 "$childs": $childs
             }
         };
-
+        firstChildClasses = firstProp(input)["class"];
+        if (firstChildClasses) {
+            firstChildClasses = firstChildClasses.split(" ");
+        }
         if (priv.hasOption(opts, "hide") ||
             (priv.hasOption(opts, "hideIfNoSelection") &&
-             input.select && input.select.$childs.length === 1)) {
+             ((input.select && input.select.$childs.length === 1) ||
+              (firstChildClasses &&
+               firstChildClasses.indexOf("je-empty") !== -1)))) {
 
             result.div.style = "display: none";
         }
