@@ -1,4 +1,4 @@
-/*global window define alert JSON document*/
+/*global window, define, alert, JSON, document*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -1164,6 +1164,20 @@
     if (jopts.exportPrivates) {
         cons.priv = priv;
     }
+
+    priv.escaper = document.createElement("textarea");
+    priv.escapeHTML = function (text) {
+        var escaper = priv.escaper;
+
+        if (escaper.innerText !== undefined) {
+            escaper.innerText = text;
+        } else {
+            escaper.innerHTML = text;
+        }
+
+        return escaper.innerHTML;
+    };
+
 
     return cons;
 }));
