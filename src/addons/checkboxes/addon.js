@@ -55,9 +55,9 @@
 
         if (priv.hasOption(opts, "hideIfNoSelection") &&
             enumitems.length === 0) {
-            empty = "js-empty";
+            empty = " je-empty";
         }
- 
+
         return {"div": {
                 "id": id + "-checklist",
                 "class": "json-edit-checklist" + empty,

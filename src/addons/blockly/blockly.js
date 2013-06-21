@@ -1,4 +1,4 @@
-/*global window define document*/
+/*global window, define, document*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -12,6 +12,7 @@
 }(this, function ($, JsonEdit, NsGen) {
     "use strict";
     var
+        globalClipboardKey = "jsoneditblocklyclipboard__",
         formatHints = JsonEdit.defaults.hintedFormatters,
         collectHints = JsonEdit.defaults.hintedCollectors,
         baseCloseOverlayStyle = {
@@ -48,18 +49,23 @@
             width = options.width || "99%",
             height = options.height || "20em",
             basePath = options.basePath || "",
-            content = opts["default"] || "";
+            content = opts["default"];
 
         window["init" + frameId] = function (Blockly) {
-            var xmlDom;
+            var xmlDom,
+                clipboard = window[globalClipboardKey];
+
+            if (clipboard) {
+                Blockly.clipboard_ = clipboard;
+            }
 
             $("#" + frameId).data({blockly: Blockly});
 
-            if (content !== "") {
+            if (content) {
                 xmlDom = null;
 
                 try {
-                    xmlDom = Blockly.Xml.textToDom(content);
+                    xmlDom = Blockly.Xml.textToDom(content.xml);
                 } catch (e) {
                     if (window.console && window.console.error) {
                         window.console.error("error loading xml for blocky", e);
@@ -110,6 +116,14 @@
                             };
 
                             closeOverlay.click(function () {
+                                var clipboard = $("#" + frameId)
+                                    .data("blockly")
+                                    .clipboard_;
+
+                                if (clipboard) {
+                                    window[globalClipboardKey] = clipboard;
+                                }
+
                                 $("#" + overlayId).hide();
                                 return false;
                             });
@@ -142,22 +156,31 @@
 
     collectHints.string.blockly = function (key, field, schema, priv) {
         var
-            xmlDom, xmlText,
+            xmlDom, xmlText, data,
 
             options = schema["je:blockly"] || {},
             inOverlay = options.overlay === true,
-            editor = (inOverlay) ? $(field).children("button:first") : $(field).children("iframe:first"),
+            compileToJs = (typeof options.compileToJsField === "string"),
+            editor = (inOverlay) ? $(field).children("button:first")
+                                 : $(field).children("iframe:first"),
             blockly = editor.data("blockly");
 
         if (blockly) {
             xmlDom = blockly.Xml.workspaceToDom(blockly.mainWorkspace);
             xmlText = blockly.Xml.domToPrettyText(xmlDom);
+
         } else {
             xmlText = schema["default"] || "<xml></xml>";
         }
 
+        data = {xml: xmlText};
+        if (compileToJs) {
+            data[options.compileToJsField] = blockly.Generator
+                .workspaceToCode('JavaScript');
+        }
+
         $("#" + editor.attr("id") + "-overlay").remove();
 
-        return {result: JsonEdit.makeResult(true, "ok", xmlText), data: xmlText};
+        return {result: JsonEdit.makeResult(true, "ok", xmlText), data: data};
     };
 }));
