@@ -1,0 +1,22 @@
+.json-edit-checklist{
+ width: 100%;
+ margin: 1em 0;
+ padding: 0;
+ display: table;
+}
+
+.json-edit-checkbox{
+ width: 70%;
+ float: right;
+ padding: 0;
+ display: table;
+}
+
+
+.json-edit-checkbox input{
+ float: right;
+}
+
+.json-edit-checkbox label{
+ float: left;
+}

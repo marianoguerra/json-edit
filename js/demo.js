@@ -6,7 +6,7 @@ require.config({
         "ace": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/ace",
         "ace.json": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-json",
         "ace.theme": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-merbivore_soft",
-        "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min",
+        "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery",
         "jqueryui": "http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min",
         "legoparser": "http://marianoguerra.github.com/legojs/src/legoparser",
         "jquery.lego": "http://marianoguerra.github.com/legojs/src/jquery.lego",
@@ -33,6 +33,7 @@ require.config({
         "hint.blockly": "../src/addons/blockly/blockly",
         "hint.optional": "../src/addons/optional",
         "hint.codemirror": "../src/addons/codemirror",
+        "hint.htmleditor": "../src/addons/htmleditor/htmleditor",
 
         // needed by hints
         // by color hint
@@ -82,7 +83,8 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint",
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color",
         "hint.tabs", "hint.password", "hint.readonly", "hint.enumlabels",
         "hint.squim", "hint.tabarray", "hint.summarylist", "hint.textarea",
-        "hint.adsafe", "hint.blockly", "hint.optional", "hint.codemirror"],
+        "hint.adsafe", "hint.blockly", "hint.optional", "hint.codemirror",
+        "hint.htmleditor"],
 
         function ($, mJsonEdit, demos, ace, legojs, prettyPrint, JSON) {
     "use strict";

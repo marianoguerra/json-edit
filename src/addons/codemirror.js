@@ -1,4 +1,4 @@
-/*global define document CodeMirror*/
+/*global define, document, CodeMirror*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -18,19 +18,8 @@
     "use strict";
     var
         cache = {},
-        escaper = document.createElement("textarea"),
         formatHints = JsonEdit.defaults.hintedFormatters,
         collectHints = JsonEdit.defaults.hintedCollectors;
-
-    function escape(text) {
-        if (escaper.innerText !== undefined) {
-            escaper.innerText = text;
-        } else {
-            escaper.innerHTML = text;
-        }
-
-        return escaper.innerHTML;
-    }
 
     function load(loadFun, path) {
         if (!cache[path]) {
@@ -74,7 +63,7 @@
             "textarea": {
                 "id": codeId,
                 "class": "codemirror-textarea",
-                "$childs": escape(content)
+                "$childs": priv.escapeHTML(content)
             }
         };
     };

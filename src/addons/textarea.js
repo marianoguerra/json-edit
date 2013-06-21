@@ -16,20 +16,8 @@
     }
 }(this, function (JsonEdit) {
     "use strict";
-    var
-        escaper = document.createElement("textarea"),
-        formatHints = JsonEdit.defaults.hintedFormatters,
+    var formatHints = JsonEdit.defaults.hintedFormatters,
         collectHints = JsonEdit.defaults.hintedCollectors;
-
-    function escape(text) {
-        if (escaper.innerText !== undefined) {
-            escaper.innerText = text;
-        } else {
-            escaper.innerHTML = text;
-        }
-
-        return escaper.innerHTML;
-    }
 
     formatHints.string = formatHints.string || {};
 
@@ -49,7 +37,7 @@
             "textarea": {
                 "rows": rows,
                 "style": "width: " + width,
-                "$childs": escape(content)
+                "$childs": priv.escapeHTML(content)
             }
         };
     };

@@ -1,47 +1,16 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
-
-  <title>eflang</title>
+  <title>Blockly Code</title>
   <script type="text/javascript" src="blockly_compressed.js"></script>
-
-  <script type="text/javascript" src="generators/javascript.js"></script>
-  <script type="text/javascript" src="generators/javascript/control.js"></script>
-  <script type="text/javascript" src="generators/javascript/logic.js"></script>
-  <script type="text/javascript" src="generators/javascript/math.js"></script>
-  <script type="text/javascript" src="generators/javascript/text.js"></script>
-  <script type="text/javascript" src="generators/javascript/lists.js"></script>
-  <script type="text/javascript" src="generators/javascript/colour.js"></script>
-  <script type="text/javascript" src="generators/javascript/variables.js"></script>
-  <script type="text/javascript" src="generators/javascript/procedures.js"></script>
-
-  <script type="text/javascript" src="language/en/_messages.js"></script>
-  <script type="text/javascript" src="language/common/control.js"></script>
-  <script type="text/javascript" src="language/common/logic.js"></script>
-  <script type="text/javascript" src="language/common/math.js"></script>
-  <script type="text/javascript" src="language/common/text.js"></script>
-  <script type="text/javascript" src="language/common/lists.js"></script>
-  <script type="text/javascript" src="language/common/colour.js"></script>
-  <script type="text/javascript" src="language/common/variables.js"></script>
-  <script type="text/javascript" src="language/common/procedures.js"></script>
-
+  <script type="text/javascript" src="javascript_compressed.js"></script>
+  <script type="text/javascript" src="en_compressed.js"></script>
   <script type="text/javascript" src="language.js"></script>
-
-  <!--[if lt IE 10]>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/1.2.4/es5-shim.min.js "></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"></script>
-  <![endif]-->
-
-  <!--
-  <script type="text/javascript" src="eflang.min.js"></script>
-  -->
-
   <style>
     html, body {
       background-color: #fff;
       margin: 0;
-      padding:0;
+      padding: 0;
       overflow: hidden;
     }
     .blocklySvg {
@@ -49,8 +18,39 @@
       width: 100%;
     }
   </style>
-</head>
-<body onload="eflang.init()">
+  <script>
+    function init() {
+      var rtl = false;
+      var toolbox = null;
+      if (window.parent.document) {
+        // document.dir fails in Mozilla, use document.body.parentNode.dir.
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=151407
+        rtl = window.parent.document.body.parentNode.dir == 'rtl';
+        toolbox = window.parent.document.getElementById('toolbox');
+      }
+      Blockly.inject(document.body,
+          {path: '../../',
+           rtl: rtl,
+           toolbox: toolbox});
 
+      if (window.parent.init) {
+        // Let the top-level application know that Blockly is ready.
+        window.parent.init(Blockly);
+      } else {
+        // Attempt to diagnose the problem.
+        var msg = 'Error: Unable to communicate between frames.\n\n';
+        if (window.parent == window) {
+          msg += 'Try loading index.html instead of frame.html';
+        } else if (window.location.protocol == 'file:') {
+          msg += 'This may be due to a security restriction preventing\n' +
+              'access when using the file:// protocol.\n' +
+              'http://code.google.com/p/chromium/issues/detail?id=47416';
+        }
+        alert(msg);
+      }
+    }
+  </script>
+</head>
+<body onload="init()">
 </body>
 </html>

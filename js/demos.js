@@ -15,7 +15,20 @@
     }
 }(this, function () {
     "use strict";
-    return [["complex nested form", "", {
+    return [
+        [
+            "html editor",
+            "",
+            {
+                "type": "string",
+                "default": "<h1>hello world</h1>",
+                "je:hint": "htmleditor",
+                "je:htmleditor": {
+                    "path": "src/addons/htmleditor/"
+                }
+            }
+        ],
+        ["complex nested form", "", {
         "type": "array",
         "je:hint": "summarylist",
         "je:summarylist": {
