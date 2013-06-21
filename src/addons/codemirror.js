@@ -37,6 +37,8 @@
             init = options.init || {},
             path = (options.path || "/"),
             addons = options.addons || [],
+            styles = options.styles || [],
+            scripts = options.scripts || [],
             content = opts["default"] || "";
 
         if (path[path.length - 1] !== "/") {
@@ -50,12 +52,26 @@
             load(priv.loadJs, path + "mode/" + options.mode);
         }
 
+        scripts.forEach(function (script) {
+            load(priv.loadJs, path + "/" + script);
+        });
+
         addons.forEach(function (addon) {
             load(priv.loadJs, path + "addon/" + addon);
         });
 
+        styles.forEach(function (stylePath) {
+            load(priv.loadCss, path + "/" + stylePath);
+        });
+
         util.events.rendered.handleOnce(function () {
-            var editor = CodeMirror.fromTextArea(document.getElementById(codeId), init);
+            if (options.lintWith) {
+                init.lintWith = CodeMirror[options.lintWith];
+            }
+
+            var textarea = document.getElementById(codeId),
+                editor = CodeMirror.fromTextArea(textarea, init);
+
             $("#" + codeId).data("codemirror", editor);
         });
 
