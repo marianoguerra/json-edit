@@ -1,4 +1,4 @@
-/*global window define*/
+/*global window, define*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -223,7 +223,7 @@
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
+            return mResult(false, "Field '" + name + "' " + msg, data);
         }
 
         if (typeof value !== "object" || value === null || isArray(value)) {
@@ -285,7 +285,7 @@
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
+            return mResult(false, "Field '" + name + "' " + msg, data);
         }
 
         if (!isArray(value)) {
@@ -436,7 +436,7 @@
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
+            return mResult(false, "Field '" + name + "' " + msg, data);
         }
 
         if (typeof value === "number" && (value % 1) !== 0) {
@@ -453,7 +453,7 @@
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
+            return mResult(false, "Field '" + name + "' " + msg, data);
         }
 
         if (typeof value !== "number") {
@@ -522,7 +522,7 @@
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
+            return mResult(false, "Field '" + name + "' " + msg, data);
         }
 
         if (typeof value !== "boolean") {
@@ -563,7 +563,7 @@
             mResult = priv.makeResult;
 
         function failed(msg, data) {
-            return mResult(false, "field '" + name + "' " + msg, data);
+            return mResult(false, "Field '" + name + "' " + msg, data);
         }
 
         if (typeof value !== "string") {
