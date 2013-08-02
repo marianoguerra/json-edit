@@ -17,6 +17,24 @@
     "use strict";
     return [
         [
+            "html editor in object",
+            "",
+            {
+                "type": "object",
+                "order": ["content"],
+                "properties": {
+                    "content": {
+                        "type": "string",
+                        "default": "<h1>hello world</h1>",
+                        "je:hint": "htmleditor",
+                        "je:htmleditor": {
+                            "path": "src/addons/htmleditor/"
+                        }
+                    }
+                }
+            }
+        ],
+        [
             "html editor",
             "",
             {

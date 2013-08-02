@@ -50,7 +50,8 @@
         util.events.rendered.handleOnce(function () {
             var editor = new nicEditor(editorConfig);
             editor.panelInstance(textareaId);
-            $("#" + id).data("editor", editor.instanceById(textareaId));
+            $("#" + textareaId).parent()
+                .data("editor", editor.instanceById(textareaId));
         });
 
         return {
