@@ -58,7 +58,7 @@ var eflang = (function () {
         // Variable getter.
         category: "Output",
         init: function () {
-            this.setColour(330);
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
             .appendTitle(B.LANG_CONST_OUTGET_TITLE_1)
             .appendTitle(new B.FieldDropdown(B.eflang.constants), 'CONST');
@@ -81,7 +81,7 @@ var eflang = (function () {
         category: "Output",
         helpUrl: B.LANG_VARIABLES_GET_HELPURL,
         init: function () {
-            this.setColour(330);
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
             .appendTitle(B.LANG_VARIABLES_OUTGET_TITLE_1)
             .appendTitle(new B.FieldTextInput(
@@ -104,7 +104,7 @@ var eflang = (function () {
         category: "Output",
         helpUrl: B.LANG_VARIABLES_OUTSET_HELPURL,
         init: function () {
-            this.setColour(330);
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendValueInput('VALUE')
                 .appendTitle(B.LANG_VARIABLES_OUTSET_TITLE_1)
                 .appendTitle(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM), 'VAR');
@@ -152,7 +152,7 @@ var eflang = (function () {
         //category: B.MSG_VARIABLE_CATEGORY,
         helpUrl: B.LANG_VARIABLES_GET_HELPURL,
         init: function () {
-            this.setColour(330);
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
             .appendTitle(B.LANG_VARIABLES_GETPATH_TITLE)
             .appendTitle(new B.FieldTextInput(
@@ -210,7 +210,7 @@ var eflang = (function () {
             return input;
         },
         init: function () {
-            this.setColour(330);
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.addField(0);
             this.addField(1);
             this.addField(2);
@@ -304,7 +304,7 @@ var eflang = (function () {
     Lang.objs_create_with_container = {
         // Container.
         init: function () {
-            this.setColour(330);
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
             .appendTitle(B.LANG_OBJS_CREATE_WITH_CONTAINER_TITLE_ADD);
             this.appendStatementInput('STACK');
@@ -316,7 +316,7 @@ var eflang = (function () {
     Lang.objs_create_with_item = {
         // Add items.
         init: function () {
-            this.setColour(330);
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
             .appendTitle(B.LANG_OBJS_CREATE_WITH_ITEM_TITLE);
             this.setPreviousStatement(true);
@@ -357,7 +357,7 @@ var eflang = (function () {
             returns: returns,
             helpUrl: '',
             init: function () {
-                this.setColour(290);
+                this.setColour(Lang.PROCEDURE_TYPE_HUE);
                 this.appendDummyInput()
                 .appendTitle(B.LANG_PROCS_CALL_WITH_NAME)
                 .appendTitle(new B.FieldTextInput(B.LANG_PROCS_CALL_NAME), 'NAME');
@@ -464,7 +464,7 @@ var eflang = (function () {
     Lang.procs_call_with_container = {
         // Container.
         init: function () {
-            this.setColour(290);
+            this.setColour(Lang.PROCEDURE_TYPE_HUE);
             this.appendDummyInput()
             .appendTitle(B.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD);
             this.appendStatementInput('STACK');
@@ -476,7 +476,7 @@ var eflang = (function () {
     Lang.procs_call_with_item = {
         // Add items.
         init: function () {
-            this.setColour(290);
+            this.setColour(Lang.PROCEDURE_TYPE_HUE);
             this.appendDummyInput()
                 .appendTitle(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
             this.setPreviousStatement(true);
@@ -498,7 +498,7 @@ var eflang = (function () {
         category: B.LANG_CATEGORY_OBJS,
         helpUrl: B.LANG_CONTROLS_FOREACH_OBJ_HELPURL,
         init: function () {
-            this.setColour(120);
+            this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('OBJ')
                 .setCheck(Array)
                 .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
@@ -569,7 +569,7 @@ var eflang = (function () {
         category: B.LANG_CATEGORY_LISTS,
         //helpUrl: B.LANG_LISTS_GET_INDEX_HELPURL,
         init: function () {
-            this.setColour(210);
+            this.setColour(Lang.LIST_TYPE_HUE);
             var thisBlock, modeMenu = new B.FieldDropdown(this.MODE, function (value) {
                 var isStatement = (value === 'APPEND');
                 this.sourceBlock_.updateStatement(isStatement);
@@ -651,7 +651,7 @@ var eflang = (function () {
         category: B.LANG_CATEGORY_CONTROLS,
         helpUrl: B.LANG_CONTROLS_ENUMERATE_HELPURL,
         init: function () {
-            this.setColour(120);
+            this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('LIST')
                 .setCheck(Array)
                 .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
@@ -882,7 +882,7 @@ var eflang = (function () {
     Lang.logic_is_null = {
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
-            this.setColour(120);
+            this.setColour(Lang.LOGIC_TYPE_HUE);
             this.setOutput(true, Boolean);
 
             this.appendValueInput('VALUE')
@@ -902,7 +902,7 @@ var eflang = (function () {
     Lang.logic_or_else = {
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
-            this.setColour(120);
+            this.setColour(Lang.LOGIC_TYPE_HUE);
             this.appendValueInput('VALUE')
                 .appendTitle("if");
 
@@ -927,7 +927,7 @@ var eflang = (function () {
     Lang.lists_contains = {
         //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
-            this.setColour(210);
+            this.setColour(Lang.LIST_TYPE_HUE);
             this.appendValueInput('VALUE');
 
             this.appendValueInput('TOFIND')
