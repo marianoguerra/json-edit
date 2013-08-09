@@ -1,4 +1,4 @@
-/*global Blockly document window location*/
+/*global Blockly, document, window, location*/
 var eflang = (function () {
     'use strict';
     var JS = Blockly.JavaScript,
@@ -968,15 +968,9 @@ var eflang = (function () {
     }
 
     function init() {
-        // Whitelist of blocks to keep.
-        var
-        toolbox,
-        query = parseQuery();
+        var query = parseQuery();
 
-        toolbox = window.parent.document.getElementById('toolbox');
-        B.inject(document.body, {path: './', toolbox: toolbox});
-
-        window.parent["init" + query.id](B, query.id);
+        window.parent["init" + query.id](B, query.id, document);
     }
 
     return {
