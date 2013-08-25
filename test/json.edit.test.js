@@ -391,7 +391,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + name + "' " + msgCheck);
+                equal(result.msg, "Field '" + name + "' " + msgCheck);
             }
 
             return result;
@@ -451,7 +451,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + name + "' " + msgCheck);
+                equal(result.msg, "Field '" + name + "' " + msgCheck);
             }
 
             return result;
@@ -502,7 +502,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + name + "' " + msgCheck);
+                equal(result.msg, "Field '" + name + "' " + msgCheck);
             }
 
             return result;
@@ -552,7 +552,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + name + "' " + msgCheck);
+                equal(result.msg, "Field '" + name + "' " + msgCheck);
             }
 
             return result;
@@ -583,7 +583,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + name + "' " + msgCheck);
+                equal(result.msg, "Field '" + name + "' " + msgCheck);
             }
 
             return result;
@@ -607,7 +607,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
             equal(result.ok, eStatus, "status for '" + value + "' should be " + eStatus + "(" + result.msg + ")");
 
             if (msgCheck) {
-                equal(result.msg, "field '" + itemName + "' " + msgCheck);
+                equal(result.msg, "Field '" + itemName + "' " + msgCheck);
             }
 
             return result;
@@ -715,7 +715,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
 
             if (msgCheck) {
                 if (itemName) {
-                    equal(result.msg, "field '" + itemName + "' " + msgCheck);
+                    equal(result.msg, "Field '" + itemName + "' " + msgCheck);
                 } else {
                     equal(result.msg, msgCheck);
                 }
@@ -773,7 +773,7 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
                 a: {type: "number"},
                 b: {type: "string"}
             }
-        }, errs.ERRORS_IN_OBJ, {"b": {"data": {}, "msg": "field 'b' should be of type string", "ok": false, isRoot: true}});
+        }, errs.ERRORS_IN_OBJ, {"b": {"data": {}, "msg": "Field 'b' should be of type string", "ok": false, isRoot: true}});
     });
 
     test("isType", function () {
