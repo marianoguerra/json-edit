@@ -848,7 +848,8 @@
             }
 
         } else {
-            field.find(ns.$cls("array-item")).each(function (i, node) {
+            // relies on .array-item being the *great-grandchild* of the current field
+            field.find("> * > * > " + ns.$cls("array-item")).each(function (i, node) {
                 var newSchema, itemResult;
 
                 // if the array above has a default then override the item

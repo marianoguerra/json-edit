@@ -872,6 +872,68 @@ require(["json.edit", "json.schema", "jquery", "qunit", "json"], function (jsonE
         checkFail(["1"], "boolean", "expected boolean got 1");
     });
 
+    test("validate nested arrays", function() {
+        var container, schema, field;
+
+        container = $('<div/>');
+
+        schema = {
+            "type": "array",
+            "title": "Parent",
+            "items": {
+                "order": ["name", "job", "children"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "job": {
+                        "type": "string",
+                        "title": "Job"
+                    },
+                    "children": {
+                        "type": "array",
+                        "title": "Children",
+                        "items": {
+                            "order": ["name", "age"],
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "title": "Name"
+                                },
+                                "age": {
+                                    "type": "string",
+                                    "title": "Age"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        };
+
+        jsonEdit(container, schema);
+
+        field = priv.collectField('root', container, schema);
+
+        ok(field);
+        ok(field.result.ok);
+        deepEqual(field.data, [
+            {
+                name: "",
+                job: "",
+                children: [
+                    {
+                        name: "",
+                        age: ""
+                    }
+                ]
+            }
+        ]);
+    });
+
     /*
     test("", function () {
     });
