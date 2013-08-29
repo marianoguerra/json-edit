@@ -167,7 +167,7 @@
             }
         }
 
-        function addItem(data, schema, onItemAdded) {
+        function addItem(itemId, data, schema, onItemAdded) {
 
             function onEditOkClick(id) {
                 var showListAfterCollect = conf.onEdit === undefined;
@@ -255,7 +255,7 @@
             Dust.render(templateName, data, function (err, text) {
                 var
                     listItem,
-                    id = "summary-item-" + (new Date()).getTime(),
+                    id = "summary-item-" + itemId,
                     summary = {
                         "span": {
                             "class": "summary-text",
@@ -316,7 +316,8 @@
                 collectEditItem(schema, false, showListAfterCollect, function (newData, closeForm) {
                     function defaultHandler(add, userNewData) {
                         var
-                            dataToSet;
+                            dataToSet,
+                            itemId = id + "_" + (new Date()).getTime();
 
                         if (userNewData !== undefined) {
                             dataToSet = userNewData;
@@ -325,7 +326,7 @@
                         }
 
                         if (add) {
-                            addItem(dataToSet, schema, function (listItem) {
+                            addItem(itemId, dataToSet, schema, function (listItem) {
                                 util.events.array.item.created.fire(name,
                                                         dataToSet, schema,
                                                         {listItem: listItem});
@@ -356,7 +357,7 @@
             $emptyMsg = $cont.children(".summary-empty-msg");
 
             for (i = 0; i < defaultValues.length; i += 1) {
-                addItem(defaultValues[i], opts.items);
+                addItem(id + "_" + i, defaultValues[i], opts.items);
             }
         });
 
