@@ -2,8 +2,18 @@
 var eflang = (function () {
     'use strict';
     var JS = Blockly.JavaScript,
-        Lang = Blockly.Language,
+        Lang = Blockly.Blocks,
         B = Blockly;
+
+    B.HSV_VALUE = 0.75;
+    B.HSV_SATURATION = 0.30;
+    Lang.TEXT_TYPE_HUE = 79;
+    Lang.COLOUR_TYPE_HUE = 191;
+    Lang.VARIABLE_TYPE_HUE = 330;
+    Lang.PROCEDURE_TYPE_HUE = 290;
+    Lang.LIST_TYPE_HUE = 260;
+    Lang.LOOPS_TYPE_HUE = 120;
+    Lang.LOGIC_TYPE_HUE = 210;
 
     B.LANG_VARIABLES_GET_FIELD_INPUT_FIELD = "get";
     B.LANG_VARIABLES_GET_FIELD_INPUT_IN = 'from object';
@@ -13,6 +23,7 @@ var eflang = (function () {
     B.LANG_VARIABLES_OUTGET_TITLE_1 = 'get out var';
     B.LANG_VARIABLES_OUTGET_ITEM = 'item';
     B.LANG_VARIABLES_OUTGET_TOOLTIP_1 = 'Returns the value of this output variable.';
+    B.LANG_VARIABLES_VALUEGET_TOOLTIP_1 = 'Returns the field inside the value field';
 
     B.LANG_VARIABLES_OUTSET_HELPURL = 'http://en.wikipedia.org/wiki/Variable_(computer_science)';
     B.LANG_VARIABLES_OUTSET_TITLE_1 = 'set out var';
@@ -99,6 +110,28 @@ var eflang = (function () {
         }
     };
 
+    Lang.variables_valueget = {
+        // Variable getter.
+        category: "Output",
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput()
+            .appendTitle("get value")
+            .appendTitle(new B.FieldTextInput(
+                B.LANG_VARIABLES_GET_ITEM), 'VAR');
+            this.setOutput(true, null);
+            this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
+        },
+        getVars: function () {
+            return [];
+        },
+        renameVar: function (oldName, newName) {
+            if (B.Names.equals(oldName, this.getTitleValue('VAR'))) {
+                this.setTitleValue(newName, 'VAR');
+            }
+        }
+    };
+
     Lang.variables_outset = {
         // Variable setter.
         category: "Output",
@@ -131,6 +164,12 @@ var eflang = (function () {
         // Variable getter.
         var code = this.getTitleValue('VAR');
         return ["env." + code, JS.ORDER_ATOMIC];
+    };
+
+    JS.variables_valueget = function () {
+        // Variable getter.
+        var code = this.getTitleValue('VAR');
+        return ["env.value." + code, JS.ORDER_ATOMIC];
     };
 
     JS.variables_outset = function () {
@@ -937,6 +976,20 @@ var eflang = (function () {
             this.setInputsInline(true);
             this.setOutput(true, Boolean);
         }
+    };
+
+    Lang.time_now = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.setOutput(true);
+            this.appendDummyInput()
+            .appendTitle("current time");
+            this.setTooltip("Return current timestamp");
+        }
+    };
+
+    JS.time_now = function () {
+        return ['((new Date()).getTime())', JS.ORDER_ATOMIC];
     };
 
     JS.lists_contains = function () {
