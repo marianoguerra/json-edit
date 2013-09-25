@@ -95,7 +95,7 @@ var eflang = (function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
                 .appendTitle(B.LANG_VARIABLES_OUTGET_TITLE_1)
-                .appendTitle(new B.FieldTextInput("name", 'VAR'));
+                .appendTitle(new B.FieldTextInput("name"), 'VAR');
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_OUTGET_TOOLTIP_1);
         },
@@ -116,7 +116,7 @@ var eflang = (function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
                 .appendTitle("get value")
-                .appendTitle(new B.FieldTextInput("name", 'VAR'));
+                .appendTitle(new B.FieldTextInput("name"), 'VAR');
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
         },
