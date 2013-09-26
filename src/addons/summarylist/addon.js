@@ -147,7 +147,7 @@
             $emptyMsg.show();
         }
 
-        function setWorking(isWorking) {
+        function setWorking(isWorking, withErrors) {
             // they don't control the means of production
             var workingClass = "summarylist-working";
 
@@ -163,7 +163,12 @@
 
                 $cont.removeClass(workingClass);
 
-                $cont.children().show();
+                if (withErrors) {
+                    $cont.children(".summary-item-editor").show();
+                } else {
+                    $cont.children(".summary-item-editor").remove();
+                    $cont.children().show();
+                }
             }
         }
 
