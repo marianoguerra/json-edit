@@ -966,6 +966,24 @@ var eflang = (function () {
         return [code, JS.ORDER_ATOMIC];
     };
 
+    Lang.variables_delpath = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput()
+                .appendTitle("delete out var")
+                .appendTitle(new B.FieldTextInput(
+                    B.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+            this.setTooltip("Remove an output variable");
+        },
+    };
+
+    JS.variables_delpath = function () {
+        var code = this.getTitleValue('VAR');
+        return "delete env." + code + ";";
+    };
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
         key, value;
