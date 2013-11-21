@@ -759,12 +759,12 @@ var eflang = (function () {
             this.setColour(230);
             this.setOutput(true, Number);
             this.appendValueInput('VALUE')
-            .setCheck(Number)
-            .appendTitle(B.LANG_MATH_PRECISION_INPUT);
+                .setCheck(Number)
+                .appendTitle(B.LANG_MATH_PRECISION_INPUT);
             this.appendValueInput('PRECISION')
-            .setCheck(Number)
-            .setAlign(B.ALIGN_RIGHT)
-            .appendTitle(B.LANG_MATH_PRECISION_INPUT_1);
+                .setCheck(Number)
+                .setAlign(B.ALIGN_RIGHT)
+                .appendTitle(B.LANG_MATH_PRECISION_INPUT_1);
             this.setInputsInline(true);
             this.setTooltip(B.LANG_MATH_PRECISION_TOOLTIP);
         }
@@ -775,6 +775,38 @@ var eflang = (function () {
             argument1 = JS.valueToCode(this, 'PRECISION', JS.ORDER_MEMBER) || '1',
             code = B.eflang.math_set_precision_fun + '(' + argument0 + ', ' + argument1 + ')';
         return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    Lang.text_to_int = {
+        init: function () {
+            this.setColour(160);
+            this.appendValueInput('VALUE')
+                .setCheck(String)
+                .appendTitle("to integer");
+            this.setOutput(true, 'Number');
+            this.setTooltip("Convert a text representation of a number to an integer number");
+        }
+    };
+
+    Lang.text_to_float = {
+        init: function () {
+            this.setColour(160);
+            this.appendValueInput('VALUE')
+                .setCheck(String)
+                .appendTitle("to decimal");
+            this.setOutput(true, 'Number');
+            this.setTooltip("Convert a text representation of a number to a decimal number");
+        }
+    };
+
+    JS.text_to_int = function (block) {
+        var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'0\'';
+        return ["parseInt(" + argument0 + ', 10)', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+    };
+
+    JS.text_to_float = function (block) {
+        var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'0\'';
+        return ["parseFloat(" + argument0 + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
     };
 
     B.LANG_DB_STORE_INPUT_1 = "store value";
