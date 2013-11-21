@@ -66,8 +66,6 @@ var eflang = (function () {
     B.eflang.db_decr_fun = "libs.store.decr";
 
     Lang.const_get = {
-        // Variable getter.
-        category: "Output",
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
@@ -76,20 +74,10 @@ var eflang = (function () {
 
             this.setOutput(true, null);
             this.setTooltip(B.LANG_CONST_OUTGET_TOOLTIP_1);
-        },
-        getVars: function () {
-            return [];
-        },
-        renameVar: function (oldName, newName) {
-            if (B.Names.equals(oldName, this.getTitleValue('VAR'))) {
-                this.setTitleValue(newName, 'VAR');
-            }
         }
     };
 
     Lang.variables_outget = {
-        // Variable getter.
-        category: "Output",
         helpUrl: B.LANG_VARIABLES_GET_HELPURL,
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
@@ -98,20 +86,10 @@ var eflang = (function () {
                 .appendTitle(new B.FieldTextInput("name"), 'VAR');
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_OUTGET_TOOLTIP_1);
-        },
-        getVars: function () {
-            return [];
-        },
-        renameVar: function (oldName, newName) {
-            if (B.Names.equals(oldName, this.getTitleValue('VAR'))) {
-                this.setTitleValue(newName, 'VAR');
-            }
         }
     };
 
     Lang.variables_valueget = {
-        // Variable getter.
-        category: "Output",
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
@@ -120,36 +98,19 @@ var eflang = (function () {
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
         },
-        getVars: function () {
-            return [];
-        },
-        renameVar: function (oldName, newName) {
-            if (B.Names.equals(oldName, this.getTitleValue('VAR'))) {
-                this.setTitleValue(newName, 'VAR');
-            }
-        }
     };
 
     Lang.variables_outset = {
-        // Variable setter.
-        category: "Output",
         helpUrl: B.LANG_VARIABLES_OUTSET_HELPURL,
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendValueInput('VALUE')
                 .appendTitle(B.LANG_VARIABLES_OUTSET_TITLE_1)
-                .appendTitle(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM), 'VAR');
+                .appendTitle(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM
+), 'VAR');
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(B.LANG_VARIABLES_OUTSET_TOOLTIP_1);
-        },
-        getVars: function () {
-            return [];
-        },
-        renameVar: function (oldName, newName) {
-            if (B.Names.equals(oldName, this.getTitleValue('VAR'))) {
-                this.setTitleValue(newName, 'VAR');
-            }
         }
     };
 
@@ -184,9 +145,6 @@ var eflang = (function () {
     B.LANG_VARIABLES_GETPATH_TOOLTIP = 'Returns the value of this path.';
 
     Lang.variables_getpath = {
-        // Variable getter.
-        category: "Output",
-        //category: B.MSG_VARIABLE_CATEGORY,
         helpUrl: B.LANG_VARIABLES_GET_HELPURL,
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
@@ -196,19 +154,10 @@ var eflang = (function () {
                 B.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_GETPATH_TOOLTIP);
-        },
-        getVars: function () {
-            return [];
-        },
-        renameVar: function (oldName, newName) {
-            if (B.Names.equals(oldName, this.getTitleValue('VAR'))) {
-                this.setTitleValue(newName, 'VAR');
-            }
         }
     };
 
     JS.variables_getpath = function () {
-        // Variable getter.
         var code = this.getTitleValue('VAR');
         return [code, JS.ORDER_ATOMIC];
     };
@@ -228,9 +177,6 @@ var eflang = (function () {
 
 
     Lang.objs_create_with = {
-        // Create a list with any number of elements of any type.
-        category: B.LANG_CATEGORY_OBJS,
-        helpUrl: '',
         addField: function (num, title) {
             var input = this.appendValueInput('FIELD' + num);
 
@@ -339,7 +285,6 @@ var eflang = (function () {
     };
 
     Lang.objs_create_with_container = {
-        // Container.
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
@@ -351,7 +296,6 @@ var eflang = (function () {
     };
 
     Lang.objs_create_with_item = {
-        // Add items.
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
@@ -365,11 +309,9 @@ var eflang = (function () {
 
     JS.procs_call_with = function () {
         // Create a list with any number of elements of any type.
-        var
-        n,
-
-        name = this.getTitleValue('NAME'),
-        code = new Array(this.itemCount_);
+        var n,
+            name = this.getTitleValue('NAME'),
+            code = new Array(this.itemCount_);
 
         for (n = 0; n < this.itemCount_; n += 1) {
             code[n] = JS.valueToCode(this, 'ADD' + n,
@@ -478,7 +420,7 @@ var eflang = (function () {
                 }
                 if (this.itemCount_ === 0) {
                     this.appendDummyInput('EMPTY')
-                    .appendTitle(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
+                        .appendTitle(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
                 }
             },
             saveConnections: function (containerBlock) {
@@ -503,7 +445,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.PROCEDURE_TYPE_HUE);
             this.appendDummyInput()
-            .appendTitle(B.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD);
+                .appendTitle(B.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD);
             this.appendStatementInput('STACK');
             this.setTooltip(B.LANG_PROCS_CALL_WITH_CONTAINER_TOOLTIP_1);
             this.contextMenu = false;
@@ -531,8 +473,6 @@ var eflang = (function () {
     B.LANG_CONTROLS_FOREACH_OBJ_TOOLTIP = 'For each key, value in an object, set the key to\n' +
         'variable "%1", value to variable "%2" and then do some statements.';
     Lang.controls_forEach_object = {
-        // For each loop.
-        category: B.LANG_CATEGORY_OBJS,
         helpUrl: B.LANG_CONTROLS_FOREACH_OBJ_HELPURL,
         init: function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
@@ -604,7 +544,6 @@ var eflang = (function () {
     Lang.lists_ops = {
         // apply operations to lists
         category: B.LANG_CATEGORY_LISTS,
-        //helpUrl: B.LANG_LISTS_GET_INDEX_HELPURL,
         init: function () {
             this.setColour(Lang.LIST_TYPE_HUE);
             var thisBlock, modeMenu = new B.FieldDropdown(this.MODE, function (value) {
@@ -612,12 +551,12 @@ var eflang = (function () {
                 this.sourceBlock_.updateStatement(isStatement);
             });
             this.appendDummyInput()
-            .appendTitle(modeMenu, 'MODE');
+                .appendTitle(modeMenu, 'MODE');
             this.appendValueInput('ITEM')
-            .appendTitle("item");
+                .appendTitle("item");
             this.appendValueInput('VALUE')
-            .setCheck(Array)
-            .appendTitle(B.LANG_LISTS_OPS_INPUT_IN_LIST);
+                .setCheck(Array)
+                .appendTitle(B.LANG_LISTS_OPS_INPUT_IN_LIST);
             this.setInputsInline(true);
             this.setOutput(true, null);
             this.updateStatement(true);
@@ -684,8 +623,6 @@ var eflang = (function () {
     B.LANG_CONTROLS_ENUMERATE_TOOLTIP = 'For each item in a list, set the item to\n' +
         'variable "%1", the index of it to "%2" and then do some statements.';
     Lang.controls_enumerate = {
-        // For each loop.
-        category: B.LANG_CATEGORY_CONTROLS,
         helpUrl: B.LANG_CONTROLS_ENUMERATE_HELPURL,
         init: function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
