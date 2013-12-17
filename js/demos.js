@@ -723,6 +723,69 @@
                 }
             }
         }
+    }], ["summary list (pagination and filter)", "use pagination and filter in summary list",
+    {
+        "order": ["locations"],
+        "properties": {
+            "locations": {
+                "default": [{
+                    "city": "Cordoba.",
+                    "state": "Cordoba",
+                    "country": "Argentina",
+                    "other": "some value"
+                }, {
+                    "city": "Santa Fe.",
+                    "state": "Santa Fe",
+                    "country": "Argentina"
+                }, {
+                    "city": "Buenos Aires.",
+                    "state": "Buenos Aires",
+                    "country": "Argentina"
+                }, {
+                    "city": "Stuttgart",
+                    "state": "Baden Wuertemberg",
+                    "country": "Germany"
+                }, {
+                    "city": "Rome",
+                    "state": "Lazio",
+                    "country": "Italy"
+                }, {
+                    "city": "Forli",
+                    "state": "Emilia-Romagna",
+                    "country": "Italy"
+                }],
+                "type": "array",
+                "je:hint": "summarylist",
+                "je:summarylist": {
+                    "template": "{city} {state} {country}",
+                    "allowPagination": true,
+                    "paginationMaxRows": 5,
+                    "allowFilter": true,
+                    "allowEdit": true,
+                    "allowRemove": true,
+                    "allowAdd": true
+                },
+                "items": {
+                    "type": "object",
+                    "title": "Location",
+                    "order": ["city", "state", "country"],
+                    "properties": {
+                        "city": {
+                            "type": "string",
+                            "title": "City"
+                        },
+                        "state": {
+                            "type": "string",
+                            "title": "State"
+                        },
+                        "country": {
+                            "type": "string",
+                            "title": "Country"
+                        }
+                    }
+                }
+            }
+        }
     }], ["tabarray hint (addon)", "manipulate an array as tabs",
     {
         "order": ["locations"],
