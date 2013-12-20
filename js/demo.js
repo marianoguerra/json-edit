@@ -54,7 +54,7 @@ require.config({
         "squide.ui": "http://marianoguerra.github.com/squide/src/squide.ui",
 
         // by summarylist
-        "dustjs": "http://linkedin.github.com/dustjs/dist/dust-full-1.0.0"
+        "dustjs": "http://linkedin.github.io/dustjs/dist/dust-full.min"
     },
 
     shim: {

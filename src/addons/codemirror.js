@@ -1,4 +1,4 @@
-/*global define, document, CodeMirror*/
+/*global define, document, CodeMirror, setTimeout*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -21,11 +21,13 @@
         formatHints = JsonEdit.defaults.hintedFormatters,
         collectHints = JsonEdit.defaults.hintedCollectors;
 
-    function load(loadFun, path) {
+    function load(loadFun, path, id) {
         if (!cache[path]) {
             cache[path] = true;
-            loadFun(path);
+            loadFun(path, id);
+            return false;
         }
+        return true;
     }
 
     formatHints.string = formatHints.string || {};
@@ -39,14 +41,15 @@
             addons = options.addons || [],
             styles = options.styles || [],
             scripts = options.scripts || [],
+            loadCssFromCache,
             content = opts["default"] || "";
 
         if (path[path.length - 1] !== "/") {
             path += "/";
         }
 
+        loadCssFromCache = load(priv.loadCss, path + "lib/codemirror.css", "codemirror-style");
         load(priv.loadJs, path + "lib/codemirror.js");
-        load(priv.loadCss, path + "lib/codemirror.css");
 
         if (options.mode) {
             load(priv.loadJs, path + "mode/" + options.mode);
@@ -69,17 +72,27 @@
                 init.lintWith = CodeMirror[options.lintWith];
             }
 
-            var textarea = document.getElementById(codeId),
+            function render() {
+                var textarea = document.getElementById(codeId),
                 editor = CodeMirror.fromTextArea(textarea, init);
 
-            $("#" + codeId).data("codemirror", editor);
+                $("#" + codeId).data("codemirror", editor);
+            }
+
+            if (loadCssFromCache) {
+                render();
+            } else {
+                // In Chrome the codemirror is rendered before the css was loaded
+                setTimeout(render, 2000);
+            }
         });
 
         return {
             "textarea": {
                 "id": codeId,
+                "style": "display:none",
                 "class": "codemirror-textarea",
-                "$childs": priv.escapeHTML(content)
+                "$childs": (content)
             }
         };
     };
