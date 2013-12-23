@@ -20,13 +20,13 @@ var eflang = (function () {
     B.LANG_VARIABLES_GET_FIELD_INPUT_FROM_TOOLTIP_1 = 'Returns the value of field in an object.';
     // Out Variables Blocks.
     B.LANG_VARIABLES_OUTGET_HELPURL = 'http://en.wikipedia.org/wiki/Variable_(computer_science)';
-    B.LANG_VARIABLES_OUTGET_TITLE_1 = 'get out var';
+    B.LANG_VARIABLES_OUTGET_TITLE_1 = 'get outvar';
     B.LANG_VARIABLES_OUTGET_ITEM = 'item';
     B.LANG_VARIABLES_OUTGET_TOOLTIP_1 = 'Returns the value of this output variable.';
     B.LANG_VARIABLES_VALUEGET_TOOLTIP_1 = 'Returns the field inside the value field';
 
     B.LANG_VARIABLES_OUTSET_HELPURL = 'http://en.wikipedia.org/wiki/Variable_(computer_science)';
-    B.LANG_VARIABLES_OUTSET_TITLE_1 = 'set out var';
+    B.LANG_VARIABLES_OUTSET_TITLE_1 = 'set outvar';
     B.LANG_VARIABLES_OUTSET_ITEM = 'item';
     B.LANG_VARIABLES_OUTSET_TOOLTIP_1 = 'Sets this output variable to be equal to the input.';
 
@@ -89,6 +89,22 @@ var eflang = (function () {
         }
     };
 
+    Lang.variables_outget_str = {
+        helpUrl: B.LANG_VARIABLES_GET_HELPURL,
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput()
+                .appendTitle("get from outvar")
+                .appendTitle(new B.FieldTextInput("name"), 'VAR');
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendTitle("key");
+            this.setOutput(true, null);
+            this.setTooltip(B.LANG_VARIABLES_OUTGET_TOOLTIP_1);
+            this.setInputsInline(true);
+        }
+    };
+
     Lang.variables_valueget = {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
@@ -98,6 +114,22 @@ var eflang = (function () {
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
         },
+    };
+
+    Lang.variables_valueget_str = {
+        helpUrl: B.LANG_VARIABLES_GET_HELPURL,
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput()
+                .appendTitle("get from value")
+                .appendTitle(new B.FieldTextInput("name"), 'VAR');
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendTitle("key");
+            this.setOutput(true, null);
+            this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
+            this.setInputsInline(true);
+        }
     };
 
     Lang.variables_outset = {
@@ -125,10 +157,22 @@ var eflang = (function () {
         return ["env." + code, JS.ORDER_ATOMIC];
     };
 
+    JS.variables_outget_str = function () {
+        var code = this.getTitleValue('VAR'),
+            key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
+        return ["env." + code + "[" + key + "]", JS.ORDER_ATOMIC];
+    };
+
     JS.variables_valueget = function () {
         // Variable getter.
         var code = this.getTitleValue('VAR');
         return ["env.value." + code, JS.ORDER_ATOMIC];
+    };
+
+    JS.variables_valueget_str = function () {
+        var code = this.getTitleValue('VAR'),
+            key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
+        return ["env.value." + code + "[" + key + "]", JS.ORDER_ATOMIC];
     };
 
     JS.variables_outset = function () {
@@ -477,7 +521,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('OBJ')
-                .setCheck(Array)
+                .setCheck("Array")
                 .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
                 .appendTitle(new B.FieldVariable("key"), 'KEY')
                 .appendTitle(", ")
@@ -555,7 +599,7 @@ var eflang = (function () {
             this.appendValueInput('ITEM')
                 .appendTitle("item");
             this.appendValueInput('VALUE')
-                .setCheck(Array)
+                .setCheck("Array")
                 .appendTitle(B.LANG_LISTS_OPS_INPUT_IN_LIST);
             this.setInputsInline(true);
             this.setOutput(true, null);
@@ -627,7 +671,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('LIST')
-                .setCheck(Array)
+                .setCheck("Array")
                 .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
                 .appendTitle(new B.FieldVariable("item"), 'VAR')
                 .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
@@ -696,10 +740,10 @@ var eflang = (function () {
             this.setColour(230);
             this.setOutput(true, Number);
             this.appendValueInput('VALUE')
-                .setCheck(Number)
+                .setCheck("Number")
                 .appendTitle(B.LANG_MATH_PRECISION_INPUT);
             this.appendValueInput('PRECISION')
-                .setCheck(Number)
+                .setCheck("Number")
                 .setAlign(B.ALIGN_RIGHT)
                 .appendTitle(B.LANG_MATH_PRECISION_INPUT_1);
             this.setInputsInline(true);
@@ -718,7 +762,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(160);
             this.appendValueInput('VALUE')
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle("to integer");
             this.setOutput(true, 'Number');
             this.setTooltip("Convert a text representation of a number to an integer number");
@@ -729,7 +773,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(160);
             this.appendValueInput('VALUE')
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle("to decimal");
             this.setOutput(true, 'Number');
             this.setTooltip("Convert a text representation of a number to a decimal number");
@@ -761,12 +805,12 @@ var eflang = (function () {
 
             this.appendValueInput('KEY')
                 .setAlign(B.ALIGN_RIGHT)
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_STORE_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_STORE_INPUT_2);
 
             this.setInputsInline(true);
@@ -797,12 +841,12 @@ var eflang = (function () {
             this.setOutput(true, String);
 
             this.appendValueInput('KEY')
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_FETCH_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_FETCH_INPUT_2);
 
             this.setInputsInline(true);
@@ -829,12 +873,12 @@ var eflang = (function () {
             this.setOutput(true, String);
 
             this.appendValueInput('KEY')
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_INCR_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_INCR_INPUT_1);
 
             this.setInputsInline(true);
@@ -861,12 +905,12 @@ var eflang = (function () {
             this.setOutput(true, String);
 
             this.appendValueInput('KEY')
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_DECR_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
-                .setCheck(String)
+                .setCheck("String")
                 .appendTitle(B.LANG_DB_DECR_INPUT_1);
 
             this.setInputsInline(true);
@@ -970,7 +1014,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle("delete out var")
+                .appendTitle("delete outvar")
                 .appendTitle(new B.FieldTextInput(
                     B.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
             this.setPreviousStatement(true);
