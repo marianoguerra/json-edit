@@ -69,8 +69,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendTitle(B.LANG_CONST_OUTGET_TITLE_1)
-            .appendTitle(new B.FieldDropdown(B.eflang.constants), 'CONST');
+            .appendField(B.LANG_CONST_OUTGET_TITLE_1)
+            .appendField(new B.FieldDropdown(B.eflang.constants), 'CONST');
 
             this.setOutput(true, null);
             this.setTooltip(B.LANG_CONST_OUTGET_TOOLTIP_1);
@@ -82,8 +82,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle(B.LANG_VARIABLES_OUTGET_TITLE_1)
-                .appendTitle(new B.FieldTextInput("name"), 'VAR');
+                .appendField(B.LANG_VARIABLES_OUTGET_TITLE_1)
+                .appendField(new B.FieldTextInput("name"), 'VAR');
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_OUTGET_TOOLTIP_1);
         }
@@ -94,11 +94,11 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle("get from outvar")
-                .appendTitle(new B.FieldTextInput("name"), 'VAR');
+                .appendField("get from outvar")
+                .appendField(new B.FieldTextInput("name"), 'VAR');
             this.appendValueInput('KEY')
                 .setCheck("String")
-                .appendTitle("key");
+                .appendField("key");
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_OUTGET_TOOLTIP_1);
             this.setInputsInline(true);
@@ -109,8 +109,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle("get value")
-                .appendTitle(new B.FieldTextInput("name"), 'VAR');
+                .appendField("get value")
+                .appendField(new B.FieldTextInput("name"), 'VAR');
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
         },
@@ -121,11 +121,11 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle("get from value")
-                .appendTitle(new B.FieldTextInput("name"), 'VAR');
+                .appendField("get from value")
+                .appendField(new B.FieldTextInput("name"), 'VAR');
             this.appendValueInput('KEY')
                 .setCheck("String")
-                .appendTitle("key");
+                .appendField("key");
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
             this.setInputsInline(true);
@@ -137,8 +137,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendValueInput('VALUE')
-                .appendTitle(B.LANG_VARIABLES_OUTSET_TITLE_1)
-                .appendTitle(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM
+                .appendField(B.LANG_VARIABLES_OUTSET_TITLE_1)
+                .appendField(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM
 ), 'VAR');
             this.setPreviousStatement(true);
             this.setNextStatement(true);
@@ -193,8 +193,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendTitle(B.LANG_VARIABLES_GETPATH_TITLE)
-            .appendTitle(new B.FieldTextInput(
+            .appendField(B.LANG_VARIABLES_GETPATH_TITLE)
+            .appendField(new B.FieldTextInput(
                 B.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
             this.setOutput(true, null);
             this.setTooltip(B.LANG_VARIABLES_GETPATH_TOOLTIP);
@@ -225,14 +225,14 @@ var eflang = (function () {
             var input = this.appendValueInput('FIELD' + num);
 
             //if (num === 0) {
-            //    input.appendTitle(B.LANG_OBJS_CREATE_WITH_INPUT_WITH);
+            //    input.appendField(B.LANG_OBJS_CREATE_WITH_INPUT_WITH);
             //}
 
             input
-                .appendTitle("key")
-                .appendTitle(new B.FieldTextInput(title ||
+                .appendField("key")
+                .appendField(new B.FieldTextInput(title ||
                               B.LANG_VARIABLES_OUTSET_ITEM), 'FIELD' + num)
-                .appendTitle(":");
+                .appendField(":");
 
             return input;
         },
@@ -262,7 +262,7 @@ var eflang = (function () {
             }
             if (this.itemCount_ === 0) {
                 this.appendDummyInput('EMPTY')
-                .appendTitle(B.LANG_OBJS_CREATE_EMPTY_TITLE_1);
+                .appendField(B.LANG_OBJS_CREATE_EMPTY_TITLE_1);
             }
         },
         decompose: function (workspace) {
@@ -310,7 +310,7 @@ var eflang = (function () {
             }
             if (this.itemCount_ === 0) {
                 this.appendDummyInput('EMPTY')
-                .appendTitle(B.LANG_OBJS_CREATE_EMPTY_TITLE_1);
+                .appendField(B.LANG_OBJS_CREATE_EMPTY_TITLE_1);
             }
         },
         saveConnections: function (containerBlock) {
@@ -332,7 +332,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendTitle(B.LANG_OBJS_CREATE_WITH_CONTAINER_TITLE_ADD);
+            .appendField(B.LANG_OBJS_CREATE_WITH_CONTAINER_TITLE_ADD);
             this.appendStatementInput('STACK');
             this.setTooltip(B.LANG_OBJS_CREATE_WITH_CONTAINER_TOOLTIP_1);
             this.contextMenu = false;
@@ -343,7 +343,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendTitle(B.LANG_OBJS_CREATE_WITH_ITEM_TITLE);
+            .appendField(B.LANG_OBJS_CREATE_WITH_ITEM_TITLE);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(B.LANG_OBJS_CREATE_WITH_ITEM_TOOLTIP_1);
@@ -382,10 +382,10 @@ var eflang = (function () {
             init: function () {
                 this.setColour(Lang.PROCEDURE_TYPE_HUE);
                 this.appendDummyInput()
-                .appendTitle(B.LANG_PROCS_CALL_WITH_NAME)
-                .appendTitle(new B.FieldTextInput(B.LANG_PROCS_CALL_NAME), 'NAME');
+                .appendField(B.LANG_PROCS_CALL_WITH_NAME)
+                .appendField(new B.FieldTextInput(B.LANG_PROCS_CALL_NAME), 'NAME');
                 this.appendValueInput('ADD0')
-                .appendTitle(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
+                .appendField(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
                 this.appendValueInput('ADD1');
 
                 if (returns) {
@@ -413,12 +413,12 @@ var eflang = (function () {
                 for (x = 0; x < this.itemCount_; x += 1) {
                     input = this.appendValueInput('ADD' + x);
                     if (x === 0) {
-                        input.appendTitle(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
+                        input.appendField(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
                     }
                 }
                 if (this.itemCount_ === 0) {
                     this.appendDummyInput('EMPTY')
-                    .appendTitle(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
+                    .appendField(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
                 }
             },
             decompose: function (workspace) {
@@ -452,7 +452,7 @@ var eflang = (function () {
                 while (itemBlock) {
                     input = this.appendValueInput('ADD' + this.itemCount_);
                     if (this.itemCount_ === 0) {
-                        input.appendTitle(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
+                        input.appendField(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
                     }
                     // Reconnect any child blocks.
                     if (itemBlock.valueConnection_) {
@@ -464,7 +464,7 @@ var eflang = (function () {
                 }
                 if (this.itemCount_ === 0) {
                     this.appendDummyInput('EMPTY')
-                        .appendTitle(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
+                        .appendField(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
                 }
             },
             saveConnections: function (containerBlock) {
@@ -489,7 +489,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.PROCEDURE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle(B.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD);
+                .appendField(B.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD);
             this.appendStatementInput('STACK');
             this.setTooltip(B.LANG_PROCS_CALL_WITH_CONTAINER_TOOLTIP_1);
             this.contextMenu = false;
@@ -501,7 +501,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.PROCEDURE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
+                .appendField(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             this.setTooltip(B.LANG_PROCS_CALL_WITH_ITEM_TOOLTIP_1);
@@ -522,13 +522,13 @@ var eflang = (function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('OBJ')
                 .setCheck("Array")
-                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
-                .appendTitle(new B.FieldVariable("key"), 'KEY')
-                .appendTitle(", ")
-                .appendTitle(new B.FieldVariable("value"), 'VAL')
-                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
+                .appendField(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM)
+                .appendField(new B.FieldVariable("key"), 'KEY')
+                .appendField(", ")
+                .appendField(new B.FieldVariable("value"), 'VAL')
+                .appendField(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST);
             this.appendStatementInput('DO')
-                .appendTitle(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
+                .appendField(B.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
@@ -595,12 +595,12 @@ var eflang = (function () {
                 this.sourceBlock_.updateStatement(isStatement);
             });
             this.appendDummyInput()
-                .appendTitle(modeMenu, 'MODE');
+                .appendField(modeMenu, 'MODE');
             this.appendValueInput('ITEM')
-                .appendTitle("item");
+                .appendField("item");
             this.appendValueInput('VALUE')
                 .setCheck("Array")
-                .appendTitle(B.LANG_LISTS_OPS_INPUT_IN_LIST);
+                .appendField(B.LANG_LISTS_OPS_INPUT_IN_LIST);
             this.setInputsInline(true);
             this.setOutput(true, null);
             this.updateStatement(true);
@@ -672,13 +672,13 @@ var eflang = (function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('LIST')
                 .setCheck("Array")
-                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
-                .appendTitle(new B.FieldVariable("item"), 'VAR')
-                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
-                .appendTitle(new B.FieldVariable("i"), 'INDEX')
-                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
+                .appendField(B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM)
+                .appendField(new B.FieldVariable("item"), 'VAR')
+                .appendField(B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX)
+                .appendField(new B.FieldVariable("i"), 'INDEX')
+                .appendField(B.LANG_CONTROLS_ENUMERATE_INPUT_INLIST);
             this.appendStatementInput('DO')
-                .appendTitle(B.LANG_CONTROLS_ENUMERATE_INPUT_DO);
+                .appendField(B.LANG_CONTROLS_ENUMERATE_INPUT_DO);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
@@ -741,11 +741,11 @@ var eflang = (function () {
             this.setOutput(true, Number);
             this.appendValueInput('VALUE')
                 .setCheck("Number")
-                .appendTitle(B.LANG_MATH_PRECISION_INPUT);
+                .appendField(B.LANG_MATH_PRECISION_INPUT);
             this.appendValueInput('PRECISION')
                 .setCheck("Number")
                 .setAlign(B.ALIGN_RIGHT)
-                .appendTitle(B.LANG_MATH_PRECISION_INPUT_1);
+                .appendField(B.LANG_MATH_PRECISION_INPUT_1);
             this.setInputsInline(true);
             this.setTooltip(B.LANG_MATH_PRECISION_TOOLTIP);
         }
@@ -763,7 +763,7 @@ var eflang = (function () {
             this.setColour(160);
             this.appendValueInput('VALUE')
                 .setCheck("String")
-                .appendTitle("to integer");
+                .appendField("to integer");
             this.setOutput(true, 'Number');
             this.setTooltip("Convert a text representation of a number to an integer number");
         }
@@ -774,7 +774,7 @@ var eflang = (function () {
             this.setColour(160);
             this.appendValueInput('VALUE')
                 .setCheck("String")
-                .appendTitle("to decimal");
+                .appendField("to decimal");
             this.setOutput(true, 'Number');
             this.setTooltip("Convert a text representation of a number to a decimal number");
         }
@@ -801,17 +801,17 @@ var eflang = (function () {
             this.setColour(230);
             this.setOutput(true, String);
             this.appendValueInput('VALUE')
-                .appendTitle(B.LANG_DB_STORE_INPUT_1);
+                .appendField(B.LANG_DB_STORE_INPUT_1);
 
             this.appendValueInput('KEY')
                 .setAlign(B.ALIGN_RIGHT)
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_STORE_INPUT);
+                .appendField(B.LANG_DB_STORE_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_STORE_INPUT_2);
+                .appendField(B.LANG_DB_STORE_INPUT_2);
 
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_STORE_TOOLTIP);
@@ -842,12 +842,12 @@ var eflang = (function () {
 
             this.appendValueInput('KEY')
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_FETCH_INPUT);
+                .appendField(B.LANG_DB_FETCH_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_FETCH_INPUT_2);
+                .appendField(B.LANG_DB_FETCH_INPUT_2);
 
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_FETCH_TOOLTIP);
@@ -874,12 +874,12 @@ var eflang = (function () {
 
             this.appendValueInput('KEY')
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_INCR_INPUT);
+                .appendField(B.LANG_DB_INCR_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_INCR_INPUT_1);
+                .appendField(B.LANG_DB_INCR_INPUT_1);
 
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_INCR_TOOLTIP);
@@ -906,12 +906,12 @@ var eflang = (function () {
 
             this.appendValueInput('KEY')
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_DECR_INPUT);
+                .appendField(B.LANG_DB_DECR_INPUT);
 
             this.appendValueInput('STORE')
                 .setAlign(B.ALIGN_RIGHT)
                 .setCheck("String")
-                .appendTitle(B.LANG_DB_DECR_INPUT_1);
+                .appendField(B.LANG_DB_DECR_INPUT_1);
 
             this.setInputsInline(true);
             this.setTooltip(B.LANG_DB_DECR_TOOLTIP);
@@ -936,7 +936,7 @@ var eflang = (function () {
             this.setOutput(true, Boolean);
 
             this.appendValueInput('VALUE')
-                .appendTitle(B.LANG_LOGIC_IS_NULL_INPUT);
+                .appendField(B.LANG_LOGIC_IS_NULL_INPUT);
 
             this.setInputsInline(true);
             this.setTooltip(B.LANG_LOGIC_IS_NULL_TOOLTIP);
@@ -954,10 +954,10 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.LOGIC_TYPE_HUE);
             this.appendValueInput('VALUE')
-                .appendTitle("if");
+                .appendField("if");
 
             this.appendValueInput('DEFAULT')
-                .appendTitle("otherwise")
+                .appendField("otherwise")
                 .setAlign(B.ALIGN_RIGHT);
 
             this.setInputsInline(true);
@@ -981,7 +981,7 @@ var eflang = (function () {
             this.appendValueInput('VALUE');
 
             this.appendValueInput('TOFIND')
-                .appendTitle("contains?")
+                .appendField("contains?")
                 .setAlign(B.ALIGN_RIGHT);
 
             this.setInputsInline(true);
@@ -994,7 +994,7 @@ var eflang = (function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.setOutput(true);
             this.appendDummyInput()
-            .appendTitle("current time");
+            .appendField("current time");
             this.setTooltip("Return current timestamp");
         }
     };
@@ -1014,8 +1014,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendTitle("delete outvar")
-                .appendTitle(new B.FieldTextInput(
+                .appendField("delete outvar")
+                .appendField(new B.FieldTextInput(
                     B.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
             this.setPreviousStatement(true);
             this.setNextStatement(true);
