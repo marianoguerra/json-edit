@@ -141,19 +141,13 @@ var eflang = (function () {
         return [code, JS.ORDER_ATOMIC];
     };
 
-
     Lang.objs_create_with = {
         addField: function (num, title) {
-            var input = this.appendValueInput('FIELD' + num);
+            var input = this.appendValueInput('FIELD' + num)
+                .setAlign(B.ALIGN_RIGHT);
 
-            //if (num === 0) {
-            //    input.appendField(B.LANG_OBJS_CREATE_WITH_INPUT_WITH);
-            //}
-
-            input
-                .appendField("key")
-                .appendField(new B.FieldTextInput(title || "item"), 'FIELD' + num)
-                .appendField(":");
+            input.appendField(new B.FieldTextInput(title || ("key" + num)),
+                             'FIELD' + num);
 
             return input;
         },
@@ -162,7 +156,7 @@ var eflang = (function () {
             this.addField(0);
             this.addField(1);
             this.addField(2);
-            this.setOutput(true, Array);
+            this.setOutput(true, "Object");
             this.setMutator(new B.Mutator(['objs_create_with_item']));
             this.itemCount_ = 3;
         },
@@ -180,13 +174,15 @@ var eflang = (function () {
             for (x = 0; x < this.itemCount_; x += 1) {
                 input = this.addField(x);
             }
+
             if (this.itemCount_ === 0) {
-                this.appendDummyInput('EMPTY')
-                    .appendField("");
+                this.addField(0);
+                this.itemCount_ = 1;
             }
         },
         decompose: function (workspace) {
-            var connection, x, itemBlock, containerBlock = new B.Block(workspace,
+            var connection, x, itemBlock,
+                containerBlock = new B.Block(workspace,
                                              'objs_create_with_container');
             containerBlock.initSvg();
             connection = containerBlock.getInput('STACK').connection;
@@ -203,7 +199,8 @@ var eflang = (function () {
             var x, itemBlock, oldInput, oldTitle, input, oldInputs = [];
             // Disconnect all input blocks and remove all inputs.
             if (this.itemCount_ === 0) {
-                this.removeInput('EMPTY');
+                this.addField(0);
+                this.itemCount_ = 1;
             } else {
                 for (x = this.itemCount_ - 1; x >= 0; x -= 1) {
                     oldInputs.push(this.getInput('FIELD' + x));
@@ -217,7 +214,7 @@ var eflang = (function () {
             itemBlock = containerBlock.getInputTargetBlock('STACK');
             while (itemBlock) {
                 oldInput = oldInputs[this.itemCount_];
-                oldTitle = (oldInput) ? oldInput.titleRow[1].getText() : null;
+                oldTitle = (oldInput) ? oldInput.fieldRow[0].getText() : null;
                 input = this.addField(this.itemCount_, oldTitle);
 
                 // Reconnect any child blocks.
@@ -228,9 +225,10 @@ var eflang = (function () {
                 itemBlock = itemBlock.nextConnection &&
                     itemBlock.nextConnection.targetBlock();
             }
+
             if (this.itemCount_ === 0) {
-                this.appendDummyInput('EMPTY')
-                    .appendField("");
+                this.addField(0);
+                this.itemCount_ = 1;
             }
         },
         saveConnections: function (containerBlock) {
