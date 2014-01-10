@@ -15,47 +15,6 @@ var eflang = (function () {
     Lang.LOOPS_TYPE_HUE = 120;
     Lang.LOGIC_TYPE_HUE = 210;
 
-    B.LANG_VARIABLES_GET_FIELD_INPUT_FIELD = "get";
-    B.LANG_VARIABLES_GET_FIELD_INPUT_IN = 'from object';
-    B.LANG_VARIABLES_GET_FIELD_INPUT_FROM_TOOLTIP_1 = 'Returns the value of field in an object.';
-    // Out Variables Blocks.
-    B.LANG_VARIABLES_OUTGET_HELPURL = 'http://en.wikipedia.org/wiki/Variable_(computer_science)';
-    B.LANG_VARIABLES_OUTGET_TITLE_1 = 'get outvar';
-    B.LANG_VARIABLES_OUTGET_ITEM = 'item';
-    B.LANG_VARIABLES_OUTGET_TOOLTIP_1 = 'Returns the value of this output variable.';
-    B.LANG_VARIABLES_VALUEGET_TOOLTIP_1 = 'Returns the field inside the value field';
-
-    B.LANG_VARIABLES_OUTSET_HELPURL = 'http://en.wikipedia.org/wiki/Variable_(computer_science)';
-    B.LANG_VARIABLES_OUTSET_TITLE_1 = 'set outvar';
-    B.LANG_VARIABLES_OUTSET_ITEM = 'item';
-    B.LANG_VARIABLES_OUTSET_TOOLTIP_1 = 'Sets this output variable to be equal to the input.';
-
-    B.LANG_CONST_OUTGET_TITLE_1 = "get constant";
-    B.LANG_CONST_OUTGET_TOOLTIP_1 = "Returns the value of a constant";
-
-    B.LANG_CATEGORY_OBJS = "Objects";
-    B.LANG_CATEGORY_PROCS = "Procedures";
-
-    B.LANG_PROCS_CALL_NAME = 'procedureName';
-    B.LANG_PROCS_CALL_WITH_INPUT_WITH = 'with';
-    B.LANG_PROCS_CALL_WITH_TOOLTIP_1 = 'Call a procedure with any number of arguments.';
-
-    B.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD = 'procedure';
-    B.LANG_PROCS_CALL_WITH_CONTAINER_TOOLTIP_1 = 'Add, remove, or reorder sections to reconfigure this procedure call.';
-
-    B.LANG_PROCS_CALL_WITH_NAME = 'Call';
-    B.LANG_PROCS_CALL_WITH_ITEM_TITLE = 'argument';
-    B.LANG_PROCS_CALL_WITH_ITEM_TOOLTIP_1 = 'Add an argument to the argument list.';
-
-    B.LANG_OBJS_CREATE_WITH_INPUT_WITH = 'create object with';
-    B.LANG_OBJS_CREATE_WITH_TOOLTIP_1 = 'Create an object with any number of fields.';
-
-    B.LANG_OBJS_CREATE_WITH_CONTAINER_TITLE_ADD = 'object';
-    B.LANG_OBJS_CREATE_WITH_CONTAINER_TOOLTIP_1 = 'Add, remove, or reorder sections to reconfigure this object block.';
-
-    B.LANG_OBJS_CREATE_WITH_ITEM_TITLE = 'field';
-    B.LANG_OBJS_CREATE_WITH_ITEM_TOOLTIP_1 = 'Add a field to the object.';
-
     B.eflang = {};
     B.eflang.constants = [["NAME", "NAME"]];
     B.eflang.constantsPath = "libs.consts.";
@@ -69,39 +28,20 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendField(B.LANG_CONST_OUTGET_TITLE_1)
-            .appendField(new B.FieldDropdown(B.eflang.constants), 'CONST');
+                .appendField("get constant")
+                .appendField(new B.FieldDropdown(B.eflang.constants), 'CONST');
 
             this.setOutput(true, null);
-            this.setTooltip(B.LANG_CONST_OUTGET_TOOLTIP_1);
         }
     };
 
     Lang.variables_outget = {
-        helpUrl: B.LANG_VARIABLES_GET_HELPURL,
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendField(B.LANG_VARIABLES_OUTGET_TITLE_1)
-                .appendField(new B.FieldTextInput("name"), 'VAR');
+                .appendField("get field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR');
             this.setOutput(true, null);
-            this.setTooltip(B.LANG_VARIABLES_OUTGET_TOOLTIP_1);
-        }
-    };
-
-    Lang.variables_outget_str = {
-        helpUrl: B.LANG_VARIABLES_GET_HELPURL,
-        init: function () {
-            this.setColour(Lang.VARIABLE_TYPE_HUE);
-            this.appendDummyInput()
-                .appendField("get from outvar")
-                .appendField(new B.FieldTextInput("name"), 'VAR');
-            this.appendValueInput('KEY')
-                .setCheck("String")
-                .appendField("key");
-            this.setOutput(true, null);
-            this.setTooltip(B.LANG_VARIABLES_OUTGET_TOOLTIP_1);
-            this.setInputsInline(true);
         }
     };
 
@@ -109,40 +49,35 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendField("get value")
-                .appendField(new B.FieldTextInput("name"), 'VAR');
+                .appendField("get value field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR');
             this.setOutput(true, null);
-            this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
-        },
+        }
     };
 
-    Lang.variables_valueget_str = {
-        helpUrl: B.LANG_VARIABLES_GET_HELPURL,
+    Lang.variables_outget_str = {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
-            this.appendDummyInput()
-                .appendField("get from value")
-                .appendField(new B.FieldTextInput("name"), 'VAR');
             this.appendValueInput('KEY')
                 .setCheck("String")
-                .appendField("key");
+                .appendField("get key");
+            this.appendDummyInput()
+                .appendField("from")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR');
             this.setOutput(true, null);
-            this.setTooltip(B.LANG_VARIABLES_VALUEGET_TOOLTIP_1);
             this.setInputsInline(true);
         }
     };
 
     Lang.variables_outset = {
-        helpUrl: B.LANG_VARIABLES_OUTSET_HELPURL,
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendValueInput('VALUE')
-                .appendField(B.LANG_VARIABLES_OUTSET_TITLE_1)
-                .appendField(new B.FieldTextInput(B.LANG_VARIABLES_OUTSET_ITEM
-), 'VAR');
+                .appendField("set field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR')
+                .appendField("to");
             this.setPreviousStatement(true);
             this.setNextStatement(true);
-            this.setTooltip(B.LANG_VARIABLES_OUTSET_TOOLTIP_1);
         }
     };
 
@@ -152,27 +87,19 @@ var eflang = (function () {
     };
 
     JS.variables_outget = function () {
-        // Variable getter.
-        var code = this.getTitleValue('VAR');
+        var code = this.getTitleValue('VAR') || "__not_set__";
         return ["env." + code, JS.ORDER_ATOMIC];
     };
 
-    JS.variables_outget_str = function () {
-        var code = this.getTitleValue('VAR'),
-            key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
-        return ["env." + code + "[" + key + "]", JS.ORDER_ATOMIC];
-    };
-
     JS.variables_valueget = function () {
-        // Variable getter.
-        var code = this.getTitleValue('VAR');
+        var code = this.getTitleValue('VAR') || "__not_set__";
         return ["env.value." + code, JS.ORDER_ATOMIC];
     };
 
-    JS.variables_valueget_str = function () {
-        var code = this.getTitleValue('VAR'),
+    JS.variables_outget_str = function () {
+        var code = this.getTitleValue('VAR') || '__not_set__',
             key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
-        return ["env.value." + code + "[" + key + "]", JS.ORDER_ATOMIC];
+        return ["env." + code + "[" + key + "]", JS.ORDER_ATOMIC];
     };
 
     JS.variables_outset = function () {
@@ -185,19 +112,14 @@ var eflang = (function () {
     };
 
     B.LANG_VARIABLES_GETPATH_TITLE = "get var path";
-    B.LANG_VARIABLES_GETPATH_ITEM = "item.child";
-    B.LANG_VARIABLES_GETPATH_TOOLTIP = 'Returns the value of this path.';
 
     Lang.variables_getpath = {
-        helpUrl: B.LANG_VARIABLES_GET_HELPURL,
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendField(B.LANG_VARIABLES_GETPATH_TITLE)
-            .appendField(new B.FieldTextInput(
-                B.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
+                .appendField(B.LANG_VARIABLES_GETPATH_TITLE)
+                .appendField(new B.FieldTextInput("item.child"), 'VAR');
             this.setOutput(true, null);
-            this.setTooltip(B.LANG_VARIABLES_GETPATH_TOOLTIP);
         }
     };
 
@@ -230,8 +152,7 @@ var eflang = (function () {
 
             input
                 .appendField("key")
-                .appendField(new B.FieldTextInput(title ||
-                              B.LANG_VARIABLES_OUTSET_ITEM), 'FIELD' + num)
+                .appendField(new B.FieldTextInput(title || "item"), 'FIELD' + num)
                 .appendField(":");
 
             return input;
@@ -243,7 +164,6 @@ var eflang = (function () {
             this.addField(2);
             this.setOutput(true, Array);
             this.setMutator(new B.Mutator(['objs_create_with_item']));
-            this.setTooltip(B.LANG_OBJS_CREATE_WITH_TOOLTIP_1);
             this.itemCount_ = 3;
         },
         mutationToDom: function (workspace) {
@@ -262,7 +182,7 @@ var eflang = (function () {
             }
             if (this.itemCount_ === 0) {
                 this.appendDummyInput('EMPTY')
-                .appendField(B.LANG_OBJS_CREATE_EMPTY_TITLE_1);
+                    .appendField("");
             }
         },
         decompose: function (workspace) {
@@ -310,7 +230,7 @@ var eflang = (function () {
             }
             if (this.itemCount_ === 0) {
                 this.appendDummyInput('EMPTY')
-                .appendField(B.LANG_OBJS_CREATE_EMPTY_TITLE_1);
+                    .appendField("");
             }
         },
         saveConnections: function (containerBlock) {
@@ -332,9 +252,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendField(B.LANG_OBJS_CREATE_WITH_CONTAINER_TITLE_ADD);
+                .appendField("object");
             this.appendStatementInput('STACK');
-            this.setTooltip(B.LANG_OBJS_CREATE_WITH_CONTAINER_TOOLTIP_1);
             this.contextMenu = false;
         }
     };
@@ -343,10 +262,9 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-            .appendField(B.LANG_OBJS_CREATE_WITH_ITEM_TITLE);
+                .appendField("field");
             this.setPreviousStatement(true);
             this.setNextStatement(true);
-            this.setTooltip(B.LANG_OBJS_CREATE_WITH_ITEM_TOOLTIP_1);
             this.contextMenu = false;
         }
     };
@@ -376,16 +294,14 @@ var eflang = (function () {
     function makeProcCall(returns) {
         return {
             // Create a list with any number of elements of any type.
-            category: B.LANG_CATEGORY_PROCS,
             returns: returns,
-            helpUrl: '',
             init: function () {
                 this.setColour(Lang.PROCEDURE_TYPE_HUE);
                 this.appendDummyInput()
-                .appendField(B.LANG_PROCS_CALL_WITH_NAME)
-                .appendField(new B.FieldTextInput(B.LANG_PROCS_CALL_NAME), 'NAME');
+                    .appendField("call")
+                    .appendField(new B.FieldTextInput("procedureName"), 'NAME');
                 this.appendValueInput('ADD0')
-                .appendField(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
+                    .appendField("with");
                 this.appendValueInput('ADD1');
 
                 if (returns) {
@@ -396,7 +312,6 @@ var eflang = (function () {
                 }
 
                 this.setMutator(new B.Mutator(['procs_call_with_item']));
-                this.setTooltip(B.LANG_PROCS_CALL_WITH_TOOLTIP_1);
                 this.itemCount_ = 2;
             },
             mutationToDom: function (workspace) {
@@ -413,12 +328,12 @@ var eflang = (function () {
                 for (x = 0; x < this.itemCount_; x += 1) {
                     input = this.appendValueInput('ADD' + x);
                     if (x === 0) {
-                        input.appendField(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
+                        input.appendField("with");
                     }
                 }
                 if (this.itemCount_ === 0) {
                     this.appendDummyInput('EMPTY')
-                    .appendField(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
+                        .appendField("");
                 }
             },
             decompose: function (workspace) {
@@ -452,7 +367,7 @@ var eflang = (function () {
                 while (itemBlock) {
                     input = this.appendValueInput('ADD' + this.itemCount_);
                     if (this.itemCount_ === 0) {
-                        input.appendField(B.LANG_PROCS_CALL_WITH_INPUT_WITH);
+                        input.appendField("with");
                     }
                     // Reconnect any child blocks.
                     if (itemBlock.valueConnection_) {
@@ -464,7 +379,7 @@ var eflang = (function () {
                 }
                 if (this.itemCount_ === 0) {
                     this.appendDummyInput('EMPTY')
-                        .appendField(B.LANG_PROCS_CALL_EMPTY_TITLE_1);
+                        .appendField("");
                 }
             },
             saveConnections: function (containerBlock) {
@@ -489,9 +404,8 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.PROCEDURE_TYPE_HUE);
             this.appendDummyInput()
-                .appendField(B.LANG_PROCS_CALL_WITH_CONTAINER_TITLE_ADD);
+                .appendField("procedure");
             this.appendStatementInput('STACK');
-            this.setTooltip(B.LANG_PROCS_CALL_WITH_CONTAINER_TOOLTIP_1);
             this.contextMenu = false;
         }
     };
@@ -501,23 +415,18 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.PROCEDURE_TYPE_HUE);
             this.appendDummyInput()
-                .appendField(B.LANG_PROCS_CALL_WITH_ITEM_TITLE);
+                .appendField("argument");
             this.setPreviousStatement(true);
             this.setNextStatement(true);
-            this.setTooltip(B.LANG_PROCS_CALL_WITH_ITEM_TOOLTIP_1);
             this.contextMenu = false;
         }
     };
 
-    B.LANG_CONTROLS_FOREACH_OBJ_HELPURL = 'http://en.wikipedia.org/wiki/For_loop';
     B.LANG_CONTROLS_FOREACH_OBJ_INPUT_ITEM = 'for each ';
     B.LANG_CONTROLS_FOREACH_OBJ_INPUT_VAR = 'x';
     B.LANG_CONTROLS_FOREACH_OBJ_INPUT_INLIST = 'in object';
     B.LANG_CONTROLS_FOREACH_OBJ_INPUT_DO = 'do';
-    B.LANG_CONTROLS_FOREACH_OBJ_TOOLTIP = 'For each key, value in an object, set the key to\n' +
-        'variable "%1", value to variable "%2" and then do some statements.';
     Lang.controls_forEach_object = {
-        helpUrl: B.LANG_CONTROLS_FOREACH_OBJ_HELPURL,
         init: function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('OBJ')
@@ -533,11 +442,6 @@ var eflang = (function () {
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
             var thisBlock = this;
-            this.setTooltip(function () {
-                return B.LANG_CONTROLS_FOREACH_OBJ_TOOLTIP
-                .replace('%1', thisBlock.getTitleValue('KEY'))
-                .replace('%2', thisBlock.getTitleValue('VAL'));
-            });
         },
         getVars: function () {
             return [this.getTitleValue('KEY'), this.getTitleValue('VAL')];
@@ -581,13 +485,8 @@ var eflang = (function () {
         return code;
     };
 
-    B.LANG_LISTS_OPS_INPUT_IN_LIST = 'in list';
-    B.LANG_LISTS_OPS_TOOLTIP_APPEND = "Append an item to a list.";
-    B.LANG_LISTS_OPS_APPEND = "append";
-
     Lang.lists_ops = {
         // apply operations to lists
-        category: B.LANG_CATEGORY_LISTS,
         init: function () {
             this.setColour(Lang.LIST_TYPE_HUE);
             var thisBlock, modeMenu = new B.FieldDropdown(this.MODE, function (value) {
@@ -600,16 +499,12 @@ var eflang = (function () {
                 .appendField("item");
             this.appendValueInput('VALUE')
                 .setCheck("Array")
-                .appendField(B.LANG_LISTS_OPS_INPUT_IN_LIST);
+                .appendField("in list");
             this.setInputsInline(true);
             this.setOutput(true, null);
             this.updateStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
             thisBlock = this;
-            this.setTooltip(function () {
-                var combo = thisBlock.getTitleValue('MODE');
-                return B['LANG_LISTS_OPS_TOOLTIP_' + combo];
-            });
         },
         mutationToDom: function () {
             // Save whether the block is a statement or a value.
@@ -656,7 +551,7 @@ var eflang = (function () {
         throw 'Unhandled combination (lists_ops).';
     };
 
-    Lang.lists_ops.MODE = [[B.LANG_LISTS_OPS_APPEND, 'APPEND']];
+    Lang.lists_ops.MODE = [["append", 'APPEND']];
 
     B.LANG_CONTROLS_ENUMERATE_HELPURL = 'http://en.wikipedia.org/wiki/For_loop';
     B.LANG_CONTROLS_ENUMERATE_INPUT_ITEM = 'for each';
@@ -664,10 +559,7 @@ var eflang = (function () {
     B.LANG_CONTROLS_ENUMERATE_INPUT_INDEX = '#';
     B.LANG_CONTROLS_ENUMERATE_INPUT_INLIST = 'in list';
     B.LANG_CONTROLS_ENUMERATE_INPUT_DO = 'do';
-    B.LANG_CONTROLS_ENUMERATE_TOOLTIP = 'For each item in a list, set the item to\n' +
-        'variable "%1", the index of it to "%2" and then do some statements.';
     Lang.controls_enumerate = {
-        helpUrl: B.LANG_CONTROLS_ENUMERATE_HELPURL,
         init: function () {
             this.setColour(Lang.LOOPS_TYPE_HUE);
             this.appendValueInput('LIST')
@@ -683,11 +575,6 @@ var eflang = (function () {
             this.setNextStatement(true);
             // Assign 'this' to a variable for use in the tooltip closure below.
             var thisBlock = this;
-            this.setTooltip(function () {
-                return B.LANG_CONTROLS_ENUMERATE_TOOLTIP
-                .replace('%1', thisBlock.getTitleValue('VAR'))
-                .replace('%2', thisBlock.getTitleValue('INDEX'));
-            });
         },
         getVars: function () {
             return [this.getTitleValue('VAR'), this.getTitleValue('INDEX')];
@@ -730,24 +617,18 @@ var eflang = (function () {
         return code;
     };
 
-    B.LANG_MATH_PRECISION_INPUT = 'set precision of';
-    B.LANG_MATH_PRECISION_INPUT_1 = 'to';
-    B.LANG_MATH_PRECISION_TOOLTIP = 'Truncate the decimal parts to a number of places';
-
     Lang.math_set_precision = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
             this.setOutput(true, Number);
             this.appendValueInput('VALUE')
                 .setCheck("Number")
-                .appendField(B.LANG_MATH_PRECISION_INPUT);
+                .appendField("set precision of");
             this.appendValueInput('PRECISION')
                 .setCheck("Number")
                 .setAlign(B.ALIGN_RIGHT)
-                .appendField(B.LANG_MATH_PRECISION_INPUT_1);
+                .appendField("to");
             this.setInputsInline(true);
-            this.setTooltip(B.LANG_MATH_PRECISION_TOOLTIP);
         }
     };
 
@@ -765,7 +646,6 @@ var eflang = (function () {
                 .setCheck("String")
                 .appendField("to integer");
             this.setOutput(true, 'Number');
-            this.setTooltip("Convert a text representation of a number to an integer number");
         }
     };
 
@@ -776,7 +656,6 @@ var eflang = (function () {
                 .setCheck("String")
                 .appendField("to decimal");
             this.setOutput(true, 'Number');
-            this.setTooltip("Convert a text representation of a number to a decimal number");
         }
     };
 
@@ -793,10 +672,8 @@ var eflang = (function () {
     B.LANG_DB_STORE_INPUT_1 = "store value";
     B.LANG_DB_STORE_INPUT = "with key";
     B.LANG_DB_STORE_INPUT_2 = "in store";
-    B.LANG_DB_STORE_TOOLTIP = "Store value in the given key";
 
     Lang.db_store = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
             this.setOutput(true, String);
@@ -814,7 +691,6 @@ var eflang = (function () {
                 .appendField(B.LANG_DB_STORE_INPUT_2);
 
             this.setInputsInline(true);
-            this.setTooltip(B.LANG_DB_STORE_TOOLTIP);
             this.setOutput(false);
             this.setPreviousStatement(true);
             this.setNextStatement(true);
@@ -832,10 +708,8 @@ var eflang = (function () {
     B.LANG_DB_FETCH_INPUT = "fetch key";
     B.LANG_DB_FETCH_INPUT_1 = "value";
     B.LANG_DB_FETCH_INPUT_2 = "from store";
-    B.LANG_DB_FETCH_TOOLTIP = "Fetch value from the given key";
 
     Lang.db_fetch = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
             this.setOutput(true, String);
@@ -850,7 +724,6 @@ var eflang = (function () {
                 .appendField(B.LANG_DB_FETCH_INPUT_2);
 
             this.setInputsInline(true);
-            this.setTooltip(B.LANG_DB_FETCH_TOOLTIP);
             this.setOutput(true, null);
         }
     };
@@ -864,10 +737,8 @@ var eflang = (function () {
 
     B.LANG_DB_INCR_INPUT = "increase key";
     B.LANG_DB_INCR_INPUT_1 = "from store";
-    B.LANG_DB_INCR_TOOLTIP = "Increase key in store and return it";
 
     Lang.db_incr = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
             this.setOutput(true, String);
@@ -882,7 +753,6 @@ var eflang = (function () {
                 .appendField(B.LANG_DB_INCR_INPUT_1);
 
             this.setInputsInline(true);
-            this.setTooltip(B.LANG_DB_INCR_TOOLTIP);
             this.setOutput(true, null);
         }
     };
@@ -896,10 +766,8 @@ var eflang = (function () {
 
     B.LANG_DB_DECR_INPUT = "decrease key";
     B.LANG_DB_DECR_INPUT_1 = "from store";
-    B.LANG_DB_DECR_TOOLTIP = "decrease key in store and return it";
 
     Lang.db_decr = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(230);
             this.setOutput(true, String);
@@ -914,7 +782,6 @@ var eflang = (function () {
                 .appendField(B.LANG_DB_DECR_INPUT_1);
 
             this.setInputsInline(true);
-            this.setTooltip(B.LANG_DB_DECR_TOOLTIP);
             this.setOutput(true, null);
         }
     };
@@ -927,10 +794,8 @@ var eflang = (function () {
     };
 
     B.LANG_LOGIC_IS_NULL_INPUT = "is null?";
-    B.LANG_LOGIC_IS_NULL_TOOLTIP = "Return true if value is null";
 
     Lang.logic_is_null = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(Lang.LOGIC_TYPE_HUE);
             this.setOutput(true, Boolean);
@@ -939,7 +804,6 @@ var eflang = (function () {
                 .appendField(B.LANG_LOGIC_IS_NULL_INPUT);
 
             this.setInputsInline(true);
-            this.setTooltip(B.LANG_LOGIC_IS_NULL_TOOLTIP);
         }
     };
 
@@ -950,7 +814,6 @@ var eflang = (function () {
     };
 
     Lang.logic_or_else = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(Lang.LOGIC_TYPE_HUE);
             this.appendValueInput('VALUE')
@@ -975,7 +838,6 @@ var eflang = (function () {
     };
 
     Lang.lists_contains = {
-        //helpUrl: B.LANG_MATH_MODULO_HELPURL,
         init: function () {
             this.setColour(Lang.LIST_TYPE_HUE);
             this.appendValueInput('VALUE');
@@ -995,7 +857,6 @@ var eflang = (function () {
             this.setOutput(true);
             this.appendDummyInput()
             .appendField("current time");
-            this.setTooltip("Return current timestamp");
         }
     };
 
@@ -1010,20 +871,18 @@ var eflang = (function () {
         return [code, JS.ORDER_ATOMIC];
     };
 
-    Lang.variables_delpath = {
+    Lang.variables_outdel = {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendDummyInput()
-                .appendField("delete outvar")
-                .appendField(new B.FieldTextInput(
-                    B.LANG_VARIABLES_GETPATH_ITEM), 'VAR');
+                .appendField("delete field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR');
             this.setPreviousStatement(true);
             this.setNextStatement(true);
-            this.setTooltip("Remove an output variable");
         },
     };
 
-    JS.variables_delpath = function () {
+    JS.variables_outdel = function () {
         var code = this.getTitleValue('VAR');
         return "delete env." + code + ";";
     };
