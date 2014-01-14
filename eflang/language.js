@@ -82,22 +82,22 @@ var eflang = (function () {
     };
 
     JS.const_get = function () {
-        var code = this.getTitleValue('CONST');
+        var code = this.getFieldValue('CONST');
         return [B.eflang.constantsPath + code, JS.ORDER_ATOMIC];
     };
 
     JS.variables_outget = function () {
-        var code = this.getTitleValue('VAR') || "__not_set__";
+        var code = this.getFieldValue('VAR') || "__not_set__";
         return ["env." + code, JS.ORDER_ATOMIC];
     };
 
     JS.variables_valueget = function () {
-        var code = this.getTitleValue('VAR') || "__not_set__";
+        var code = this.getFieldValue('VAR') || "__not_set__";
         return ["env.value." + code, JS.ORDER_ATOMIC];
     };
 
     JS.variables_outget_str = function () {
-        var code = this.getTitleValue('VAR') || '__not_set__',
+        var code = this.getFieldValue('VAR') || '__not_set__',
             key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
         return ["env." + code + "[" + key + "]", JS.ORDER_ATOMIC];
     };
@@ -106,7 +106,7 @@ var eflang = (function () {
         // Variable setter.
         var argument0 = JS.valueToCode(this, 'VALUE',
                                        JS.ORDER_ASSIGNMENT) || '0',
-            varName = this.getTitleValue('VAR');
+            varName = this.getFieldValue('VAR');
 
         return "env." + varName + ' = ' + argument0 + ';\n';
     };
@@ -124,7 +124,7 @@ var eflang = (function () {
     };
 
     JS.variables_getpath = function () {
-        var code = this.getTitleValue('VAR');
+        var code = this.getFieldValue('VAR');
         return [code, JS.ORDER_ATOMIC];
     };
 
@@ -133,7 +133,7 @@ var eflang = (function () {
         var n, code = new Array(this.itemCount_);
 
         for (n = 0; n < this.itemCount_; n += 1) {
-            code[n] = (this.getTitleValue('FIELD' + n)) + ": " +
+            code[n] = (this.getFieldValue('FIELD' + n)) + ": " +
                 (JS.valueToCode(this, 'FIELD' + n,
                                 JS.ORDER_COMMA) || 'null');
         }
@@ -270,7 +270,7 @@ var eflang = (function () {
     JS.procs_call_with = function () {
         // Create a list with any number of elements of any type.
         var n,
-            name = this.getTitleValue('NAME'),
+            name = this.getFieldValue('NAME'),
             code = new Array(this.itemCount_);
 
         for (n = 0; n < this.itemCount_; n += 1) {
@@ -442,12 +442,12 @@ var eflang = (function () {
             var thisBlock = this;
         },
         getVars: function () {
-            return [this.getTitleValue('KEY'), this.getTitleValue('VAL')];
+            return [this.getFieldValue('KEY'), this.getFieldValue('VAL')];
         },
         renameVar: function (oldName, newName) {
-            if (B.Names.equals(oldName, this.getTitleValue('KEY'))) {
+            if (B.Names.equals(oldName, this.getFieldValue('KEY'))) {
                 this.setTitleValue(newName, 'KEY');
-            } else if (B.Names.equals(oldName, this.getTitleValue('VAL'))) {
+            } else if (B.Names.equals(oldName, this.getFieldValue('VAL'))) {
                 this.setTitleValue(newName, 'VAL');
             }
         }
@@ -456,8 +456,8 @@ var eflang = (function () {
     JS.controls_forEach_object = function () {
         // For each loop over an object
         var code, listVar,
-            key = JS.variableDB_.getName(this.getTitleValue('KEY'), B.Variables.NAME_TYPE),
-            value = JS.variableDB_.getName(this.getTitleValue('VAL'), B.Variables.NAME_TYPE),
+            key = JS.variableDB_.getName(this.getFieldValue('KEY'), B.Variables.NAME_TYPE),
+            value = JS.variableDB_.getName(this.getFieldValue('VAL'), B.Variables.NAME_TYPE),
             argument0 = JS.valueToCode(this, 'OBJ', JS.ORDER_ASSIGNMENT) || '[]',
             branch = JS.statementToCode(this, 'DO');
 
@@ -538,7 +538,7 @@ var eflang = (function () {
     };
 
     JS.lists_ops = function () {
-        var mode = this.getTitleValue('MODE'),
+        var mode = this.getFieldValue('MODE'),
             item = JS.valueToCode(this, 'ITEM', JS.ORDER_UNARY_NEGATION) || "null",
             list = JS.valueToCode(this, 'VALUE', JS.ORDER_MEMBER) || '[]';
 
@@ -575,12 +575,12 @@ var eflang = (function () {
             var thisBlock = this;
         },
         getVars: function () {
-            return [this.getTitleValue('VAR'), this.getTitleValue('INDEX')];
+            return [this.getFieldValue('VAR'), this.getFieldValue('INDEX')];
         },
         renameVar: function (oldName, newName) {
-            if (B.Names.equals(oldName, this.getTitleValue('VAR'))) {
+            if (B.Names.equals(oldName, this.getFieldValue('VAR'))) {
                 this.setTitleValue(newName, 'VAR');
-            } else if (B.Names.equals(oldName, this.getTitleValue('INDEX'))) {
+            } else if (B.Names.equals(oldName, this.getFieldValue('INDEX'))) {
                 this.setTitleValue(newName, 'INDEX');
             }
         }
@@ -589,8 +589,8 @@ var eflang = (function () {
     JS.controls_enumerate = function () {
         // For each loop.
         var code, listVar,
-            variable0 = JS.variableDB_.getName(this.getTitleValue('VAR'), B.Variables.NAME_TYPE),
-            indexVar = JS.variableDB_.getName(this.getTitleValue('INDEX'), B.Variables.NAME_TYPE),
+            variable0 = JS.variableDB_.getName(this.getFieldValue('VAR'), B.Variables.NAME_TYPE),
+            indexVar = JS.variableDB_.getName(this.getFieldValue('INDEX'), B.Variables.NAME_TYPE),
             argument0 = JS.valueToCode(this, 'LIST', JS.ORDER_ASSIGNMENT) || '[]',
             branch = JS.statementToCode(this, 'DO');
 
@@ -658,13 +658,13 @@ var eflang = (function () {
     };
 
     JS.text_to_int = function (block) {
-        var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'0\'';
-        return ["parseInt(" + argument0 + ', 10)', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+        var argument0 = JS.valueToCode(block, 'VALUE', JS.ORDER_FUNCTION_CALL) || '\'0\'';
+        return ["parseInt(" + argument0 + ', 10)', JS.ORDER_FUNCTION_CALL];
     };
 
     JS.text_to_float = function (block) {
-        var argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'0\'';
-        return ["parseFloat(" + argument0 + ')', Blockly.JavaScript.ORDER_FUNCTION_CALL];
+        var argument0 = JS.valueToCode(block, 'VALUE', JS.ORDER_FUNCTION_CALL) || '\'0\'';
+        return ["parseFloat(" + argument0 + ')', JS.ORDER_FUNCTION_CALL];
     };
 
     B.LANG_DB_STORE_INPUT_1 = "store value";
@@ -881,8 +881,90 @@ var eflang = (function () {
     };
 
     JS.variables_outdel = function () {
-        var code = this.getTitleValue('VAR');
+        var code = this.getFieldValue('VAR');
         return "delete env." + code + ";";
+    };
+
+    Lang.text_bold = {
+        init: function () {
+            this.setColour(160);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("bold");
+            this.setOutput(true, 'String');
+        }
+    };
+
+    JS.text_bold = function (block) {
+        var argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return ["'**' + " + argument0 + " + '**'",
+            JS.ORDER_FUNCTION_CALL];
+    };
+
+    Lang.text_italic = {
+        init: function () {
+            this.setColour(160);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("italic");
+            this.setOutput(true, 'String');
+        }
+    };
+
+    JS.text_italic = function (block) {
+        var argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return ["'*' + " + argument0 + " + '*'",
+            JS.ORDER_FUNCTION_CALL];
+    };
+
+    Lang.text_link = {
+        init: function () {
+            this.setColour(160);
+            this.setOutput(true, "String");
+            this.appendValueInput('URL')
+                .appendField("link to");
+
+            this.appendValueInput('LABEL')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField("with label");
+
+            this.setInputsInline(true);
+            this.setOutput(true);
+        }
+    };
+
+    JS.text_link = function () {
+        var url = JS.valueToCode(this, 'URL', JS.ORDER_MEMBER) || '#',
+            label = JS.valueToCode(this, 'LABEL', JS.ORDER_MEMBER) || '?',
+            code = "'[' + " + label + " + '](' + " + url + " + ')'";
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    Lang.text_image = {
+        init: function () {
+            this.setColour(160);
+            this.setOutput(true, "String");
+            this.appendValueInput('URL')
+                .appendField("image from");
+
+            this.appendValueInput('LABEL')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField("otherwise text");
+
+            this.setInputsInline(true);
+            this.setOutput(true);
+        }
+    };
+
+    JS.text_image = function () {
+        var url = JS.valueToCode(this, 'URL', JS.ORDER_MEMBER) || '#',
+            label = JS.valueToCode(this, 'LABEL', JS.ORDER_MEMBER) || '?',
+            code = "'![' + " + label + " + '](' + " + url + " + ')'";
+        return [code, JS.ORDER_FUNCTION_CALL];
     };
 
     function parseQuery() {
