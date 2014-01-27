@@ -385,13 +385,17 @@
 
     cons.makeResult = JsonSchema._makeResult;
 
-    priv.label = function (label, idFor) {
-        return {
+    priv.label = function (label, idFor, title) {
+        var obj = {
             "label": {
                 "for": idFor,
                 "$childs": label
             }
         };
+        if (title) {
+            obj.label.title = title;
+        }
+        return obj;
     };
 
     priv.inputTypes = {
@@ -1073,7 +1077,8 @@
             $childs,
             firstChildClasses,
             labelText = ifNotSet(opts.title, fid),
-            label = priv.label(labelText, inputId);
+            labelTitle = opts.type === 'array' ? opts.description : undefined,
+            label = priv.label(labelText, inputId, labelTitle);
 
         if (false && opts.type === 'boolean') {
             label.label.$childs = [input, label.label.$childs];
