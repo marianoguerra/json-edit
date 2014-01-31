@@ -182,12 +182,12 @@ var eflang = (function () {
         },
         decompose: function (workspace) {
             var connection, x, itemBlock,
-                containerBlock = new B.Block(workspace,
+                containerBlock = B.Block.obtain(workspace,
                                              'objs_create_with_container');
             containerBlock.initSvg();
             connection = containerBlock.getInput('STACK').connection;
             for (x = 0; x < this.itemCount_; x += 1) {
-                itemBlock = new B.Block(workspace, 'objs_create_with_item');
+                itemBlock = B.Block.obtain(workspace, 'objs_create_with_item');
                 itemBlock.initSvg();
                 connection.connect(itemBlock.previousConnection);
                 connection = itemBlock.nextConnection;
@@ -336,12 +336,12 @@ var eflang = (function () {
             },
             decompose: function (workspace) {
                 var x, connection, itemBlock,
-                    containerBlock = new B.Block(workspace,
+                    containerBlock = B.Block.obtain(workspace,
                                                  'procs_call_with_container');
                 containerBlock.initSvg();
                 connection = containerBlock.getInput('STACK').connection;
                 for (x = 0; x < this.itemCount_; x += 1) {
-                    itemBlock = new B.Block(workspace, 'procs_call_with_item');
+                    itemBlock = B.Block.obtain(workspace, 'procs_call_with_item');
                     itemBlock.initSvg();
                     connection.connect(itemBlock.previousConnection);
                     connection = itemBlock.nextConnection;
