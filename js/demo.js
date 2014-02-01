@@ -1,4 +1,4 @@
-/*global require window console*/
+/*global require, window, console, alert*/
 require.config({
     baseUrl: "js/",
     paths: {
@@ -38,6 +38,7 @@ require.config({
         // needed by hints
         // by color hint
         "colorPicker": "../src/addons/color/picker/colorPicker",
+        "spectrum": "../src/addons/color/picker/spectrum",
         // by adsafe hint
         "jslint": "../src/addons/adsafe/lib/jslint",
 
@@ -70,6 +71,10 @@ require.config({
         },
         colorPicker: {
             exports: "colorPicker"
+        },
+        spectrum: {
+            exports: "spectrum",
+            deps: ["jquery", "jqueryui"]
         },
         dustjs: {
             exports: "dust"

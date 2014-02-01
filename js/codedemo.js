@@ -1,4 +1,4 @@
-/*global require alert setTimeout*/
+/*global require, alert, setTimeout*/
 require.config({
     baseUrl: "js/",
     paths: {
@@ -33,6 +33,7 @@ require.config({
         // needed by hints
         // by color hint
         "colorPicker": "../src/addons/color/picker/colorPicker",
+        "spectrum": "../src/addons/color/picker/spectrum",
 
         // by squide hint
         "squim": "http://marianoguerra.github.com/squim/src/squim",
@@ -63,6 +64,10 @@ require.config({
         },
         colorPicker: {
             exports: "colorPicker"
+        },
+        spectrum: {
+            exports: "spectrum",
+            deps: ["jquery", "jqueryui"]
         },
         dustjs: {
             exports: "dust"

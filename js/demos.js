@@ -372,7 +372,11 @@
             "color": {
                 "type": "string",
                 "title": "Color",
-                "je:hint": "color"
+                "je:hint": "color",
+                "allowEmpty": false,
+                "showPaletteOnly": false,
+                "showPalette": true,
+                "showInitial": false
             }
         }
     }], ["color hint with default (addon)", "",
@@ -383,7 +387,23 @@
                 "type": "string",
                 "title": "Color",
                 "je:hint": "color",
-                "default": "cc0000"
+                "default": "cc0000",
+                "showPalette": false,
+                "showInitial": false
+            }
+        }
+    }], ["color hint custom palette(addon)", "",
+    {
+        "order": ["color"],
+        "properties": {
+            "color": {
+                "type": "string",
+                "title": "Color",
+                "je:hint": "color",
+                "allowEmpty": true,
+                "showPaletteOnly": true,
+                "showPalette": true,
+                "palette": ["#c82829", "#f5871f", "#eab700", "#718c00"]
             }
         }
     }], ["date hint (addon)", "",
