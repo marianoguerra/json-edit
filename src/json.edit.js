@@ -444,7 +444,7 @@
 
         function onRemoveClick(event) {
             var realMinItems = ifNotSet(opts.minItems, 0),
-                cont = $("#" + id);
+                cont = $("#" + id + "-div");
 
             if (cont.parent().children().size() <= realMinItems) {
                 defaults.displayError(defaults.msgs.cantRemoveMinItems);
@@ -457,7 +457,7 @@
 
         cont = {
             "div": {
-                "id": id,
+                "id": id + "-div",
                 "class": ns.cls("array-item"),
                 "$childs": [
                     input,
@@ -495,6 +495,7 @@
         } else {
             items.append($.lego(item));
         }
+        util.events.rendered.fire();
     }
 
     function onClearItemsClick(opts, id) {
