@@ -1,277 +1,277 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="UTF-8" />
- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>Json Edit</title>
-	<link rel="stylesheet" href="http://marianoguerra.github.com/squide/css/squide.css">
-	<link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Json Edit</title>
+        <link rel="stylesheet" href="http://marianoguerra.github.com/squide/css/squide.css">
+        <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
 
- <link  type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css" />
-	<link rel="stylesheet" href="http://ioncache.github.com/Tag-Handler/css/jquery.taghandler.css">
+        <link  type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css" />
+        <link rel="stylesheet" href="http://ioncache.github.com/Tag-Handler/css/jquery.taghandler.css">
 
-	<link rel="stylesheet" href="src/addons/summarylist/addon.css">
-	<link rel="stylesheet" href="css/json.edit.css">
-	<link rel="stylesheet" href="css/demo.json.edit.css">
+        <link rel="stylesheet" href="src/addons/summarylist/addon.css">
+        <link rel="stylesheet" href="css/json.edit.css">
+        <link rel="stylesheet" href="css/demo.json.edit.css">
+        <link rel="stylesheet" type="text/css" href="src/addons/color/picker/spectrum.css">
 
-	<script data-main="js/demo" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.0.2/require.min.js"></script>
- 
-</head>
-<body>
- <h1>Json Edit</h1>
+        <script data-main="js/demo" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.0.2/require.min.js"></script>
+    </head>
+    <body>
+        <h1>Json Edit</h1>
 
- <p class="project-description">give me a <a href="http://json-schema.org">json schema</a>, I give you a form, give
- me the data (user input) I give you a validated json object matching the json
- schema</p>
+        <p class="project-description">give me a <a href="http://json-schema.org">json schema</a>, I give you a form, give
+        me the data (user input) I give you a validated json object matching the json
+        schema</p>
 
- <h2>Test it</h2>
+        <h2>Test it</h2>
 
- <p>go to the <a href="test/">test page</a> to run the unit tests</p>
+        <p>go to the <a href="test/">test page</a> to run the unit tests</p>
 
- <h2>Download it</h2>
+        <h2>Download it</h2>
 
- <p><a href="src/json.edit.js">json-edit</a></p>
+        <p><a href="src/json.edit.js">json-edit</a></p>
 
- <h2>Try it!</h2>
+        <h2>Try it!</h2>
 
- <p>select a demo on the combo, edit the JSON on the left, click <em>run</em> and see it on the right,
-   enter some data, click <em>validate</em> and see the result at the
-   bottom.</p>
+        <p>select a demo on the combo, edit the JSON on the left, click <em>run</em> and see it on the right,
+        enter some data, click <em>validate</em> and see the result at the
+        bottom.</p>
 
- <a href="https://github.com/marianoguerra/json-edit"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
- <select id='demo-selector' style="margin-left: 25%; width: 50%;"></select>
+        <a href="https://github.com/marianoguerra/json-edit"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+        <select id='demo-selector' style="margin-left: 25%; width: 50%;"></select>
 
- <div id="demo-cont"></div>
+        <div id="demo-cont"></div>
 
-<xml id="toolbox" style="display: none">
-<category name="Control">
-  <block type="controls_if"></block>
-  <block type="controls_repeat"></block>
-  <block type="controls_whileUntil"></block>
-  <block type="controls_for">
-    <value name="FROM">
-      <block type="math_number">
+        <xml id="toolbox" style="display: none">
+        <category name="Control">
+        <block type="controls_if"></block>
+        <block type="controls_repeat"></block>
+        <block type="controls_whileUntil"></block>
+        <block type="controls_for">
+        <value name="FROM">
+        <block type="math_number">
         <title name="NUM">1</title>
-      </block>
-    </value>
-    <value name="TO">
-      <block type="math_number">
+        </block>
+        </value>
+        <value name="TO">
+        <block type="math_number">
         <title name="NUM">10</title>
-      </block>
-    </value>
-  </block>
-  <block type="controls_forEach"></block>
-  <block type="controls_flow_statements"></block>
-  <block type="controls_forEach_object"></block>
-  <block type="controls_enumerate"></block>
-</category>
-<category name="Logic">
-  <block type="logic_compare"></block>
-  <block type="logic_operation"></block>
-  <block type="logic_negate"></block>
-  <block type="logic_boolean"></block>
-  <block type="logic_null"></block>
-  <block type="logic_ternary"></block>
-  <block type="logic_is_null"></block>
-  <block type="logic_or_else"></block>
-</category>
-<category name="Others">
-<block type="variables_outget"></block>
-<block type="variables_outset"></block>
-<block type="variables_getpath"></block>
+        </block>
+        </value>
+        </block>
+        <block type="controls_forEach"></block>
+        <block type="controls_flow_statements"></block>
+        <block type="controls_forEach_object"></block>
+        <block type="controls_enumerate"></block>
+        </category>
+        <category name="Logic">
+        <block type="logic_compare"></block>
+        <block type="logic_operation"></block>
+        <block type="logic_negate"></block>
+        <block type="logic_boolean"></block>
+        <block type="logic_null"></block>
+        <block type="logic_ternary"></block>
+        <block type="logic_is_null"></block>
+        <block type="logic_or_else"></block>
+        </category>
+        <category name="Others">
+        <block type="variables_outget"></block>
+        <block type="variables_outset"></block>
+        <block type="variables_getpath"></block>
 
-<block type="objs_create_with"></block>
+        <block type="objs_create_with"></block>
 
-<block type="const_get"></block>
+        <block type="const_get"></block>
 
-<block type="procs_call_with"></block>
-<block type="procs_call_with_no_return"></block>
-</category>
-<category name="Math">
-  <block type="math_number"></block>
-  <block type="math_arithmetic"></block>
-  <block type="math_single"></block>
-  <block type="math_trig"></block>
-  <block type="math_constant"></block>
-  <block type="math_number_property"></block>
-  <block type="math_change">
-    <value name="DELTA">
-      <block type="math_number">
+        <block type="procs_call_with"></block>
+        <block type="procs_call_with_no_return"></block>
+        </category>
+        <category name="Math">
+        <block type="math_number"></block>
+        <block type="math_arithmetic"></block>
+        <block type="math_single"></block>
+        <block type="math_trig"></block>
+        <block type="math_constant"></block>
+        <block type="math_number_property"></block>
+        <block type="math_change">
+        <value name="DELTA">
+        <block type="math_number">
         <title name="NUM">1</title>
-      </block>
-    </value>
-  </block>
-  <block type="math_round"></block>
-  <block type="math_on_list"></block>
-  <block type="math_modulo"></block>
-  <block type="math_constrain">
-    <value name="LOW">
-      <block type="math_number">
+        </block>
+        </value>
+        </block>
+        <block type="math_round"></block>
+        <block type="math_on_list"></block>
+        <block type="math_modulo"></block>
+        <block type="math_constrain">
+        <value name="LOW">
+        <block type="math_number">
         <title name="NUM">1</title>
-      </block>
-    </value>
-    <value name="HIGH">
-      <block type="math_number">
+        </block>
+        </value>
+        <value name="HIGH">
+        <block type="math_number">
         <title name="NUM">100</title>
-      </block>
-    </value>
-  </block>
-  <block type="math_random_int">
-    <value name="FROM">
-      <block type="math_number">
+        </block>
+        </value>
+        </block>
+        <block type="math_random_int">
+        <value name="FROM">
+        <block type="math_number">
         <title name="NUM">1</title>
-      </block>
-    </value>
-    <value name="TO">
-      <block type="math_number">
+        </block>
+        </value>
+        <value name="TO">
+        <block type="math_number">
         <title name="NUM">100</title>
-      </block>
-    </value>
-  </block>
-  <block type="math_random_float"></block>
-  <block type="math_set_precision"></block>
-</category>
-<category name="Text">
-  <block type="text"></block>
-  <block type="text_join"></block>
-  <block type="text_append">
-    <value name="TEXT">
-      <block type="text"></block>
-    </value>
-  </block>
-  <block type="text_length"></block>
-  <block type="text_isEmpty"></block>
-  <block type="text_indexOf">
-    <value name="VALUE">
-      <block type="variables_get">
+        </block>
+        </value>
+        </block>
+        <block type="math_random_float"></block>
+        <block type="math_set_precision"></block>
+        </category>
+        <category name="Text">
+        <block type="text"></block>
+        <block type="text_join"></block>
+        <block type="text_append">
+        <value name="TEXT">
+        <block type="text"></block>
+        </value>
+        </block>
+        <block type="text_length"></block>
+        <block type="text_isEmpty"></block>
+        <block type="text_indexOf">
+        <value name="VALUE">
+        <block type="variables_get">
         <title name="VAR">text</title>
-      </block>
-    </value>
-  </block>
-  <block type="text_charAt">
-    <value name="VALUE">
-      <block type="variables_get">
+        </block>
+        </value>
+        </block>
+        <block type="text_charAt">
+        <value name="VALUE">
+        <block type="variables_get">
         <title name="VAR">text</title>
-      </block>
-    </value>
-  </block>
-  <block type="text_getSubstring">
-    <value name="STRING">
-      <block type="variables_get">
+        </block>
+        </value>
+        </block>
+        <block type="text_getSubstring">
+        <value name="STRING">
+        <block type="variables_get">
         <title name="VAR">text</title>
-      </block>
-    </value>
-  </block>
-  <block type="text_changeCase"></block>
-  <block type="text_trim"></block>
-  <block type="text_print"></block>
-  <block type="text_prompt"></block>
-</category>
-<category name="Lists">
-  <block type="lists_create_empty"></block>
-  <block type="lists_create_with"></block>
-  <block type="lists_repeat">
-    <value name="NUM">
-      <block type="math_number">
+        </block>
+        </value>
+        </block>
+        <block type="text_changeCase"></block>
+        <block type="text_trim"></block>
+        <block type="text_print"></block>
+        <block type="text_prompt"></block>
+        </category>
+        <category name="Lists">
+        <block type="lists_create_empty"></block>
+        <block type="lists_create_with"></block>
+        <block type="lists_repeat">
+        <value name="NUM">
+        <block type="math_number">
         <title name="NUM">5</title>
-      </block>
-    </value>
-  </block>
-  <block type="lists_length"></block>
-  <block type="lists_isEmpty"></block>
-  <block type="lists_indexOf">
-    <value name="VALUE">
-      <block type="variables_get">
+        </block>
+        </value>
+        </block>
+        <block type="lists_length"></block>
+        <block type="lists_isEmpty"></block>
+        <block type="lists_indexOf">
+        <value name="VALUE">
+        <block type="variables_get">
         <title name="VAR">list</title>
-      </block>
-    </value>
-  </block>
-  <block type="lists_getIndex">
-    <value name="VALUE">
-      <block type="variables_get">
+        </block>
+        </value>
+        </block>
+        <block type="lists_getIndex">
+        <value name="VALUE">
+        <block type="variables_get">
         <title name="VAR">list</title>
-      </block>
-    </value>
-  </block>
-  <block type="lists_setIndex">
-    <value name="LIST">
-      <block type="variables_get">
+        </block>
+        </value>
+        </block>
+        <block type="lists_setIndex">
+        <value name="LIST">
+        <block type="variables_get">
         <title name="VAR">list</title>
-      </block>
-    </value>
-  </block>
-  <block type="lists_getSublist">
-    <value name="LIST">
-      <block type="variables_get">
+        </block>
+        </value>
+        </block>
+        <block type="lists_getSublist">
+        <value name="LIST">
+        <block type="variables_get">
         <title name="VAR">list</title>
-      </block>
-    </value>
-  </block>
-  <block type="lists_ops"></block>
-  <block type="lists_contains"></block>
-</category>
-<category name="Colour">
-  <block type="colour_picker"></block>
-  <block type="colour_rgb"></block>
-  <block type="colour_blend"></block>
-</category>
-<category name="Variables" custom="VARIABLE"></category>
-<category name="Procedures" custom="PROCEDURE"></category>
-<category name="Store">
-<block type="db_fetch">
-<value name="KEY">
- <block type="text">
-  <title name="TEXT">key</title>
- </block>
-</value>
-<value name="STORE">
- <block type="text">
-  <title name="TEXT">store</title>
- </block>
-</value>
-</block>
-<block type="db_store">
-<value name="VALUE">
- <block type="text">
-   <title name="TEXT">value</title>
- </block>
-</value>
-<value name="KEY">
- <block type="text">
-   <title name="TEXT">key</title>
- </block>
-</value>
-<value name="STORE">
- <block type="text">
-   <title name="TEXT">store</title>
- </block>
-</value>
-</block>
-<block type="db_incr">
-<value name="KEY">
- <block type="text">
-  <title name="TEXT">key</title>
- </block>
-</value>
-<value name="STORE">
- <block type="text">
-  <title name="TEXT">store</title>
- </block>
-</value>
-</block>
-<block type="db_decr">
-<value name="KEY">
- <block type="text">
-  <title name="TEXT">key</title>
- </block>
-</value>
-<value name="STORE">
- <block type="text">
-  <title name="TEXT">store</title>
- </block>
-</value>
-</block>
-</category>
-</xml>
-</body>
+        </block>
+        </value>
+        </block>
+        <block type="lists_ops"></block>
+        <block type="lists_contains"></block>
+        </category>
+        <category name="Colour">
+        <block type="colour_picker"></block>
+        <block type="colour_rgb"></block>
+        <block type="colour_blend"></block>
+        </category>
+        <category name="Variables" custom="VARIABLE"></category>
+        <category name="Procedures" custom="PROCEDURE"></category>
+        <category name="Store">
+        <block type="db_fetch">
+        <value name="KEY">
+        <block type="text">
+        <title name="TEXT">key</title>
+        </block>
+        </value>
+        <value name="STORE">
+        <block type="text">
+        <title name="TEXT">store</title>
+        </block>
+        </value>
+        </block>
+        <block type="db_store">
+        <value name="VALUE">
+        <block type="text">
+        <title name="TEXT">value</title>
+        </block>
+        </value>
+        <value name="KEY">
+        <block type="text">
+        <title name="TEXT">key</title>
+        </block>
+        </value>
+        <value name="STORE">
+        <block type="text">
+        <title name="TEXT">store</title>
+        </block>
+        </value>
+        </block>
+        <block type="db_incr">
+        <value name="KEY">
+        <block type="text">
+        <title name="TEXT">key</title>
+        </block>
+        </value>
+        <value name="STORE">
+        <block type="text">
+        <title name="TEXT">store</title>
+        </block>
+        </value>
+        </block>
+        <block type="db_decr">
+        <value name="KEY">
+        <block type="text">
+        <title name="TEXT">key</title>
+        </block>
+        </value>
+        <value name="STORE">
+        <block type="text">
+        <title name="TEXT">store</title>
+        </block>
+        </value>
+        </block>
+        </category>
+        </xml>
+    </body>
 </html>

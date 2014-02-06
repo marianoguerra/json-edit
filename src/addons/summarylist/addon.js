@@ -1,4 +1,4 @@
-/*global window define alert*/
+/*global window, define, alert*/
 (function (root, factory) {
     "use strict";
     if (typeof define === 'function' && define.amd) {
@@ -28,11 +28,15 @@
     formatHints.array.summarylist = function (name, type, id, opts, required,
                                               priv, util) {
         var
+            paginationLinks = [], $paginationLinks, $filterSummary, $filterInput,
+            setPage, currentPage = 0,
+            onPaginationLinkClick,
             modulePath = module.uri,
             moduleBasePath = modulePath.slice(0, modulePath.lastIndexOf("/") + 1),
             i,
             minItems,
             conf = opts["je:summarylist"],
+            paginationMaxRows = conf.paginationMaxRows || 10,
             templateName = "summary" + (new Date()).getTime(),
             template = Dust.compile(conf.template, templateName),
             $cont,
@@ -60,6 +64,19 @@
         if (defaultValues.length > minItems) {
             minItems = defaultValues.length;
         }
+
+        setPage = function (index) {
+            $filterInput.val("");
+            $list.children(".summary-item")
+            .each(function () {
+                $(this).hide();
+            })
+            .slice(index, index + paginationMaxRows)
+            .each(function () {
+                $(this).show();
+            });
+            currentPage = index;
+        };
 
         function linkButton(path, alt, onClick) {
             return {
@@ -103,6 +120,11 @@
                         $list.show();
                         $buttons.show();
                         $emptyMsg.show();
+                        $filterSummary.show();
+                        $paginationLinks.show();
+                        if (conf.allowPagination) {
+                            setPage(currentPage);
+                        }
                     }
                 });
             } else {
@@ -137,6 +159,8 @@
             $list.hide();
             $buttons.hide();
             $emptyMsg.hide();
+            $filterSummary.hide();
+            $paginationLinks.hide();
             $cont.prepend($.lego(cont));
         }
 
@@ -145,9 +169,11 @@
             $list.show();
             $buttons.show();
             $emptyMsg.show();
+            $filterSummary.show();
+            $paginationLinks.show();
         }
 
-        function setWorking(isWorking) {
+        function setWorking(isWorking, withErrors) {
             // they don't control the means of production
             var workingClass = "summarylist-working";
 
@@ -163,11 +189,16 @@
 
                 $cont.removeClass(workingClass);
 
-                $cont.children().show();
+                if (withErrors) {
+                    $cont.children(".summary-item-editor").show();
+                } else {
+                    $cont.children(".summary-item-editor").remove();
+                    $cont.children().show();
+                }
             }
         }
 
-        function addItem(data, schema, onItemAdded) {
+        function addItem(itemId, data, schema, onItemAdded) {
 
             function onEditOkClick(id) {
                 var showListAfterCollect = conf.onEdit === undefined;
@@ -255,7 +286,7 @@
             Dust.render(templateName, data, function (err, text) {
                 var
                     listItem,
-                    id = "summary-item-" + (new Date()).getTime(),
+                    id = "summary-item-" + itemId,
                     summary = {
                         "span": {
                             "class": "summary-text",
@@ -306,6 +337,7 @@
 
                 // remove the empty message if it's there
                 $list.parent().find(".summary-empty-msg").remove();
+
             });
         }
 
@@ -316,7 +348,8 @@
                 collectEditItem(schema, false, showListAfterCollect, function (newData, closeForm) {
                     function defaultHandler(add, userNewData) {
                         var
-                            dataToSet;
+                            dataToSet,
+                            itemId = id + "_" + (new Date()).getTime();
 
                         if (userNewData !== undefined) {
                             dataToSet = userNewData;
@@ -325,7 +358,7 @@
                         }
 
                         if (add) {
-                            addItem(dataToSet, schema, function (listItem) {
+                            addItem(itemId, dataToSet, schema, function (listItem) {
                                 util.events.array.item.created.fire(name,
                                                         dataToSet, schema,
                                                         {listItem: listItem});
@@ -354,9 +387,16 @@
             $list = $("#" + id + "-list");
             $buttons = $cont.children(".summary-action-buttons");
             $emptyMsg = $cont.children(".summary-empty-msg");
+            $paginationLinks = $cont.children(".summary-pagination");
+            $filterSummary = $cont.children(".summary-filter");
+            $filterInput = $filterSummary.children(".summary-filter-input");
 
             for (i = 0; i < defaultValues.length; i += 1) {
-                addItem(defaultValues[i], opts.items);
+                addItem(id + "_" + i, defaultValues[i], opts.items);
+            }
+
+            if (conf.allowPagination) {
+                setPage(currentPage);
             }
         });
 
@@ -367,6 +407,66 @@
                 "$childs": []
             }
         }];
+
+        if (conf.allowPagination) {
+            onPaginationLinkClick = function (index) {
+                return function (event) {
+                    setPage(index);
+                    event.preventDefault();
+                };
+            };
+
+            for (i = 0; i < defaultValues.length; i += paginationMaxRows) {
+                paginationLinks.push({
+                    "a": {
+                        "class": "pagination-link",
+                        "$click": onPaginationLinkClick(i),
+                        "$childs": (i + 1) + "..."
+                    }
+                });
+            }
+            widgetChilds.unshift({
+                "div": {
+                    "class": "summary-pagination",
+                    "style": "display: table; width: 100%; text-align: center;",
+                    "$childs": paginationLinks
+                }
+            });
+        }
+
+        if (conf.allowFilter) {
+            widgetChilds.unshift({
+                "div": {
+                    "class": "summary-filter",
+                    "style": "display: table; width: 100%; text-align: center;",
+                    "$childs": [{
+                        "label": {
+                            "class": "summary-filter-label",
+                            "$childs": ["Filter:"]
+                        }
+                    }, {
+                        "input": {
+                            "type": "text",
+                            "class": "summary-filter-input",
+                            "$keyup": function (event) {
+                                var filter = $(this).val();
+                                if (filter === "") {
+                                    setPage(currentPage);
+                                } else {
+                                    $list
+                                    .children('.summary-item')
+                                    .hide()
+                                    .find(".summary-text")
+                                    .filter(function () {
+                                        return $(this).text().indexOf(filter) >= 0;
+                                    }).closest('.summary-item').show();
+                                }
+                            }
+                        }
+                    }]
+                }
+            });
+        }
 
         if (conf.allowAdd !== false) {
             addButton = button("Add", function () {

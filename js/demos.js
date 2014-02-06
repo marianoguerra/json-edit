@@ -15,7 +15,25 @@
     }
 }(this, function () {
     "use strict";
-    return [
+    return [["array of colors", "", {
+        "type": "object",
+        "required": ["colors"],
+        "order": ["colors"],
+        "properties": {
+            "colors": {
+                "title": "Colors",
+                "type": "array",
+                "default": ["#c82829", "#f5871f", "#eab700", "#718c00", "#3e999f"],
+                "items": {
+                    "je:hint": "color",
+                    "showPalette": true,
+                    "showInitial": true,
+                    "default": "#c82829",
+                    "type": "string"
+                }
+            }
+        }
+    }],
         [
             "html editor in object",
             "",
@@ -299,7 +317,7 @@
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "order": ["name", "description"],
+                    "order": ["name", "description", "flag"],
                     "required": ["name"],
                     "properties": {
                         "name": {
@@ -309,6 +327,12 @@
                         "description": {
                             "type": "string",
                             "title": "Description"
+                        },
+                        "flag": {
+                            "type": "string",
+                            "je:hint": "color",
+                            "default": "cc0000",
+                            "title": "Flag color"
                         }
                     }
                 }
@@ -372,7 +396,11 @@
             "color": {
                 "type": "string",
                 "title": "Color",
-                "je:hint": "color"
+                "je:hint": "color",
+                "allowEmpty": false,
+                "showPaletteOnly": false,
+                "showPalette": true,
+                "showInitial": false
             }
         }
     }], ["color hint with default (addon)", "",
@@ -383,7 +411,23 @@
                 "type": "string",
                 "title": "Color",
                 "je:hint": "color",
-                "default": "cc0000"
+                "default": "cc0000",
+                "showPalette": false,
+                "showInitial": false
+            }
+        }
+    }], ["color hint custom palette(addon)", "",
+    {
+        "order": ["color"],
+        "properties": {
+            "color": {
+                "type": "string",
+                "title": "Color",
+                "je:hint": "color",
+                "allowEmpty": true,
+                "showPaletteOnly": true,
+                "showPalette": true,
+                "palette": ["#c82829", "#f5871f", "#eab700", "#718c00"]
             }
         }
     }], ["date hint (addon)", "",
@@ -698,6 +742,69 @@
                 "je:hint": "summarylist",
                 "je:summarylist": {
                     "template": "{city} {state} {country}",
+                    "allowEdit": true,
+                    "allowRemove": true,
+                    "allowAdd": true
+                },
+                "items": {
+                    "type": "object",
+                    "title": "Location",
+                    "order": ["city", "state", "country"],
+                    "properties": {
+                        "city": {
+                            "type": "string",
+                            "title": "City"
+                        },
+                        "state": {
+                            "type": "string",
+                            "title": "State"
+                        },
+                        "country": {
+                            "type": "string",
+                            "title": "Country"
+                        }
+                    }
+                }
+            }
+        }
+    }], ["summary list (pagination and filter)", "use pagination and filter in summary list",
+    {
+        "order": ["locations"],
+        "properties": {
+            "locations": {
+                "default": [{
+                    "city": "Cordoba.",
+                    "state": "Cordoba",
+                    "country": "Argentina",
+                    "other": "some value"
+                }, {
+                    "city": "Santa Fe.",
+                    "state": "Santa Fe",
+                    "country": "Argentina"
+                }, {
+                    "city": "Buenos Aires.",
+                    "state": "Buenos Aires",
+                    "country": "Argentina"
+                }, {
+                    "city": "Stuttgart",
+                    "state": "Baden Wuertemberg",
+                    "country": "Germany"
+                }, {
+                    "city": "Rome",
+                    "state": "Lazio",
+                    "country": "Italy"
+                }, {
+                    "city": "Forli",
+                    "state": "Emilia-Romagna",
+                    "country": "Italy"
+                }],
+                "type": "array",
+                "je:hint": "summarylist",
+                "je:summarylist": {
+                    "template": "{city} {state} {country}",
+                    "allowPagination": true,
+                    "paginationMaxRows": 5,
+                    "allowFilter": true,
                     "allowEdit": true,
                     "allowRemove": true,
                     "allowAdd": true

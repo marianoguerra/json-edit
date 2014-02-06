@@ -385,13 +385,17 @@
 
     cons.makeResult = JsonSchema._makeResult;
 
-    priv.label = function (label, idFor) {
-        return {
+    priv.label = function (label, idFor, title) {
+        var obj = {
             "label": {
                 "for": idFor,
                 "$childs": label
             }
         };
+        if (title) {
+            obj.label.title = title;
+        }
+        return obj;
     };
 
     priv.inputTypes = {
@@ -440,7 +444,7 @@
 
         function onRemoveClick(event) {
             var realMinItems = ifNotSet(opts.minItems, 0),
-                cont = $("#" + id);
+                cont = $("#" + id + "-div");
 
             if (cont.parent().children().size() <= realMinItems) {
                 defaults.displayError(defaults.msgs.cantRemoveMinItems);
@@ -453,7 +457,7 @@
 
         cont = {
             "div": {
-                "id": id,
+                "id": id + "-div",
                 "class": ns.cls("array-item"),
                 "$childs": [
                     input,
@@ -491,6 +495,7 @@
         } else {
             items.append($.lego(item));
         }
+        util.events.rendered.fire();
     }
 
     function onClearItemsClick(opts, id) {
@@ -848,7 +853,8 @@
             }
 
         } else {
-            field.find(ns.$cls("array-item")).each(function (i, node) {
+            // relies on .array-item being the *great-grandchild* of the current field
+            field.find("> * > * > " + ns.$cls("array-item")).each(function (i, node) {
                 var newSchema, itemResult;
 
                 // if the array above has a default then override the item
@@ -1072,7 +1078,8 @@
             $childs,
             firstChildClasses,
             labelText = ifNotSet(opts.title, fid),
-            label = priv.label(labelText, inputId);
+            labelTitle = opts.type === 'array' ? opts.description : undefined,
+            label = priv.label(labelText, inputId, labelTitle);
 
         if (false && opts.type === 'boolean') {
             label.label.$childs = [input, label.label.$childs];

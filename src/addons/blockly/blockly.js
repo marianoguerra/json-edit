@@ -32,7 +32,25 @@
             margin: "1%",
             padding: "1%",
             "z-index": 10000
-        };
+        },
+        colors = [
+            "#c82829", "#f5871f", "#eab700", "#718c00", "#3e999f", "#4271ae",
+            "#8959a8",
+            "#cc6666", "#de935f", "#f0c674", "#b5bd68", "#8abeb7", "#81a2be",
+            "#b294bb",
+            "#111111", "#3B3131", "#463E3F", "#504A4B", "#5C5858", "#666362",
+            "#726E6D", "#837E7C", "#B6B6B4", "#BCC6CC", "#000080", "#15317E",
+            "#0000A0", "#0041C2", "#1569C7", "#1F45FC", "#1589FF", "#82CAFF",
+            "#78C7C7", "#6CC417", "#52D017", "#54C571", "#85BB65", "#B2C248",
+            "#CCFB5D", "#BCE954", "#EDE275", "#FFFF00", "#FFEBCD", "#ECE5B6",
+            "#FFDB58", "#FDD017", "#F2BB66", "#FBB117", "#E9AB17", "#DEB887",
+            "#C9BE62", "#EE9A4D", "#D4A017", "#F87431", "#FF8040", "#FF7F50",
+            "#F9966B", "#E18B6B", "#F75D59", "#E55B3C", "#F70D1A", "#E42217",
+            "#DC381F", "#C34A2C", "#C24641", "#7F4E52", "#C5908E", "#EDC9AF",
+            "#E38AAE", "#F6358A", "#F535AA", "#CA226B", "#C12283", "#4B0082",
+            "#6A287E", "#6C2DC7", "#7F38EC", "#A23BEC", "#9E7BFF", "#C8A2C8",
+            "#F9B7FF", "#E3E4FA", "#FFFFFF", "#FEFEFE"
+        ];
 
     formatHints.string = formatHints.string || {};
 
@@ -51,9 +69,20 @@
             basePath = options.basePath || "",
             content = opts["default"];
 
-        window["init" + frameId] = function (Blockly) {
+        window["init" + frameId] = function (Blockly, _id, childDocument) {
             var xmlDom,
+                domParser = new window.DOMParser(),
                 clipboard = window[globalClipboardKey];
+
+            Blockly.inject(childDocument.body,
+                           {path: './', toolbox: options.toolbox});
+
+            Blockly.FieldColour.COLOURS = colors;
+            Blockly.HSV_VALUE = 0.75;
+            Blockly.HSV_SATURATION = 0.30;
+            Blockly.Language.TEXT_TYPE_HUE = 79;
+            Blockly.Language.LOGIC_TYPE_HUE = 358;
+            Blockly.Language.COLOUR_TYPE_HUE = 191;
 
             if (clipboard) {
                 Blockly.clipboard_ = clipboard;

@@ -27,3 +27,21 @@
  margin: 4em;
  margin-left: 49%;
 }
+
+.summary-pagination{
+ width: 100%;
+ text-align: center;
+ margin: 1em 0;
+}
+
+.summary-filter{
+ width: 100%;
+ text-align: center;
+ margin: 1em 0;
+}
+
+.pagination-link{
+ margin-right: 1em;
+}
+
+

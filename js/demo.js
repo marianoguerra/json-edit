@@ -1,4 +1,4 @@
-/*global require window console*/
+/*global require, window, console, alert*/
 require.config({
     baseUrl: "js/",
     paths: {
@@ -38,6 +38,7 @@ require.config({
         // needed by hints
         // by color hint
         "colorPicker": "../src/addons/color/picker/colorPicker",
+        "spectrum": "../src/addons/color/picker/spectrum",
         // by adsafe hint
         "jslint": "../src/addons/adsafe/lib/jslint",
 
@@ -54,7 +55,7 @@ require.config({
         "squide.ui": "http://marianoguerra.github.com/squide/src/squide.ui",
 
         // by summarylist
-        "dustjs": "http://linkedin.github.com/dustjs/dist/dust-full-1.0.0"
+        "dustjs": "http://linkedin.github.io/dustjs/dist/dust-full.min"
     },
 
     shim: {
@@ -70,6 +71,10 @@ require.config({
         },
         colorPicker: {
             exports: "colorPicker"
+        },
+        spectrum: {
+            exports: "spectrum",
+            deps: ["jquery", "jqueryui"]
         },
         dustjs: {
             exports: "dust"
