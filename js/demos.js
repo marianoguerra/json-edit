@@ -15,7 +15,25 @@
     }
 }(this, function () {
     "use strict";
-    return [
+    return [["array of colors", "", {
+        "type": "object",
+        "required": ["colors"],
+        "order": ["colors"],
+        "properties": {
+            "colors": {
+                "title": "Colors",
+                "type": "array",
+                "default": ["#c82829", "#f5871f", "#eab700", "#718c00", "#3e999f"],
+                "items": {
+                    "je:hint": "color",
+                    "showPalette": true,
+                    "showInitial": true,
+                    "default": "#c82829",
+                    "type": "string"
+                }
+            }
+        }
+    }],
         [
             "html editor in object",
             "",
@@ -299,7 +317,7 @@
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "order": ["name", "description"],
+                    "order": ["name", "description", "flag"],
                     "required": ["name"],
                     "properties": {
                         "name": {
@@ -309,6 +327,12 @@
                         "description": {
                             "type": "string",
                             "title": "Description"
+                        },
+                        "flag": {
+                            "type": "string",
+                            "je:hint": "color",
+                            "default": "cc0000",
+                            "title": "Flag color"
                         }
                     }
                 }
