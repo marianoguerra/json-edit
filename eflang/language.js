@@ -23,6 +23,8 @@ var eflang = (function () {
     B.eflang.db_fetch_fun = "libs.store.get";
     B.eflang.db_incr_fun = "libs.store.incr";
     B.eflang.db_decr_fun = "libs.store.decr";
+    B.eflang.db_del_fun = "libs.store.del";
+    B.eflang.db_keys_fun = "libs.store.keys";
 
     Lang.const_get = {
         init: function () {
@@ -139,6 +141,18 @@ var eflang = (function () {
         }
         code = '{' + code.join(', ') + '}';
         return [code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.obj_empty = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput().appendField("empty object");
+            this.setOutput(true, "Object");
+        }
+    };
+
+    JS.obj_empty = function () {
+        return ["{}", JS.ORDER_ATOMIC];
     };
 
     Lang.objs_create_with = {
@@ -730,6 +744,57 @@ var eflang = (function () {
         var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
             store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
             code = B.eflang.db_fetch_fun + '(' + store + ', ' + key + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_DEL_INPUT = "delete key";
+    B.LANG_DB_DEL_INPUT_1 = "from store";
+
+    Lang.db_del = {
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField(B.LANG_DB_DEL_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField(B.LANG_DB_DEL_INPUT_1);
+
+            this.setInputsInline(true);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.db_del = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_del_fun + '(' + store + ', ' + key + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_KEYS_INPUT = "list keys from store";
+
+    Lang.db_keys = {
+        init: function () {
+            this.setColour(230);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField(B.LANG_DB_KEYS_INPUT);
+
+            this.setInputsInline(true);
+            this.setOutput(true, "Array");
+        }
+    };
+
+    JS.db_keys = function () {
+        var store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_keys_fun + '(' + store + ')';
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
