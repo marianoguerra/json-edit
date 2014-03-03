@@ -25,6 +25,8 @@ var eflang = (function () {
     B.eflang.db_decr_fun = "libs.store.decr";
     B.eflang.db_del_fun = "libs.store.del";
     B.eflang.db_keys_fun = "libs.store.keys";
+    B.eflang.db_flushdb_fun = "libs.store.flushdb";
+    B.eflang.db_flushall_fun = "libs.store.flushall";
 
     Lang.const_get = {
         init: function () {
@@ -795,6 +797,48 @@ var eflang = (function () {
     JS.db_keys = function () {
         var store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
             code = B.eflang.db_keys_fun + '(' + store + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_FLUSHDB_INPUT = "remove all from store";
+
+    Lang.db_flushdb = {
+        init: function () {
+            this.setColour(230);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField(B.LANG_DB_FLUSHDB_INPUT);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.db_flushdb = function () {
+        var store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_flushdb_fun + '(' + store + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_FLUSHALL_INPUT = "remove all from all stores";
+
+    Lang.db_flushall = {
+        init: function () {
+            this.setColour(230);
+
+            this.appendDummyInput()
+                .appendField(B.LANG_DB_FLUSHALL_INPUT);
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.db_flushall = function () {
+        var code = B.eflang.db_flushall_fun + '()';
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
