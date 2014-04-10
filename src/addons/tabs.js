@@ -91,7 +91,7 @@
     collectHints.object.tabs = function (key, field, schema, priv) {
         // if you change innerId format here change it in formatter above
         var
-            innerId = field.attr("id") + "-inner";
+            innerId = field.find("div[id$='-inner']").attr("id");
 
         return priv.collectObject(innerId, schema);
     };
