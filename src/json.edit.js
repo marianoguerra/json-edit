@@ -477,7 +477,7 @@
 
     function onAddItemClick(opts, id, i, name, util) {
         var
-            items = $("#" + id + " " + ns.$cls("array-items")),
+            items = $("#" + id + " > " + ns.$cls("array-items")),
             item = makeArrayItem(
                 opts,
                 name,
@@ -495,7 +495,7 @@
 
     function onClearItemsClick(opts, id) {
         var realMinItems = ifNotSet(opts.minItems, 0),
-            selectorItems = "#" + id + " " + ns.$cls("array-items"),
+            selectorItems = "#" + id + " > " + ns.$cls("array-items"),
             selectorChildsToRemove = ":not(:lt(" + realMinItems + "))";
 
         $(selectorItems).children(selectorChildsToRemove).remove();
