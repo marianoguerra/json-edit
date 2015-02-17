@@ -1076,6 +1076,43 @@ var eflang = (function () {
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
+    Lang.text_image_resizable = {
+        init: function () {
+            this.setColour(160);
+            this.setOutput(true, "String");
+            this.appendValueInput('URL')
+                .appendField("image from");
+
+            this.appendValueInput('LABEL')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField("otherwise text");
+
+            this.appendValueInput('WIDTH')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("Number")
+                .appendField("width");
+
+            this.appendValueInput('HEIGHT')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("Number")
+                .appendField("height");
+
+            this.setInputsInline(true);
+            this.setOutput(true);
+        }
+    };
+
+    JS.text_image_resizable = function () {
+        var url = JS.valueToCode(this, 'URL', JS.ORDER_MEMBER) || '#',
+            label = JS.valueToCode(this, 'LABEL', JS.ORDER_MEMBER) || '?',
+            width = JS.valueToCode(this, 'WIDTH', JS.ORDER_MEMBER) || '100',
+            height = JS.valueToCode(this, 'HEIGHT', JS.ORDER_MEMBER) || '100',
+            code = "'[img ' + " + width + " + ' ' + " + height + " + ' \"' + " + url + " + '\" \"' + " + label + " + '\"]'";
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
         key, value;
