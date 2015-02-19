@@ -22,6 +22,7 @@ require.config({
         "hint.date": "../src/addons/date",
         "hint.color": "../src/addons/color/color",
         "hint.tabs": "../src/addons/tabs",
+        "hint.tabsobject": "../src/addons/tabsobject",
         "hint.password": "../src/addons/password",
         "hint.textarea": "../src/addons/textarea",
         "hint.readonly": "../src/addons/readonly",
@@ -77,7 +78,7 @@ require.config({
 
 require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint", "json",
 
-        "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs",
+        "hint.tags", "hint.autocomplete", "hint.date", "hint.color", "hint.tabs", "hint.tabsobject",
         "hint.password", "hint.readonly", "hint.enumlabels", "hint.squim", "hint.tabarray",
         "hint.summarylist", "hint.textarea"],
 
