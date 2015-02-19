@@ -141,7 +141,7 @@
                     "div": {
                         "class": "summary-edit-buttons",
                         "$childs": [
-                            button("Ok", onEditOkClick),
+                            button("OK", onEditOkClick),
                             button("Cancel", onEditCancelClick)
                         ]
                     }

@@ -96,13 +96,13 @@
     collectHints.object.tabsobject = function (key, field, schema, priv) {
         // if you change innerId format here change it in formatter above
         var
-            innerId = field.find("div[id$='-inner']").attr("id"),
+            innerId = field.attr("id") + "-inner",
             options = schema["je:options"],
             response = {}, result = {}, ok = false;
 
         options.forEach(function (item, index) {
             result = priv.collectObject(innerId + index, schema, item.fields);
-            ok = result.ok;
+            ok = result.result.ok;
             response = $.extend(true, response, result);
             response.result.ok = response.result.ok && ok;
         });

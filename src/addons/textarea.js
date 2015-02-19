@@ -33,19 +33,13 @@
             content = JSON.stringify(content);
         }
 
-        var obj = {
-            textarea: {
+        return {
+            "textarea": {
                 "rows": rows,
                 "style": "width: " + width,
                 "$childs": priv.escapeHTML(content)
             }
-        }
-
-        if (opts.description) {
-            obj.textarea.title = opts.description;
-        }
-
-        return obj;
+        };
     };
 
     collectHints.string = collectHints.string || {};
