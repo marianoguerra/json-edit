@@ -291,16 +291,16 @@
     };
 
     cons.defaults = defaults;
-    priv.collectObject = function (id, opts) {
+    priv.collectObject = function (id, opts, order) {
         var
             // if can be already a jquery object if called from collectObject
             cont = (typeof id === "string") ? $("#" + id) : id,
-            order = priv.getKeys(opts.properties, opts.order),
             defaultVals = ifNotSet(opts["default"], {}),
             result = priv.collectResult(true), data = {},
 
             apropsSel, aprops;
 
+        order = order || priv.getKeys(opts.properties, opts.order),
         $.each(order, function (i, key) {
             var
                 value, newSchema,
