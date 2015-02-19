@@ -297,10 +297,9 @@
             cont = (typeof id === "string") ? $("#" + id) : id,
             defaultVals = ifNotSet(opts["default"], {}),
             result = priv.collectResult(true), data = {},
-
             apropsSel, aprops;
 
-        order = order || priv.getKeys(opts.properties, opts.order),
+        order = order || priv.getKeys(opts.properties, opts.order);
         $.each(order, function (i, key) {
             var
                 value, newSchema,
@@ -460,13 +459,18 @@
                 "id": id + "-div",
                 "class": ns.cls("array-item"),
                 "$childs": [
-                    input,
+                    {
+                        "div": {
+                            "class": ns.cls("array-item-wrapper"),
+                            "$childs": [input]
+                        }
+                    },
                     {
                         "div": {
                             "class": ns.cls("array-item-actions"),
                             "$childs": [
                                 makeLinkAction(
-                                    "remove",
+                                    "X",
                                     onRemoveClick,
                                     {"class": ns.cls("action")})
                             ]
@@ -481,7 +485,7 @@
 
     function onAddItemClick(opts, id, i, name, util) {
         var
-            items = $("#" + id + " > " + ns.$cls("array-items")),
+            items = $("#" + id + " " + ns.$cls("array-items")),
             item = makeArrayItem(
                 opts,
                 name,
@@ -500,7 +504,7 @@
 
     function onClearItemsClick(opts, id) {
         var realMinItems = ifNotSet(opts.minItems, 0),
-            selectorItems = "#" + id + " > " + ns.$cls("array-items"),
+            selectorItems = "#" + id + " " + ns.$cls("array-items"),
             selectorChildsToRemove = ":not(:lt(" + realMinItems + "))";
 
         $(selectorItems).children(selectorChildsToRemove).remove();
@@ -679,11 +683,11 @@
                             "div": {
                                 "class": ns.cls("array-actions"),
                                 "$childs": [
-                                    makeButton("add", function () {
+                                    makeButton("Add", function () {
                                         i += 1;
                                         onAddItemClick(opts, id, i, name, util);
                                     }),
-                                    makeButton("clear", function () {
+                                    makeButton("Clear", function () {
                                         onClearItemsClick(opts, id);
                                     })
                                 ]
@@ -820,8 +824,7 @@
     };
 
     defaults.collectors.array = function (name, field, schema) {
-        var
-            result, arrayResult, castResult,
+        var result, arrayResult, castResult, itemSelector,
 
             defaults = schema["default"] || [],
             itemSchema = schema.items || {},
@@ -854,7 +857,9 @@
 
         } else {
             // relies on .array-item being the *great-grandchild* of the current field
-            field.find("> * > * > " + ns.$cls("array-item")).each(function (i, node) {
+            itemSelector = "> * > * > " + ns.$cls("array-item") + " > " + 
+                ns.$cls("array-item-wrapper");
+            field.find(itemSelector).each(function (i, node) {
                 var newSchema, itemResult;
 
                 // if the array above has a default then override the item
