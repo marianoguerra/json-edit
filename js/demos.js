@@ -282,6 +282,69 @@
                 "default": "($lambda (foo bar) ($sequence 1 2))"
             }
         }
+    }], ["tabsobject hint (addon)", "",
+    {
+        "order": ["name", "location", "interests"],
+        "required": ["name"],
+        "je:hint": "tabsobject",
+        "je:options": [{
+            "title": "Simple",
+            "fields": ["name", "location"],
+        }, {
+            "title": "Advance",
+            "fields": ["interests"],
+        }],
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "title": "Name"
+            },
+            "location": {
+                "type": "object",
+                "title": "Location",
+                "order": ["city", "state", "country"],
+                "properties": {
+                    "city": {
+                        "type": "string",
+                        "title": "City"
+                    },
+                    "state": {
+                        "type": "string",
+                        "title": "State"
+                    },
+                    "country": {
+                        "type": "string",
+                        "title": "Country"
+                    }
+                }
+            },
+            "interests": {
+                "title": "Interests",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "order": ["name", "description", "flag"],
+                    "required": ["name"],
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "title": "Name"
+                        },
+                        "description": {
+                            "type": "string",
+                            "title": "Description"
+                        },
+                        "flag": {
+                            "type": "string",
+                            "je:hint": "color",
+                            "default": "cc0000",
+                            "title": "Flag color"
+                        }
+                    }
+                }
+            }
+        }
     }], ["tabs hint (addon)", "",
     {
         "order": ["name", "location", "interests"],
