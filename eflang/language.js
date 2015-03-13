@@ -19,6 +19,12 @@ var eflang = (function () {
     B.eflang.constants = [["NAME", "NAME"]];
     B.eflang.constantsPath = "libs.consts.";
     B.eflang.math_set_precision_fun = "libs.format.floatPrecision";
+
+    B.eflang.notify_info = "libs.notify.info";
+    B.eflang.notify_success = "libs.notify.success";
+    B.eflang.notify_warning = "libs.notify.warning";
+    B.eflang.notify_error = "libs.notify.error";
+
     B.eflang.db_store_fun = "libs.store.set";
     B.eflang.db_fetch_fun = "libs.store.get";
     B.eflang.db_incr_fun = "libs.store.incr";
@@ -1112,6 +1118,59 @@ var eflang = (function () {
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
+    Lang.parse_json = {
+        init: function () {
+            this.setColour(180);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Parse JSON");
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.parse_json = function (block) {
+        var argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return ["JSON.parse(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
+    };
+
+    JS.parse_json = function (block) {
+        var argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return ["JSON.parse(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
+    };
+
+    function makeNotify(level) {
+        return {
+            init: function () {
+                this.setColour(170);
+                this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Notify " + level);
+
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+            }
+        };
+    }
+
+    Lang.notify_info = makeNotify('Info');
+    Lang.notify_success = makeNotify('Success');
+    Lang.notify_warning = makeNotify('Warning');
+    Lang.notify_error = makeNotify('Error');
+
+    function makeNotifyJs(funName) {
+        return function (block) {
+            var argument0 = JS.valueToCode(block, 'VALUE',
+                                           JS.ORDER_FUNCTION_CALL) || '""';
+            return funName + "(" + argument0 + ");";
+        };
+    }
+
+    JS.notify_info = makeNotifyJs(B.eflang.notify_info);
+    JS.notify_success = makeNotifyJs(B.eflang.notify_success);
+    JS.notify_warning = makeNotifyJs(B.eflang.notify_warning);
+    JS.notify_error = makeNotifyJs(B.eflang.notify_error);
 
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
