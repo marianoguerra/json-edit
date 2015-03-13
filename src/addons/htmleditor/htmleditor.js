@@ -51,7 +51,9 @@
             var editor = new nicEditor(editorConfig);
             editor.panelInstance(textareaId);
             $("#" + textareaId).parent()
-                .data("editor", editor.instanceById(textareaId));
+                .data("editor", editor.instanceById(textareaId))
+                .data("editor-id", textareaId)
+                .data("editor-parent", editor);
         });
 
         return {
@@ -68,8 +70,11 @@
     collectorHints.string.htmleditor = function (key, field, schema, priv) {
         var
             editor = field.data("editor"),
+            editorId = field.data("editor-id"),
+            editorParent = field.data("editor-parent"),
             result = editor.getContent();
 
+        editorParent.removeInstance(editorId);
         return {result: JsonEdit.makeResult(true, "ok", result), data: result};
     };
 

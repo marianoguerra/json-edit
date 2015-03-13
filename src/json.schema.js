@@ -404,7 +404,7 @@
         if (value === null) {
             return priv.makeResult(true, "ok", value);
         } else {
-            return priv.makeResult(false, "Field '" + name + "' " +
+            return priv.makeResult(false, "field '" + name + "' " +
                 cons.msgs.err.NOT_NULL, {});
         }
     };

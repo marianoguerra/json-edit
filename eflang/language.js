@@ -23,6 +23,10 @@ var eflang = (function () {
     B.eflang.db_fetch_fun = "libs.store.get";
     B.eflang.db_incr_fun = "libs.store.incr";
     B.eflang.db_decr_fun = "libs.store.decr";
+    B.eflang.db_del_fun = "libs.store.del";
+    B.eflang.db_keys_fun = "libs.store.keys";
+    B.eflang.db_flushdb_fun = "libs.store.flushdb";
+    B.eflang.db_flushall_fun = "libs.store.flushall";
 
     Lang.const_get = {
         init: function () {
@@ -139,6 +143,18 @@ var eflang = (function () {
         }
         code = '{' + code.join(', ') + '}';
         return [code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.obj_empty = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput().appendField("empty object");
+            this.setOutput(true, "Object");
+        }
+    };
+
+    JS.obj_empty = function () {
+        return ["{}", JS.ORDER_ATOMIC];
     };
 
     Lang.objs_create_with = {
@@ -733,6 +749,99 @@ var eflang = (function () {
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
+    B.LANG_DB_DEL_INPUT = "delete key";
+    B.LANG_DB_DEL_INPUT_1 = "from store";
+
+    Lang.db_del = {
+        init: function () {
+            this.setColour(230);
+            this.setOutput(true, String);
+
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField(B.LANG_DB_DEL_INPUT);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField(B.LANG_DB_DEL_INPUT_1);
+
+            this.setInputsInline(true);
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.db_del = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_del_fun + '(' + store + ', ' + key + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_KEYS_INPUT = "list keys from store";
+
+    Lang.db_keys = {
+        init: function () {
+            this.setColour(230);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField(B.LANG_DB_KEYS_INPUT);
+
+            this.setInputsInline(true);
+            this.setOutput(true, "Array");
+        }
+    };
+
+    JS.db_keys = function () {
+        var store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_keys_fun + '(' + store + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_FLUSHDB_INPUT = "remove all from store";
+
+    Lang.db_flushdb = {
+        init: function () {
+            this.setColour(230);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.appendValueInput('STORE')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField(B.LANG_DB_FLUSHDB_INPUT);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.db_flushdb = function () {
+        var store = JS.valueToCode(this, 'STORE', JS.ORDER_MEMBER) || '"store"',
+            code = B.eflang.db_flushdb_fun + '(' + store + ')';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
+    B.LANG_DB_FLUSHALL_INPUT = "remove all from all stores";
+
+    Lang.db_flushall = {
+        init: function () {
+            this.setColour(230);
+
+            this.appendDummyInput()
+                .appendField(B.LANG_DB_FLUSHALL_INPUT);
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.db_flushall = function () {
+        var code = B.eflang.db_flushall_fun + '()';
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
     B.LANG_DB_INCR_INPUT = "increase key";
     B.LANG_DB_INCR_INPUT_1 = "from store";
 
@@ -966,6 +1075,43 @@ var eflang = (function () {
             code = "'![' + " + label + " + '](' + " + url + " + ')'";
         return [code, JS.ORDER_FUNCTION_CALL];
     };
+
+    Lang.text_image_resizable = {
+        init: function () {
+            this.setColour(160);
+            this.setOutput(true, "String");
+            this.appendValueInput('URL')
+                .appendField("image from");
+
+            this.appendValueInput('LABEL')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("String")
+                .appendField("otherwise text");
+
+            this.appendValueInput('WIDTH')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("Number")
+                .appendField("width");
+
+            this.appendValueInput('HEIGHT')
+                .setAlign(B.ALIGN_RIGHT)
+                .setCheck("Number")
+                .appendField("height");
+
+            this.setInputsInline(true);
+            this.setOutput(true);
+        }
+    };
+
+    JS.text_image_resizable = function () {
+        var url = JS.valueToCode(this, 'URL', JS.ORDER_MEMBER) || '#',
+            label = JS.valueToCode(this, 'LABEL', JS.ORDER_MEMBER) || '?',
+            width = JS.valueToCode(this, 'WIDTH', JS.ORDER_MEMBER) || '100',
+            height = JS.valueToCode(this, 'HEIGHT', JS.ORDER_MEMBER) || '100',
+            code = "'[img ' + " + width + " + ' ' + " + height + " + ' \"' + " + url + " + '\" \"' + " + label + " + '\"]'";
+        return [code, JS.ORDER_FUNCTION_CALL];
+    };
+
 
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},

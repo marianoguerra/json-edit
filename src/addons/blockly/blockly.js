@@ -23,10 +23,10 @@
         },
         baseOverlayStyle = {
             position: "fixed",
-            width: "96%",
+            width: "100%",
             left: 0,
             top: 0,
-            height: "90%",
+            height: "100%",
             border: "1px solid #DFDFDF",
             "background-color": "#fff",
             margin: "1%",
@@ -64,25 +64,22 @@
             userOverlayStyle = options.overlayStyle || {},
             userCloseOverlayStyle = options.closeOverlayStyle || {},
             rows = options.rows || 4,
-            width = options.width || "99%",
-            height = options.height || "20em",
+            width = options.width || "100%",
+            height = options.height || "100%",
             basePath = options.basePath || "",
             content = opts["default"];
 
         window["init" + frameId] = function (Blockly, _id, childDocument) {
             var xmlDom,
                 domParser = new window.DOMParser(),
-                clipboard = window[globalClipboardKey];
+                clipboard = window[globalClipboardKey],
+                toolbox = $.isFunction(options.toolbox) ?
+                    options.toolbox() : options.toolbox;
 
-            Blockly.inject(childDocument.body,
-                           {path: './', toolbox: options.toolbox});
+            Blockly.Css.CONTENT = [];
+            Blockly.inject(childDocument.body, {path: './', toolbox: toolbox});
 
             Blockly.FieldColour.COLOURS = colors;
-            Blockly.HSV_VALUE = 0.75;
-            Blockly.HSV_SATURATION = 0.30;
-            Blockly.Language.TEXT_TYPE_HUE = 79;
-            Blockly.Language.LOGIC_TYPE_HUE = 358;
-            Blockly.Language.COLOUR_TYPE_HUE = 191;
 
             if (clipboard) {
                 Blockly.clipboard_ = clipboard;
@@ -140,7 +137,7 @@
                                 "iframe": {
                                     "class": "je-blockly-overlay-editor",
                                     "src": basePath + "frame.html?id=" + frameId,
-                                    "style": "border: 0; width: 100%; height: 90%"
+                                    "style": "border: 0; width: 100%; height: 100%"
                                 }
                             };
 
@@ -204,8 +201,8 @@
 
         data = {xml: xmlText};
         if (compileToJs) {
-            data[options.compileToJsField] = blockly.Generator
-                .workspaceToCode('JavaScript');
+            data[options.compileToJsField] = blockly.JavaScript
+                .workspaceToCode();
         }
 
         $("#" + editor.attr("id") + "-overlay").remove();
