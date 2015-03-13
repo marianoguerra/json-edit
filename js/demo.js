@@ -2,15 +2,15 @@
 require.config({
     baseUrl: "js/",
     paths: {
-        "json": "http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2",
-        "ace": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/ace",
-        "ace.json": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-json",
-        "ace.theme": "http://cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-merbivore_soft",
-        "jquery": "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery",
-        "jqueryui": "http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min",
-        "legoparser": "http://marianoguerra.github.com/legojs/src/legoparser",
-        "jquery.lego": "http://marianoguerra.github.com/legojs/src/jquery.lego",
-        "prettyPrint": "http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify",
+        "json": "//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2",
+        "ace": "//cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/ace",
+        "ace.json": "//cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/mode-json",
+        "ace.theme": "//cdnjs.cloudflare.com/ajax/libs/ace/0.2.0/theme-merbivore_soft",
+        "jquery": "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery",
+        "jqueryui": "//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min",
+        "legoparser": "//marianoguerra.github.com/legojs/src/legoparser",
+        "jquery.lego": "//marianoguerra.github.com/legojs/src/jquery.lego",
+        "prettyPrint": "//cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify",
         "jquery.taghandler": "https://raw.github.com/ioncache/Tag-Handler/master/js/jquery.taghandler",
         "json.edit": "../src/json.edit",
         "json.schema": "../src/json.schema",
@@ -44,19 +44,19 @@ require.config({
         "jslint": "../src/addons/adsafe/lib/jslint",
 
         // by squide hint
-        "squim": "http://marianoguerra.github.com/squim/src/squim",
-        "squim.types": "http://marianoguerra.github.com/squim/src/squim.types",
-        "squim.parser": "http://marianoguerra.github.com/squim/src/squim.parser",
-        "squim.error": "http://marianoguerra.github.com/squim/src/squim.error",
-        "squim.ground": "http://marianoguerra.github.com/squim/src/squim.ground",
-        "squim.util": "http://marianoguerra.github.com/squim/src/squim.util",
+        "squim": "//marianoguerra.github.com/squim/src/squim",
+        "squim.types": "//marianoguerra.github.com/squim/src/squim.types",
+        "squim.parser": "//marianoguerra.github.com/squim/src/squim.parser",
+        "squim.error": "//marianoguerra.github.com/squim/src/squim.error",
+        "squim.ground": "//marianoguerra.github.com/squim/src/squim.ground",
+        "squim.util": "//marianoguerra.github.com/squim/src/squim.util",
 
-        "squide": "http://marianoguerra.github.com/squide/src/squide",
-        "squide.types": "http://marianoguerra.github.com/squide/src/squide.types",
-        "squide.ui": "http://marianoguerra.github.com/squide/src/squide.ui",
+        "squide": "//marianoguerra.github.com/squide/src/squide",
+        "squide.types": "//marianoguerra.github.com/squide/src/squide.types",
+        "squide.ui": "//marianoguerra.github.com/squide/src/squide.ui",
 
         // by summarylist
-        "dustjs": "http://linkedin.github.io/dustjs/dist/dust-full.min"
+        "dustjs": "//cdnjs.cloudflare.com/ajax/libs/dustjs-linkedin/2.6.0/dust-core.min"
     },
 
     shim: {
