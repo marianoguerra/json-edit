@@ -25,6 +25,8 @@ var eflang = (function () {
     B.eflang.notify_warning = "libs.notify.warning";
     B.eflang.notify_error = "libs.notify.error";
 
+    B.eflang.util_parse_url = "libs.parse.url";
+
     B.eflang.db_store_fun = "libs.store.set";
     B.eflang.db_fetch_fun = "libs.store.get";
     B.eflang.db_incr_fun = "libs.store.incr";
@@ -1134,10 +1136,21 @@ var eflang = (function () {
         return ["JSON.parse(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
     };
 
-    JS.parse_json = function (block) {
-        var argument0 = JS.valueToCode(block, 'VALUE',
+    Lang.parse_url = {
+        init: function () {
+            this.setColour(180);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Parse URL");
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.parse_url = function (block) {
+        var funName = B.eflang.util_parse_url,
+            argument0 = JS.valueToCode(block, 'VALUE',
                                JS.ORDER_FUNCTION_CALL) || '""';
-        return ["JSON.parse(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
+        return [funName + "(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
     };
 
     function makeNotify(level) {
