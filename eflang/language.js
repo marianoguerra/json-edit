@@ -140,6 +140,63 @@ var eflang = (function () {
         return [code, JS.ORDER_ATOMIC];
     };
 
+    Lang.variables_setpath = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('VALUE')
+                .appendField("set field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR')
+                .appendField("to");
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.variables_setpath = function () {
+        // Variable setter.
+        var argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            varName = this.getFieldValue('VAR');
+
+        return varName + ' = ' + argument0 + ';\n';
+    };
+
+    Lang.variables_stateget = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput()
+                .appendField("get state field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR');
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.variables_stateget = function () {
+        var code = this.getFieldValue('VAR') || "__not_set__";
+        return ["state." + code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.variables_stateset = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('VALUE')
+                .appendField("set state field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR')
+                .appendField("to");
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.variables_stateset = function () {
+        // Variable setter.
+        var argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            varName = this.getFieldValue('VAR');
+
+        return "state." + varName + ' = ' + argument0 + ';\n';
+    };
+
     JS.objs_create_with = function () {
         // Create a list with any number of elements of any type.
         var n, code = new Array(this.itemCount_);
