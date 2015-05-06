@@ -26,6 +26,7 @@ var eflang = (function () {
     B.eflang.notify_error = "libs.notify.error";
 
     B.eflang.util_parse_url = "libs.parse.url";
+    B.eflang.util_parse_csv = "libs.parse.csv";
 
     B.eflang.db_store_fun = "libs.store.set";
     B.eflang.db_fetch_fun = "libs.store.get";
@@ -1191,6 +1192,28 @@ var eflang = (function () {
         var argument0 = JS.valueToCode(block, 'VALUE',
                                JS.ORDER_FUNCTION_CALL) || '""';
         return ["JSON.parse(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
+    };
+
+    Lang.parse_csv = {
+        init: function () {
+            this.setColour(180);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Parse CSV");
+            this.appendValueInput('DELIMITER')
+                .setCheck("String")
+                .appendField("with Delimiter");
+
+            this.setOutput(true, Array);
+        }
+    };
+
+    JS.parse_csv = function (block) {
+        var funName = B.eflang.util_parse_csv,
+            delimiter = JS.valueToCode(this, 'DELIMITER', JS.ORDER_MEMBER) || ',',
+            argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return [funName + "(" + argument0 + "," + delimiter + ")", JS.ORDER_FUNCTION_CALL];
     };
 
     Lang.parse_url = {
