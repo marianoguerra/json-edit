@@ -145,7 +145,7 @@ var eflang = (function () {
         init: function () {
             this.setColour(Lang.VARIABLE_TYPE_HUE);
             this.appendValueInput('VALUE')
-                .appendField("set field")
+                .appendField("set var path")
                 .appendField(new B.FieldTextInput("fieldname"), 'VAR')
                 .appendField("to");
             this.setPreviousStatement(true);
@@ -196,6 +196,138 @@ var eflang = (function () {
             varName = this.getFieldValue('VAR');
 
         return "state." + varName + ' = ' + argument0 + ';\n';
+    };
+
+    Lang.variables_stateget_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("get state field");
+            this.appendDummyInput()
+            this.setOutput(true, null);
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.variables_stateget_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
+        return ["state[" + key + "]", JS.ORDER_ATOMIC];
+    };
+
+    Lang.variables_stateset_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("set state field");
+
+            this.appendValueInput('VALUE')
+                .appendField("to");
+
+            this.setInputsInline(true);
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.variables_stateset_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0';
+        return "state[" + key + "] = " + argument0 + ";";
+    };
+
+    Lang.variables_statedel_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("delete state field");
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    Lang.variables_stateinc_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("increment state field");
+
+            this.appendValueInput('VALUE')
+                .setCheck("Number")
+                .appendField("by");
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.variables_stateinc_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            field = "state[" + key + "]";
+
+        return field + "=(typeof " + field + " === 'number')?" + field + " + " + argument0 +
+            ":" + argument0 + ";";
+    };
+
+    Lang.variables_statedec_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("decrement state field");
+
+            this.appendValueInput('VALUE')
+                .setCheck("Number")
+                .appendField("by");
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.variables_statedec_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            field = "state[" + key + "]";
+
+        return field + "=(typeof " + field + " === 'number')?" + field + " - " + argument0 +
+            ":" + argument0 + ";";
+    };
+
+    Lang.state_clear = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.appendDummyInput()
+            .appendField("clear state");
+        }
+    };
+
+    JS.state_clear = function () {
+        return 'for (var __key__ in state) { delete state[__key__]; }';
+    };
+
+
+    JS.variables_statedel_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
+        return "delete state[" + key + "];";
     };
 
     JS.objs_create_with = function () {
