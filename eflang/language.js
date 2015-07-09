@@ -19,6 +19,15 @@ var eflang = (function () {
     B.eflang.constants = [["NAME", "NAME"]];
     B.eflang.constantsPath = "libs.consts.";
     B.eflang.math_set_precision_fun = "libs.format.floatPrecision";
+
+    B.eflang.notify_info = "libs.notify.info";
+    B.eflang.notify_success = "libs.notify.success";
+    B.eflang.notify_warning = "libs.notify.warning";
+    B.eflang.notify_error = "libs.notify.error";
+
+    B.eflang.util_parse_url = "libs.parse.url";
+    B.eflang.util_parse_csv = "libs.parse.csv";
+
     B.eflang.db_store_fun = "libs.store.set";
     B.eflang.db_fetch_fun = "libs.store.get";
     B.eflang.db_incr_fun = "libs.store.incr";
@@ -130,6 +139,195 @@ var eflang = (function () {
     JS.variables_getpath = function () {
         var code = this.getFieldValue('VAR');
         return [code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.variables_setpath = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('VALUE')
+                .appendField("set var path")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR')
+                .appendField("to");
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.variables_setpath = function () {
+        // Variable setter.
+        var argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            varName = this.getFieldValue('VAR');
+
+        return varName + ' = ' + argument0 + ';\n';
+    };
+
+    Lang.variables_stateget = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendDummyInput()
+                .appendField("get state field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR');
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.variables_stateget = function () {
+        var code = this.getFieldValue('VAR') || "__not_set__";
+        return ["state." + code, JS.ORDER_ATOMIC];
+    };
+
+    Lang.variables_stateset = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('VALUE')
+                .appendField("set state field")
+                .appendField(new B.FieldTextInput("fieldname"), 'VAR')
+                .appendField("to");
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.variables_stateset = function () {
+        // Variable setter.
+        var argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            varName = this.getFieldValue('VAR');
+
+        return "state." + varName + ' = ' + argument0 + ';\n';
+    };
+
+    Lang.variables_stateget_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("get state field");
+            this.appendDummyInput()
+            this.setOutput(true, null);
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.variables_stateget_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
+        return ["state[" + key + "]", JS.ORDER_ATOMIC];
+    };
+
+    Lang.variables_stateset_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("set state field");
+
+            this.appendValueInput('VALUE')
+                .appendField("to");
+
+            this.setInputsInline(true);
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+        }
+    };
+
+    JS.variables_stateset_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0';
+        return "state[" + key + "] = " + argument0 + ";";
+    };
+
+    Lang.variables_statedel_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("delete state field");
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    Lang.variables_stateinc_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("increment state field");
+
+            this.appendValueInput('VALUE')
+                .setCheck("Number")
+                .appendField("by");
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.variables_stateinc_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            field = "state[" + key + "]";
+
+        return field + "=(typeof " + field + " === 'number')?" + field + " + " + argument0 +
+            ":" + argument0 + ";";
+    };
+
+    Lang.variables_statedec_str = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.appendValueInput('KEY')
+                .setCheck("String")
+                .appendField("decrement state field");
+
+            this.appendValueInput('VALUE')
+                .setCheck("Number")
+                .appendField("by");
+
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.setInputsInline(true);
+        }
+    };
+
+    JS.variables_statedec_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key',
+            argument0 = JS.valueToCode(this, 'VALUE',
+                                       JS.ORDER_ASSIGNMENT) || '0',
+            field = "state[" + key + "]";
+
+        return field + "=(typeof " + field + " === 'number')?" + field + " - " + argument0 +
+            ":" + argument0 + ";";
+    };
+
+    Lang.state_clear = {
+        init: function () {
+            this.setColour(Lang.VARIABLE_TYPE_HUE);
+            this.setPreviousStatement(true);
+            this.setNextStatement(true);
+
+            this.appendDummyInput()
+            .appendField("clear state");
+        }
+    };
+
+    JS.state_clear = function () {
+        return 'for (var __key__ in state) { delete state[__key__]; }';
+    };
+
+
+    JS.variables_statedel_str = function () {
+        var key = JS.valueToCode(this, 'KEY', JS.ORDER_MEMBER) || 'key';
+        return "delete state[" + key + "];";
     };
 
     JS.objs_create_with = function () {
@@ -1112,6 +1310,92 @@ var eflang = (function () {
         return [code, JS.ORDER_FUNCTION_CALL];
     };
 
+    Lang.parse_json = {
+        init: function () {
+            this.setColour(180);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Parse JSON");
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.parse_json = function (block) {
+        var argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return ["JSON.parse(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
+    };
+
+    Lang.parse_csv = {
+        init: function () {
+            this.setColour(180);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Parse CSV");
+            this.appendValueInput('DELIMITER')
+                .setCheck("String")
+                .appendField("with Delimiter");
+
+            this.setOutput(true, Array);
+        }
+    };
+
+    JS.parse_csv = function (block) {
+        var funName = B.eflang.util_parse_csv,
+            delimiter = JS.valueToCode(this, 'DELIMITER', JS.ORDER_MEMBER) || ',',
+            argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return [funName + "(" + argument0 + "," + delimiter + ")", JS.ORDER_FUNCTION_CALL];
+    };
+
+    Lang.parse_url = {
+        init: function () {
+            this.setColour(180);
+            this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Parse URL");
+            this.setOutput(true, null);
+        }
+    };
+
+    JS.parse_url = function (block) {
+        var funName = B.eflang.util_parse_url,
+            argument0 = JS.valueToCode(block, 'VALUE',
+                               JS.ORDER_FUNCTION_CALL) || '""';
+        return [funName + "(" + argument0 + ")", JS.ORDER_FUNCTION_CALL];
+    };
+
+    function makeNotify(level) {
+        return {
+            init: function () {
+                this.setColour(170);
+                this.appendValueInput('VALUE')
+                .setCheck("String")
+                .appendField("Notify " + level);
+
+                this.setPreviousStatement(true);
+                this.setNextStatement(true);
+            }
+        };
+    }
+
+    Lang.notify_info = makeNotify('Info');
+    Lang.notify_success = makeNotify('Success');
+    Lang.notify_warning = makeNotify('Warning');
+    Lang.notify_error = makeNotify('Error');
+
+    function makeNotifyJs(funName) {
+        return function (block) {
+            var argument0 = JS.valueToCode(block, 'VALUE',
+                                           JS.ORDER_FUNCTION_CALL) || '""';
+            return funName + "(" + argument0 + ");";
+        };
+    }
+
+    JS.notify_info = makeNotifyJs(B.eflang.notify_info);
+    JS.notify_success = makeNotifyJs(B.eflang.notify_success);
+    JS.notify_warning = makeNotifyJs(B.eflang.notify_warning);
+    JS.notify_error = makeNotifyJs(B.eflang.notify_error);
 
     function parseQuery() {
         var i, parts, valparts, query = location.search.slice(1), result = {},
