@@ -27,7 +27,6 @@ require.config({
         "hint.textarea": "../src/addons/textarea",
         "hint.readonly": "../src/addons/readonly",
         "hint.enumlabels": "../src/addons/enumlabels",
-        "hint.squim": "../src/addons/squim",
         "hint.tabarray": "../src/addons/tabarray",
         "hint.summarylist": "../src/addons/summarylist/addon",
         "hint.adsafe": "../src/addons/adsafe/adsafe",
@@ -38,22 +37,9 @@ require.config({
 
         // needed by hints
         // by color hint
-        "colorPicker": "../src/addons/color/picker/colorPicker",
         "spectrum": "../src/addons/color/picker/spectrum",
         // by adsafe hint
         "jslint": "../src/addons/adsafe/lib/jslint",
-
-        // by squide hint
-        "squim": "//marianoguerra.github.com/squim/src/squim",
-        "squim.types": "//marianoguerra.github.com/squim/src/squim.types",
-        "squim.parser": "//marianoguerra.github.com/squim/src/squim.parser",
-        "squim.error": "//marianoguerra.github.com/squim/src/squim.error",
-        "squim.ground": "//marianoguerra.github.com/squim/src/squim.ground",
-        "squim.util": "//marianoguerra.github.com/squim/src/squim.util",
-
-        "squide": "//marianoguerra.github.com/squide/src/squide",
-        "squide.types": "//marianoguerra.github.com/squide/src/squide.types",
-        "squide.ui": "//marianoguerra.github.com/squide/src/squide.ui",
 
         // by summarylist
         "dustjs": "//cdnjs.cloudflare.com/ajax/libs/dustjs-linkedin/2.6.0/dust-core.min"
@@ -70,9 +56,6 @@ require.config({
         prettyPrint: {
             exports: "prettyPrint"
         },
-        colorPicker: {
-            exports: "colorPicker"
-        },
         spectrum: {
             exports: "spectrum",
             deps: ["jquery", "jqueryui"]
@@ -88,7 +71,7 @@ require(["jquery", "json.edit", "demos", "ace", "jquery.lego", "prettyPrint",
 
         "hint.tags", "hint.autocomplete", "hint.date", "hint.color",
         "hint.tabs", "hint.tabsobject", "hint.password", "hint.readonly", "hint.enumlabels",
-        "hint.squim", "hint.tabarray", "hint.summarylist", "hint.textarea",
+        "hint.tabarray", "hint.summarylist", "hint.textarea",
         "hint.adsafe", "hint.blockly", "hint.optional", "hint.codemirror",
         "hint.htmleditor"],
 

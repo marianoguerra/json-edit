@@ -3,17 +3,16 @@
     "use strict";
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'jqueryui', 'json.edit', 'json.schema', 'nsgen',
-               'colorPicker', 'spectrum'],
-               function ($, $ui, JsonEdit, JsonSchema, NsGen, ColorPicker) {
+        define(['jquery', 'jqueryui', 'json.edit', 'json.schema', 'nsgen', 'spectrum'],
+               function ($, $ui, JsonEdit, JsonSchema, NsGen) {
             // Also create a global in case some scripts
             // that are loaded still are looking for
             // a global even when an AMD loader is in use.
-            return (root.JsonEdit = factory($, $ui, JsonEdit, JsonSchema, NsGen, ColorPicker));
+            return (root.JsonEdit = factory($, $ui, JsonEdit, JsonSchema, NsGen));
         });
     } else {
         // Browser globals
-        root.JsonEdit = factory(root.$, root.$, root.JsonEdit, root.JsonSchema, root.NsGen, root.ColorPicker);
+        root.JsonEdit = factory(root.$, root.$, root.JsonEdit, root.JsonSchema, root.NsGen);
     }
 }(this, function ($, $ui, JsonEdit, JsonSchema, NsGen, mColorPicker) {
     "use strict";
@@ -99,34 +98,14 @@
                 "#A23BEC", "#9E7BFF", "#C8A2C8", "#F9B7FF", "#E3E4FA", "#FFFFFF", "#FEFEFE"
             ];
 
-            if (opts.picker === "colorPicker") {
-                input.click(function (event) {
-                    mColorPicker.size = 3;
-                    mColorPicker(event);
-                });
-
-                content = $.trim(input.val());
-                if (content !== "") {
-                    color = normalizeRGB(content);
-
-                    if (color.ok) {
-                        contrastColor = contrastTextColor(color.num.red,
-                                                          color.num.green,
-                                                          color.num.blue);
-
-                        input.css({"background-color": "#" + color.str, "color": contrastColor});
-                    }
-                }
-            } else {
-                input.spectrum({
-                    showInput: true,
-                    allowEmpty: opts.allowEmpty,
-                    showPaletteOnly: opts.showPaletteOnly,
-                    showPalette: opts.showPalette,
-                    showInitial: opts.showInitial,
-                    palette: opts.palette || colors
-                });
-            }
+            input.spectrum({
+                showInput: true,
+                allowEmpty: opts.allowEmpty,
+                showPaletteOnly: opts.showPaletteOnly,
+                showPalette: opts.showPalette,
+                showInitial: opts.showInitial,
+                palette: opts.palette || colors
+            });
 
         });
 
