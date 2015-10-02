@@ -181,8 +181,7 @@
     collectHints.string = collectHints.string || {};
 
     collectHints.string.blockly = function (key, field, schema, priv) {
-        var
-            xmlDom, xmlText, data,
+        var xmlDom, xmlText, data, jsCode, msg, jsFun,
 
             options = schema["je:blockly"] || {},
             inOverlay = options.overlay === true,
@@ -201,8 +200,19 @@
 
         data = {xml: xmlText};
         if (compileToJs) {
-            data[options.compileToJsField] = blockly.JavaScript
-                .workspaceToCode();
+            jsCode = blockly.JavaScript.workspaceToCode();
+            data[options.compileToJsField] = jsCode;
+
+            try {
+                jsFun = new Function(jsCode);
+            } catch (error) {
+                msg = "invalid js code: " + (error.message || 'error');
+                data = {xml: xmlText, js: jsCode};
+
+                return {
+                    result: JsonEdit.makeResult(false, msg, data)
+                };
+            }
         }
 
         $("#" + editor.attr("id") + "-overlay").remove();
