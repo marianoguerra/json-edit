@@ -11,7 +11,7 @@ require.config({
         "legoparser": "//marianoguerra.github.com/legojs/src/legoparser",
         "jquery.lego": "//marianoguerra.github.com/legojs/src/jquery.lego",
         "prettyPrint": "//cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify",
-        "jquery.taghandler": "https://raw.github.com/ioncache/Tag-Handler/master/js/jquery.taghandler",
+        "jquery.taghandler": "//rawgit.com/ioncache/Tag-Handler/master/js/jquery.taghandler",
         "json.edit": "../src/json.edit",
         "json.schema": "../src/json.schema",
         "nsgen": "../src/nsgen",
